@@ -1,7 +1,7 @@
 import unittest
 import os
 import sys
-sys.path.append("../")
+sys.path.append(os.getcwd())
 from simulation.lib.geometry import Point
 from simulation.realm.graph import Road, Junction
 from simulation.realm.truck import Collision, Truck
