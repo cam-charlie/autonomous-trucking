@@ -1,7 +1,7 @@
 import unittest
 import os
 import sys
-sys.path.append(os.getcwd())
+sys.path.append("../")
 from simulation.lib.geometry import Point
 from simulation.realm.graph import Road, Junction
 from simulation.realm.truck import Collision, Truck
@@ -10,7 +10,7 @@ class TestGraph(unittest.TestCase):
     def test_road_definition(self):
         junction_start = Junction(Point(1,1))
         junction_end = Junction(Point(2,3))
-        
+
         # Straight road
         test_road_a = Road(junction_start,junction_end)
         self.assertAlmostEqual(test_road_a._ax,0)
@@ -65,7 +65,7 @@ class TestGraph(unittest.TestCase):
             t.update(0,0)
             road_start.step(1)
             road_end.step(1)
-        
+
         self.assertAlmostEqual(road_end._trucks[0].position, 0.2)
         self.assertEqual(len(road_start._trucks),0)
 
