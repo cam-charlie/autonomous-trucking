@@ -14,7 +14,10 @@ class Env:
         """ Reset realm to map and conditions specified in config
 
         Returns:
-            observations: As defined in compute observations
+            observations: As defined in compute observations    
+            rewards
+            dones
+            infos
         """
         raise NotImplementedError
 
@@ -42,6 +45,7 @@ class Env:
                 entire route.
             infos: A dictionary of agents to debug information.
         """
+        
         raise NotImplementedError
 
     def _compute_rewards(self) -> float:

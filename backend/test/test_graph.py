@@ -32,7 +32,7 @@ class TestGraph(unittest.TestCase):
         road.entry(t0)
         for _ in range(5):
             t0.update(0, 0)
-            road.step(1.0)  
+            road.step(1.0)
         self.assertAlmostEqual(road._trucks[0].position, 0.5)
         # Collision
         t1 = Truck(junction_next)

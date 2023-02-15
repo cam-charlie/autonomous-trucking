@@ -79,7 +79,7 @@ class Road(Edge):
     Represented as a spline curve
     """
 
-    def __init__(self, start: Node, end: Node, vin: Point = None, vout: Point = None) -> None:
+    def __init__(self, start: Node, end: Node, vin: Point = None, vout: Point = None, length = None) -> None:
         """Initializes a road object
 
         Args:
@@ -90,7 +90,9 @@ class Road(Edge):
         """
         super().__init__(start, end)
 
-        self._length = (end.pos-start.pos).magnitude()
+        self._length = length
+        if length == None:
+            self._length = (end.pos-start.pos).magnitude()
         self._start = start
         self._end = end
 

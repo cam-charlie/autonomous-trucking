@@ -18,7 +18,7 @@ class Truck:
         Called once each turn, before step()
         """
         self.stepped = False
-        acceleration = max(self._max_acceleration,acceleration)
+        acceleration = max(self._max_acceleration,abs(acceleration))
         self._velocity = max(self._max_velocity, self._velocity + acceleration*dt)
 
     @property
