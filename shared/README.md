@@ -32,6 +32,7 @@ Node:
     }
 
 // position required by front-end only
+// road_ids and node_ids must be different and unique!
 
 Globals:
     {

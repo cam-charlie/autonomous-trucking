@@ -97,8 +97,6 @@ class Road(Edge):
         super().__init__(id, start, end)
 
         self._length = length
-        if length == None:
-            self._length = (end.pos-start.pos).magnitude()
         self._start = start
         self._end = end
 

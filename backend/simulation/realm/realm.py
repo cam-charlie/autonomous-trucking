@@ -11,8 +11,7 @@ if TYPE_CHECKING:
 class Realm:
     def __init__(self) -> None:
         self.trucks: Dict[int, Truck] = {}
-        self.nodes: Dict[int, Node] = {}
-        self.roads: Dict[int, Road] = {}
+        self.containers = {}
 
         # TODO(mark) initialize trucks and graph from config
         # 1. Generate graph structure
@@ -25,14 +24,17 @@ class Realm:
 
         self.trucks = {t["truck_id"]: Truck.from_json(t) for t in data["trucks"]}
 
-        self.nodes = {n["node_id"]: Node.from_json(n) for n in data["nodes"]}
 
-        self.roads = {r["road_id"]: Road(
-            r["road_id"],
-            self.nodes[int(r["start_node_id"])],
-            self.nodes[int(r["end_node_id"])],
-            r["length"])
-            for r in data["roads"]}
+        for n in data["nodes"]:
+            self.containers[n["node_id"]] = Node.from_json(n)
+
+        for r in data["roads"]:
+            self.containers[r["road_id"]] = Road(
+                r["road_id"],
+                self.containers[int(r["start_node_id"])],
+                self.containers[int(r["end_node_id"])],
+                r["length"]
+            )
 
 
     def step(self, actions: Dict[int, float], dt: float =1/30) -> None:
@@ -51,7 +53,7 @@ class Realm:
             truck.update(actions[truck.id],dt)
 
         # Step
-        for node in self.graph.values():
+        for node in self.containers.values():
             node.step(dt)
 
         #TODO(mark) completed trucks (finished desired route)
