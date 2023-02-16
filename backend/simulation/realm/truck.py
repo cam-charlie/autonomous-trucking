@@ -1,14 +1,15 @@
-from simulation.lib.id import generateID
+from simulation.globals import MAX_ACCELERATION, MAX_VELOCITY
+
+
+from typing import Any
+
 
 class Truck:
 
-    def __init__(self, destination: int, max_acceleration: float =1.0, max_velocity:float = 1.0):
-        self._id: int = generateID()
-
-        self._max_acceleration: float = max_acceleration
-        self._max_velocity: float = max_velocity
+    def __init__(self, id: int, destination_id: int):
+        self._id = id
         self._velocity: float = 0
-        self.destination: int = destination
+        self.destination: int = destination_id
         self.position: float = 0
         self.stepped = False
 
@@ -18,8 +19,8 @@ class Truck:
         Called once each turn, before step()
         """
         self.stepped = False
-        acceleration = max(self._max_acceleration,abs(acceleration))
-        self._velocity = max(self._max_velocity, self._velocity + acceleration*dt)
+        acceleration = max(MAX_ACCELERATION, abs(acceleration))
+        self._velocity = max(MAX_VELOCITY, self._velocity + acceleration*dt)
 
     @property
     def id(self) -> int:
@@ -32,6 +33,11 @@ class Truck:
         """ Change in normalized position
         """
         return self._velocity
+
+    @staticmethod
+    def from_json(json: Any) -> 'Truck':
+        return Truck(int(json["truck_id"]), int(json["destination_id"]))
+
 
 class Collision(Exception):
     pass

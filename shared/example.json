@@ -1,0 +1,45 @@
+{
+  "roads": [
+    {
+      "road_id": 1,
+      "start_node_id": 3,
+      "end_node_id": 4,
+      "length": 50.0
+    }
+  ],
+
+  "nodes": [
+    {
+      "type" : "junction",
+      "node_id": 3,
+      "position": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "type": "junction",
+      "node_id": 4,
+      "position": {
+        "x": 10,
+        "y": 0
+      }
+    }
+  ],
+
+  "trucks": [
+    {
+      "truck_id": 100,
+      "destination_id": 1
+    },
+    {
+      "truck_id": 101,
+      "destination_id": 1
+    }
+  ],
+
+  "globals": {
+        "max_truck_acceleration": 1.0,
+        "max_truck_velocity": 1.0
+  }
+}
