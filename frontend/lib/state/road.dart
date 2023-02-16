@@ -15,9 +15,8 @@ abstract class Road {
   double get length;
 
   Offset positionAt({double? distance, double? fraction});
+  double direction({double? distance, double? fraction});
 }
-
-
 
 class StraightRoad extends Road {
   final Offset start;
@@ -26,7 +25,8 @@ class StraightRoad extends Road {
   @override
   final RID id;
 
-  const StraightRoad({required this.id, required this.start, required this.end});
+  const StraightRoad(
+      {required this.id, required this.start, required this.end});
 
   @override
   double get length => (start - end).distance;
@@ -43,9 +43,30 @@ class StraightRoad extends Road {
     return start + (end - start) * fraction;
   }
 
+  @override
+  double direction({double? distance, double? fraction}) {
+    if ((distance == null) == (fraction == null)) {
+      throw ArgumentError(
+          "Exactly one of distance and fraction must be non-null");
+    }
+
+    Offset travel = end - start;
+
+    if (travel.dy == 0) {
+      return travel.dx > 0 ? pi / 2 : 3 * pi / 2;
+    } else if (travel.dy > 0) {
+      return travel.dx > 0
+          ? atan(travel.dx / travel.dy)
+          : 2 * pi - atan(travel.dx.abs() / travel.dy);
+    } else {
+      return travel.dx > 0
+          ? pi / 2 + atan(travel.dy.abs() / travel.dx.abs())
+          : travel.dx < 0
+              ? 3 * pi / 2 - atan(travel.dy.abs() / travel.dx.abs())
+              : pi;
+    }
+  }
 }
-
-
 
 class ArcRoad extends Road {
   final Offset centre;
@@ -61,8 +82,13 @@ class ArcRoad extends Road {
   @override
   final RID id;
 
-  const ArcRoad({required this.id, required this.centre,
-    required this.radius, required double arcStart, required arcEnd, required this.clockwise})
+  const ArcRoad(
+      {required this.id,
+      required this.centre,
+      required this.radius,
+      required double arcStart,
+      required arcEnd,
+      required this.clockwise})
       : arcStart = arcStart % (2 * pi),
         arcEnd = arcEnd % (2 * pi);
 
@@ -86,5 +112,32 @@ class ArcRoad extends Road {
 
     return Offset(
         centre.dx + sin(angle) * radius, centre.dy + cos(angle) * radius);
+  }
+
+  @override
+  double direction({double? distance, double? fraction}) {
+    if ((distance == null) == (fraction == null)) {
+      throw ArgumentError(
+          "Exactly one of distance and fraction must be non-null");
+    }
+
+    Offset travel = centre - positionAt(distance: distance, fraction: fraction);
+    double angle;
+
+    if (travel.dy == 0) {
+      angle = travel.dx > 0 ? pi / 2 : 3 * pi / 2;
+    } else if (travel.dy > 0) {
+      angle = travel.dx > 0
+          ? atan(travel.dx / travel.dy)
+          : 2 * pi - atan(travel.dx.abs() / travel.dy);
+    } else {
+      angle = travel.dx > 0
+          ? pi / 2 + atan(travel.dy.abs() / travel.dx.abs())
+          : travel.dx < 0
+              ? 3 * pi / 2 - atan(travel.dy.abs() / travel.dx.abs())
+              : pi;
+    }
+
+    return (angle + (clockwise ? -pi / 2 : pi / 2)) % (2 * pi);
   }
 }
