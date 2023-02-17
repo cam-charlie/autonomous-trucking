@@ -8,6 +8,7 @@ class VelocityCalculator<T extends num> {
   }
 
   reset({T? value}) {
+    _velocity = 0;
     _prev = value;
     _sw
       ..reset()
@@ -16,7 +17,7 @@ class VelocityCalculator<T extends num> {
 
   pushValue(T x) {
     const double oneMillion = 1000000;
-    double secondsElapsed = (_sw.elapsedMicroseconds as double) / oneMillion;
+    double secondsElapsed = (_sw.elapsedMicroseconds.toDouble()) / oneMillion;
     if (secondsElapsed == 0 || _prev == null) {
       _velocity = 0;
     } else {
