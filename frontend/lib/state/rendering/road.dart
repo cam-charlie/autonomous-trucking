@@ -2,6 +2,7 @@ import 'dart:math';
 import 'dart:ui';
 import 'package:equatable/equatable.dart';
 
+/// Road ID
 class RID extends Equatable {
   const RID(int id) : _id = id;
   final int _id;
@@ -9,8 +10,8 @@ class RID extends Equatable {
   List<Object> get props => [_id];
 }
 
-abstract class Road {
-  const Road();
+abstract class RenderRoad {
+  const RenderRoad();
   RID get id;
   double get length;
 
@@ -18,14 +19,14 @@ abstract class Road {
   double direction({double? distance, double? fraction});
 }
 
-class StraightRoad extends Road {
+class StraightRenderRoad extends RenderRoad with EquatableMixin {
   final Offset start;
   final Offset end;
 
   @override
   final RID id;
 
-  const StraightRoad(
+  const StraightRenderRoad(
       {required this.id, required this.start, required this.end});
 
   @override
@@ -66,9 +67,12 @@ class StraightRoad extends Road {
               : pi;
     }
   }
+
+  @override
+  List<Object> get props => [start, end, id];
 }
 
-class ArcRoad extends Road {
+class RenderArcRoad extends RenderRoad with EquatableMixin {
   final Offset centre;
   final double radius;
   final bool clockwise;
@@ -82,7 +86,7 @@ class ArcRoad extends Road {
   @override
   final RID id;
 
-  const ArcRoad(
+  const RenderArcRoad(
       {required this.id,
       required this.centre,
       required this.radius,
@@ -140,4 +144,7 @@ class ArcRoad extends Road {
 
     return (angle + (clockwise ? -pi / 2 : pi / 2)) % (2 * pi);
   }
+
+  @override
+  List<Object> get props => [centre, radius, clockwise, arcStart, arcEnd, id];
 }

@@ -11,9 +11,8 @@ class VID extends Equatable {
   List<Object> get props => [_id];
 }
 
-class Vehicle {
-  final double x;
-  final double y;
+class Vehicle with EquatableMixin {
+  final Offset position;
   final double direction; // radians
   final VID id;
 
@@ -21,5 +20,8 @@ class Vehicle {
       constants.vehicleColours[id.hashCode % constants.vehicleColours.length];
 
   const Vehicle(
-      {required this.id, required this.x, required this.y, required this.direction});
+      {required this.id, required this.position, required this.direction});
+
+  @override
+  List<Object> get props => [position, direction, id];
 }
