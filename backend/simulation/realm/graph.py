@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from simulation.realm.truck import Truck
     from simulation.lib.geometry import Point
-    from typing import List, Dict
+    from typing import List, Dict, Optional
 
 class TruckContainer(ABC):
 
@@ -79,7 +79,11 @@ class Road(Edge):
     Represented as a spline curve
     """
 
-    def __init__(self, start: Node, end: Node, vin: Point = None, vout: Point = None, length = None) -> None:
+    def __init__(self, start: Node, 
+                       end: Node, 
+                       vin: Optional[Point] = None, 
+                       vout: Optional[Point] = None, 
+                       length = None) -> None:
         """Initializes a road object
 
         Args:

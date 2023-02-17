@@ -57,6 +57,7 @@ class Env:
         Returns
             Change in metric on most recent step
         """
+        raise NotImplementedError
 
     def _compute_observations(self) -> float:
         """Autonomous trucking observation API.
