@@ -27,8 +27,10 @@ const vehicleColours = <MaterialColor>[
 Color backgroundColour = const Color(0xffB2D497);
 Color roadColour = const Color(0xff5B5B5B);
 Color uiColour = const Color(0xB0000000);
+Color shadowColour = const Color(0x44000000);
 
 const double roadWidth = 20;
+const Size carSize = Size(8, 15);
 
 const double maxZoomIn = 10;
 const double maxZoomOut = 0.1;

@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
+import 'package:frontend/utilities/camera_transform.dart';
 import 'package:frontend/utilities/range.dart';
 import 'package:frontend/utilities/velocity_calculator.dart';
 import 'package:frontend/constants.dart' as constants;
@@ -9,12 +10,17 @@ import 'package:frontend/constants.dart' as constants;
 /*
 TODO:
   - add bounds detection and animation to stop out of bounds panning and zooming.
+  - add manual x, y, r, z, bounds, etc, changing
+  - make zoom about cursor
  */
 
 class MoveDetectorController extends ChangeNotifier {
   Rect _positionBounds;
   Range _zoomBounds;
   Range _rotationBounds;
+
+  CameraTransform get transform => CameraTransform(
+      position: Offset(_x, _y), zoom: _zoom, rotation: _rotation);
 
   double get x => _x;
   double _x;
@@ -81,7 +87,7 @@ class MoveDetectorController extends ChangeNotifier {
 
     _acz = AnimationController.unbounded(vsync: _tickerProvider)
       ..addListener(() {
-        _zoom = _acz.value;
+        _zoom = max(_acz.value, 0.1); // TODO: make this into proper bounds
         notifyListeners();
       });
 
@@ -111,26 +117,12 @@ class MoveDetectorController extends ChangeNotifier {
     super.dispose();
   }
 
-  panStart(DragStartDetails details) {
-    _acx.stop();
-    _acy.stop();
-    _acz.stop(); // should stop zooming when user pans
-    _acr.stop();
-  }
-
-  panUpdate(DragUpdateDetails details) {
-    if (_canPan) {
-      _x += details.delta.dx / _zoom;
-      _y += details.delta.dy / _zoom;
-    }
-    notifyListeners();
-  }
-
-  panEnd(DragEndDetails details) {
-    // acx.value = x;
-    // acy.value = y;
-    _animatePostPan(Offset(_x, _y), details.velocity.pixelsPerSecond);
-    // TODO: animate into bounds if out of bounds
+  transformPanWithRotationAndZoom(Offset pan) {
+    final s = sin(_rotation), c = cos(-rotation);
+    return Offset(
+      -(c * pan.dx + s * pan.dy) / zoom,
+      -(-s * pan.dx + c * pan.dy) / zoom,
+    );
   }
 
   scaleStart(ScaleStartDetails details) {
@@ -138,22 +130,24 @@ class MoveDetectorController extends ChangeNotifier {
     _acy.stop();
     _acz.stop();
     _acr.stop();
-    _baseZoom = 1;
-    _baseRotation = 0;
+    _baseZoom = zoom;
+    _baseRotation = _rotation;
     _zoomVelocityCalculator.reset();
     _rotateVelocityCalculator.reset();
   }
 
   scaleUpdate(ScaleUpdateDetails details) {
-    if (_canPan) {
-      _x += details.focalPointDelta.dx;
-      _y += details.focalPointDelta.dy;
-    }
-    if (_canZoom) {
-      _zoom = _baseZoom * details.scale;
-    }
     if (_canRotate) {
       _rotation = (_baseRotation + details.rotation) % (2 * pi);
+    }
+    if (_canZoom) {
+      // TODO: make it zoom around the cursor. does it already handle two fingers?
+      _zoom = _baseZoom * details.scale;
+    }
+    if (_canPan) {
+      final pan = transformPanWithRotationAndZoom(details.focalPointDelta);
+      _x += pan.dx;
+      _y += pan.dy;
     }
     _zoomVelocityCalculator.pushValue(details.scale);
     _rotateVelocityCalculator.pushValue(details.rotation);
@@ -161,10 +155,10 @@ class MoveDetectorController extends ChangeNotifier {
   }
 
   scaleEnd(ScaleEndDetails details) {
-    // acx.value = x;
-    // acy.value = y;
+    // TODO: prevent back swing animation
     if (_canPan) {
-      _animatePostPan(Offset(_x, _y), details.velocity.pixelsPerSecond);
+      _animatePostPan(Offset(_x, _y),
+          transformPanWithRotationAndZoom(details.velocity.pixelsPerSecond));
     }
     if (_canZoom) {
       _animatePostScale(_zoom, _zoomVelocityCalculator.velocity);
@@ -187,6 +181,7 @@ class MoveDetectorController extends ChangeNotifier {
   }
 
   _animatePostRotate(double r, double rv) {
-    _acr.animateWith(FrictionSimulation(constants.zoomDragCoefficient, r, rv));
+    _acr.animateWith(
+        FrictionSimulation(constants.rotateDragCoefficient, r, rv));
   }
 }

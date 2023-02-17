@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/widgets/interactive_simulation.dart';
 
 void main() {
   runApp(TruckingApp());
@@ -9,11 +10,7 @@ class TruckingApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home:  Center(
-        child: Text('Autonomous Trucking'),
-      ),
-    );
+    return InteractiveSimulation();
   }
 
 }

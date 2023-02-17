@@ -13,10 +13,6 @@ class MoveDetector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onPanStart: controller.panStart,
-      onPanUpdate: controller.panUpdate,
-      onPanEnd: controller.panEnd,
-      // onPanCancel:, // needed?
       onScaleStart: controller.scaleStart,
       onScaleUpdate: controller.scaleUpdate,
       onScaleEnd: controller.scaleEnd,
