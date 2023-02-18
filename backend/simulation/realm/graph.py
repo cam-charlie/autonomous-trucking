@@ -110,8 +110,8 @@ class Road(Edge):
             Point u along road
         """
         return Point(
-            u * (self._end.pos().x() - self._start.pos().x()),
-            u * (self._end.pos().y() - self._start.pos().y())
+            u * (self._end.pos.x - self._start.pos.x),
+            u * (self._end.pos.y - self._start.pos.y)
             )
 
     def entry(self, truck: Truck) -> None:
