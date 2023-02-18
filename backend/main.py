@@ -1,7 +1,8 @@
 from simulation.realm.realm import Realm
 from simulation.realm.graph import Road
+from simulation.draw.visualiser import Visualiser
 
 if __name__ == '__main__':
     r = Realm()
-    print(r.containers)
-    [print(f"id: {t.id}, dest: {t.destination}, route: {t.route}") for t in r.trucks.values()]
+    v = Visualiser(r)
+    v.start()

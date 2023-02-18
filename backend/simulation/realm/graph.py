@@ -109,7 +109,7 @@ class Road(Edge):
         Return:
             Point u along road
         """
-        return Point(
+        return self._start.pos + Point(
             u * (self._end.pos.x - self._start.pos.x),
             u * (self._end.pos.y - self._start.pos.y)
             )

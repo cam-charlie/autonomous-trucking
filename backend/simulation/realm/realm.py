@@ -3,7 +3,7 @@ import json
 
 from typing import TYPE_CHECKING, cast
 from simulation.realm.truck import Truck
-from simulation.realm.graph import Road, Node, Edge
+from simulation.realm.graph import Road, Node, Edge, Junction
 if TYPE_CHECKING:
     from simulation.realm.graph import TruckContainer
     from typing import Dict
@@ -35,6 +35,15 @@ class Realm:
                 cast(Node, self.containers[int(r["end_node_id"])]),
                 r["length"]
             )
+
+        # bodge
+        for node in self.containers.values():
+            if isinstance(node, Junction) and node.id==3:
+                node._routing_table[4] = 0
+
+        # add trucks to the first container on their route
+        for truck in self.trucks.values():
+            self.containers[truck.route[0]].entry(truck)
 
 
     def step(self, actions: Dict[int, float], dt: float =1/30) -> None:
