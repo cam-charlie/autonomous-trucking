@@ -4,7 +4,7 @@ Wrapper for interfacing with algorithm
 '''
 
 class Env:
-    """Environment wrapper for autonomous-trucking simulator following format commonly used 
+    """Environment wrapper for autonomous-trucking simulator following format commonly used
     in reinforcement learning settings.
 
     Also applicable for rule based solutions
@@ -14,7 +14,7 @@ class Env:
         """ Reset realm to map and conditions specified in config
 
         Returns:
-            observations: As defined in compute observations    
+            observations: As defined in compute observations
             rewards
             dones
             infos
@@ -41,11 +41,11 @@ class Env:
         Returns:
             observations: As defined in _compute observations
             rewards: As defined in _compute_rewards
-            dones: A dictionary of agents to booleans, where true indicates truck has completed 
+            dones: A dictionary of agents to booleans, where true indicates truck has completed
                 entire route.
             infos: A dictionary of agents to debug information.
         """
-        
+
         raise NotImplementedError
 
     def _compute_rewards(self) -> float:
