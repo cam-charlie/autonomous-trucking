@@ -4,7 +4,7 @@
       "road_id": 1,
       "start_node_id": 3,
       "end_node_id": 4,
-      "length": 50.0
+      "length": 200.0
     }
   ],
 
@@ -13,16 +13,16 @@
       "type" : "junction",
       "node_id": 3,
       "position": {
-        "x": 0,
-        "y": 0
+        "x": 200,
+        "y": 200
       }
     },
     {
       "type": "junction",
       "node_id": 4,
       "position": {
-        "x": 10,
-        "y": 0
+        "x": 400,
+        "y": 200
       }
     }
   ],

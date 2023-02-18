@@ -1,9 +1,9 @@
 from __future__ import annotations
 import json
 
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING
 from simulation.realm.truck import Truck
-from simulation.realm.graph import Road, Node, Edge
+from simulation.realm.graph import Road, Node, Edge, Junction
 if TYPE_CHECKING:
     from simulation.realm.graph import TruckContainer
     from typing import Dict
@@ -11,7 +11,8 @@ if TYPE_CHECKING:
 class Realm:
     def __init__(self) -> None:
         self.trucks: Dict[int, Truck] = {}
-        self.containers: Dict[int, TruckContainer] = {}
+        self.nodes: Dict[int, Node] = {}
+        self.roads: Dict[int, Road] = {}
 
         # TODO(mark) initialize trucks and graph from config
         # 1. Generate graph structure
@@ -26,15 +27,24 @@ class Realm:
 
 
         for n in data["nodes"]:
-            self.containers[n["node_id"]] = Node.from_json(n)
+            self.nodes[n["node_id"]] = Node.from_json(n)
 
         for r in data["roads"]:
-            self.containers[r["road_id"]] = Road(
+            self.roads[r["road_id"]] = Road(
                 r["road_id"],
-                cast(Node, self.containers[int(r["start_node_id"])]),
-                cast(Node, self.containers[int(r["end_node_id"])]),
+                self.nodes[int(r["start_node_id"])],
+                self.nodes[int(r["end_node_id"])],
                 r["length"]
             )
+
+        # bodge
+        for node in self.nodes.values():
+            if isinstance(node, Junction) and node.id==3:
+                node._routing_table[4] = 0
+
+        # add trucks to the first container on their route
+        for truck in self.trucks.values():
+            self.nodes[truck.route[0]].entry(truck)
 
 
     def step(self, actions: Dict[int, float], dt: float =1/30) -> None:
@@ -52,8 +62,11 @@ class Realm:
         for truck in self.trucks.values():
             truck.update(actions[truck.id],dt)
 
-        # Step
-        for node in self.containers.values():
+        # Step nodes and roads
+        for node in self.nodes.values():
             node.step(dt)
+        for road in self.roads.values():
+            road.step(dt)
+
 
         #TODO(mark) completed trucks (finished desired route)

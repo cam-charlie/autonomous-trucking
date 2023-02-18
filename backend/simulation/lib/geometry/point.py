@@ -3,7 +3,7 @@
 '''
 
 
-from typing import Any
+from typing import Any, Tuple
 
 
 class Point:
@@ -38,3 +38,6 @@ class Point:
     @staticmethod
     def from_json(json: Any) -> 'Point':
         return Point(float(json['x']), float(json['y']))
+
+    def to_tuple(self) -> Tuple[float, float]:
+        return (self.x, self.y)
