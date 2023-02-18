@@ -6,12 +6,12 @@ from simulation.realm.truck import Truck
 from simulation.realm.graph import Road, Node, Edge
 if TYPE_CHECKING:
     from simulation.realm.graph import TruckContainer
-    from typing import Dict
+    from typing import Dict, cast
 
 class Realm:
     def __init__(self) -> None:
         self.trucks: Dict[int, Truck] = {}
-        self.containers = {}
+        self.containers: Dict[int, TruckContainer] = {}
 
         # TODO(mark) initialize trucks and graph from config
         # 1. Generate graph structure
@@ -31,8 +31,8 @@ class Realm:
         for r in data["roads"]:
             self.containers[r["road_id"]] = Road(
                 r["road_id"],
-                self.containers[int(r["start_node_id"])],
-                self.containers[int(r["end_node_id"])],
+                cast(Node, self.containers[int(r["start_node_id"])]),
+                cast(Node, self.containers[int(r["end_node_id"])]),
                 r["length"]
             )
 
