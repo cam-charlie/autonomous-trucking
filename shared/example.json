@@ -30,11 +30,13 @@
   "trucks": [
     {
       "truck_id": 100,
-      "destination_id": 1
+      "destination_id": 4,
+      "route": [3, 4]
     },
     {
       "truck_id": 101,
-      "destination_id": 1
+      "destination_id": 4,
+      "route": [3, 4]
     }
   ],
 

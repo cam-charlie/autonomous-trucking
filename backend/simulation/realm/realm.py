@@ -1,12 +1,12 @@
 from __future__ import annotations
 import json
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 from simulation.realm.truck import Truck
 from simulation.realm.graph import Road, Node, Edge
 if TYPE_CHECKING:
     from simulation.realm.graph import TruckContainer
-    from typing import Dict, cast
+    from typing import Dict
 
 class Realm:
     def __init__(self) -> None:

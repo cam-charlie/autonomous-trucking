@@ -4,30 +4,29 @@
 # Intermediate Data Format
 Point:
     {
-        "x": ...,
-        "y": ...
+        "x": float,
+        "y": float
     }
 
 Truck:
     {
-        "truck_id": ...,
-        "destination_id": ...,
+        "truck_id": int,
+        "destination_id": int,
+        "route": List[int] // list of node_ids
     }
-
-^ I should consider routes at some point
 
 Road:
     {
-        "road_id": ...,
-        "start_node_id": //id of the node it points to
-        "end_node_id": ...
-        "length": ...,
+        "road_id": int,
+        "start_node_id": int, //id of the node it points to
+        "end_node_id": int,
+        "length": float,
     }
 
 Node:
     {
         "type": // should be one of ["junction", "source", "sink"]
-        "node_id": ...,
+        "node_id": int,
         "position: Point
     }
 
@@ -36,6 +35,6 @@ Node:
 
 Globals:
     {
-        "max_truck_acceleration": ...,
-        "max_truck_velocity": ...,
+        "max_truck_acceleration": float,
+        "max_truck_velocity": float
     }
