@@ -2,7 +2,7 @@ import pygame
 import sys
 
 from simulation.realm.truck import Truck
-from simulation.realm.graph import Node, Road, TruckContainer
+from simulation.realm.graph import Node, Road
 from simulation.realm.realm import Realm
 
 '''
@@ -42,11 +42,11 @@ class Visualiser:
 
 
     def draw_graph(self) -> None:
-        for tc in self.realm.containers.values():
-            if isinstance(tc, Node):
-                self.draw_node(tc)
-            elif isinstance(tc, Road):
-                self.draw_road(tc)
+        for node in self.realm.nodes.values():
+            self.draw_node(node)
+
+        for road in self.realm.roads.values():
+            self.draw_road(road)
 
 
     def draw_node(self, node: Node) -> None:
