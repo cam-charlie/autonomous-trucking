@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from simulation.realm.truck import Truck
     from simulation.lib.geometry import Point
-    from typing import List, Dict, Any
+    from typing import List, Dict, Optional, Any
 
 class TruckContainer(ABC):
 
