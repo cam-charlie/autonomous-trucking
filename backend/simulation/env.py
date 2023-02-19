@@ -2,17 +2,18 @@ from __future__ import annotations
 from .config import Config
 from .realm.realm import Realm
 
-from typing import TYPE_CHECKING, NewType
+from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from typing import Dict, Tuple, Any
     from simulation.realm.truck import Truck
+    EnvState = Tuple[Dict[Any, Any], float, Dict[Truck, bool], Dict[Any, Any]]
 
 '''
 Wrapper for interfacing with algorithm
 #TODO(mark) Fully interface with PettingZoo API to run RL as extension :D
 '''
 
-EnvState = Tuple[Dict[Any, Any], float, Dict[Truck, bool], Dict[Any, Any]]
+
 
 class Env:
     """Environment wrapper for autonomous-trucking simulator following format commonly used
