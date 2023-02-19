@@ -12,4 +12,4 @@ class Config:
 
     @property
     def MAX_VELOCITY(self) -> float:
-        self.data["globals"]["max_truck_velocity"]
+        return self.data["globals"]["max_truck_velocity"]

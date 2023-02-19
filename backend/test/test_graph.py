@@ -3,7 +3,7 @@ import os
 import sys
 sys.path.append(os.getcwd())
 from simulation.lib.geometry import Point
-from simulation.realm.graph import Road, Junction
+from simulation.realm.graph import Depot, Road, Junction
 from simulation.realm.truck import Collision, Truck
 from simulation.config import Config
 
@@ -74,6 +74,33 @@ class TestGraph(unittest.TestCase):
         self.assertAlmostEqual(road_end._trucks[0].position, 0.2)
         self.assertEqual(len(road_start._trucks),0)
 
+    def test_depot(self):
+        depot_start = Depot(0, Point(0,0))
+        depot_start._routing_table[1] = 0
+        depot_end = Depot(1, Point(10,0))
+
+        road = Road(2, depot_start, depot_end, 10)
+        t = Truck([depot_end.id], test_config)
+        t._velocity = 1
+
+        depot_start.entry(t)
+        dt = 1
+        # Does nothing
+        for _ in range(5):
+            t.act(1,dt)
+            depot_start.act(None, dt)
+            depot_start.update(dt)
+            depot_end.update(dt)
+            road.update(dt)
+        # Release
+        depot_start.act(t.id, dt)
+        for _ in range(100):
+            if t.done(): break
+            t.act(1,dt)
+            depot_start.update(dt)
+            depot_end.update(dt)
+            road.update(dt)
+        self.assertTrue(t.done())
 
 if __name__ == "__main__":
     unittest.main()

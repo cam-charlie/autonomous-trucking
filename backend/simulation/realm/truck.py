@@ -10,11 +10,10 @@ class Truck(Actor):
     def __init__(self, route: List[int], config: Config) -> None:
         super().__init__()
         self._velocity: float = 0
-        self.destination: int = route[0]
         self.position: float = 0
         self.stepped = False
         self.config = config
-        self._route = route
+        self._route = route[::-1]
 
     def act(self, acceleration, dt) -> None:
         """Apply actions
@@ -29,6 +28,18 @@ class Truck(Actor):
             self._velocity = min(self.config.MAX_VELOCITY, self._velocity + achieved_acceleration*dt)
             if self._velocity < 0:
                 self._velocity = 0
+
+    def reached_next_destination(self) -> None:
+        self._route.pop()
+
+    def done(self) -> bool:
+        return True if len(self._route) == 0 else False
+
+    @property
+    def destination(self) -> int:
+        if len(self._route) == 0:
+            return -1
+        return self._route[-1]
 
     @property
     def velocity(self) -> float:
@@ -45,7 +56,6 @@ class Truck(Actor):
         truck = Truck([int(x) for x in json["route"]], config)
         truck.position = json['current_position']
         return truck
-
 
 class Collision(Exception):
     pass
