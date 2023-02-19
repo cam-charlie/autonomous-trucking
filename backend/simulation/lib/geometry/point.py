@@ -1,10 +1,7 @@
 '''
 2D vector representation. Use immutably.
 '''
-
-
 from typing import Any, Tuple
-
 
 class Point:
 

@@ -1,34 +1,35 @@
-from simulation.globals import MAX_ACCELERATION, MAX_VELOCITY
+from __future__ import annotations
+from .entity import Actor
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from typing import Any, List
+    from ..config import Config
 
+class Truck(Actor):
 
-from typing import Any, List
-
-
-class Truck:
-
-    def __init__(self, id: int, destination_id: int, route: List[int]):
-        self._id = id
+    def __init__(self, route: List[int], config: Config):
+        super().__init__()
         self._velocity: float = 0
-        self.destination: int = destination_id
+        self.destination: int = route[0]
         self.position: float = 0
         self.stepped = False
-
+        self.config = config
         self._route = route
 
-    def update(self, acceleration: float, dt: float) -> None:
+
+    def act(self, acceleration, dt) -> None:
         """Apply actions
 
         Called once each turn, before step()
         """
         self.stepped = False
-        acceleration = max(MAX_ACCELERATION, abs(acceleration))
-        self._velocity = max(MAX_VELOCITY, self._velocity + acceleration*dt)
-
-    @property
-    def id(self) -> int:
-        """ Unique
-        """
-        return self._id
+        if acceleration != None:
+            achieved_acceleration = min(self.config.MAX_ACCELERATION, abs(acceleration))
+            if acceleration < 0:
+                achieved_acceleration = achieved_acceleration * -1
+            self._velocity = min(self.config.MAX_VELOCITY, self._velocity + achieved_acceleration*dt)
+            if self._velocity < 0:
+                self._velocity = 0
 
     @property
     def velocity(self) -> float:
@@ -41,8 +42,10 @@ class Truck:
         return self._route
 
     @staticmethod
-    def from_json(json: Any) -> 'Truck':
-        return Truck(int(json["truck_id"]), int(json["destination_id"]), [int(x) for x in json["route"]])
+    def from_json(json: Any, config: Config) -> 'Truck':
+        truck = Truck([int(x) for x in json["route"]], config)
+        truck.position = json['current_position']
+        return truck
 
 
 class Collision(Exception):

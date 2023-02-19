@@ -1,7 +1,15 @@
 COUNTER = 0
+_taken = {}
+
+def registerID(id: int):
+    _taken[id] = True
 
 def generateID() -> int:
     global COUNTER
-    COUNTER += 1
+    while _taken.get(COUNTER,False):
+        COUNTER += 1
+    registerID(COUNTER)
     return COUNTER
+
+
     

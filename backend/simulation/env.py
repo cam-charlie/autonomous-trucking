@@ -1,3 +1,11 @@
+from __future__ import annotations
+from .config import Config
+from .realm.realm import Realm
+
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from typing import Dict, Tuple
+
 '''
 Wrapper for interfacing with algorithm
 #TODO(mark) Fully interface with PettingZoo API to run RL as extension :D
@@ -19,9 +27,12 @@ class Env:
             dones
             infos
         """
-        raise NotImplementedError
+        self.config = Config(config_json_path)
+        self.realm = Realm(self.config)
 
-    def step(self, actions):
+        return self.step()
+    
+    def step(self, actions: Dict[int, float] = {}):
         """ Simulates one realm tick.
 
         Args:
@@ -45,10 +56,15 @@ class Env:
                 entire route.
             infos: A dictionary of agents to debug information.
         """
+        
+        dones = self.realm.update(actions)
+        obs = self._compute_observations()
+        rewards, infos = self._compute_rewards()
 
-        raise NotImplementedError
+        return obs, rewards, dones, infos
 
-    def _compute_rewards(self) -> float:
+
+    def _compute_rewards(self) -> Tuple[float, Dict]:
         """ Computes the metric to optimize for
 
         By default overall throughput of trucks reaching destination.
@@ -57,9 +73,9 @@ class Env:
         Returns
             Change in metric on most recent step
         """
-        raise NotImplementedError
+        return 0, {}
 
-    def _compute_observations(self) -> float:
+    def _compute_observations(self):
         """Autonomous trucking observation API.
 
         Returns:
@@ -69,7 +85,8 @@ class Env:
         # Release primarily truck positions and representation of graph structure.
         # Future lookaheads should be done by the algorithm module.
 
-        raise NotImplementedError
+        # TODO(mark) this is a placeholder. Wrap into a dictionary of primitives.
+        return {}
 
     def render(self) -> float:
         """ Pass required game state to frontend module

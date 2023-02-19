@@ -1,23 +1,21 @@
 from __future__ import annotations
 from abc import ABC
-from simulation.lib.geometry import Point
+from ..lib.geometry import Point
 from collections import deque
-import math
-from simulation.realm.truck import Collision
-
+from .truck import Collision
+from .entity import Actor, Entity
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from simulation.realm.truck import Truck
-    from simulation.lib.geometry import Point
-    from typing import List, Dict, Optional, Any
+    from .truck import Truck
+    from typing import List, Dict, Any
 
-class TruckContainer(ABC):
+class TruckContainer(Entity, ABC):
 
     def __init__(self, id: int) -> None:
-        self._id: int = id
+        super().__init__(id)
         self._trucks: deque[Truck] = deque()
 
-    def step(self, dt: float) -> None:
+    def update(self, dt: float) -> None:
         pass
 
     def entry(self, truck: Truck) -> None:
@@ -75,9 +73,9 @@ class Junction(Node):
 
     @staticmethod
     def from_json(json: Any) -> Junction:
-        return Junction(json["node_id"], Point.from_json(json["position"]))
+        return Junction(json["id"], Point.from_json(json["position"]))
 
-class Source(Node):
+class Source(Node, Actor):
     pass
 
 class Sink(Node):
@@ -118,7 +116,7 @@ class Road(Edge):
         super().entry(truck)
         truck.position = truck.position / self._length
 
-    def step(self, dt: float) -> None:
+    def update(self, dt: float) -> None:
         for truck in self._trucks:
             if not truck.stepped:
                 truck.position += truck.velocity * dt / self._length

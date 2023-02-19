@@ -1,53 +1,63 @@
 from __future__ import annotations
-import json
-
 from typing import TYPE_CHECKING
-from simulation.realm.truck import Truck
-from simulation.realm.graph import Road, Node, Edge, Junction
+from .truck import Truck
+from .graph import Node, Road, Edge, Junction
+from .entity import Actor
 if TYPE_CHECKING:
-    from simulation.realm.graph import TruckContainer
+    from ..config import Config
     from typing import Dict
 
 class Realm:
-    def __init__(self) -> None:
+    def __init__(self, config: Config) -> None:
         self.trucks: Dict[int, Truck] = {}
+        self.actors: Dict[int, Actor] = {}
         self.nodes: Dict[int, Node] = {}
-        self.roads: Dict[int, Road] = {}
+        self.edges: Dict[int, Edge] = {}
 
-        # TODO(mark) initialize trucks and graph from config
-        # 1. Generate graph structure
-        # 2. Run Floyd-Warshall to creating routing tables for junctions
-        self._initialise("../shared/example.json")
+        # TODO(mark)
+        # Run Floyd-Warshall to creating routing tables for junctions
+        self._initialise(config)
 
-    def _initialise(self, config_path: str) -> None:
-        with open(config_path, 'r') as f:
-            data = json.load(f)
+    def _initialise(self, config: Config) -> None:
 
-        self.trucks = {t["truck_id"]: Truck.from_json(t) for t in data["trucks"]}
+        data = config.data
 
+        # graph
+        self.nodes = {n["id"]:Node.from_json(n) for n in data['nodes']}
 
-        for n in data["nodes"]:
-            self.nodes[n["node_id"]] = Node.from_json(n)
-
-        for r in data["roads"]:
-            self.roads[r["road_id"]] = Road(
-                r["road_id"],
-                self.nodes[int(r["start_node_id"])],
-                self.nodes[int(r["end_node_id"])],
-                r["length"]
-            )
-
-        # bodge
-        for node in self.nodes.values():
+        for r in data['roads']:
+            self.edges[r["id"]] = Road(
+                    r["id"],
+                    self.nodes[int(r["start_node_id"])],
+                    self.nodes[int(r["end_node_id"])],
+                    r["length"]
+                )
+    
+        # TODO(mark) temp
+        for k,node in self.nodes.items():
             if isinstance(node, Junction) and node.id==3:
                 node._routing_table[4] = 0
 
-        # add trucks to the first container on their route
+        # trucks
+        self.trucks = {}
+        for t in data["trucks"]:
+            truck = Truck.from_json(t, config)
+            self.trucks[truck.id] = truck
+            self.nodes[t['current_node']].entry(truck)       
+
+        # TODO(mark) temp  
+        self.trucks[0]._velocity = 1
+
         for truck in self.trucks.values():
-            self.nodes[truck.route[0]].entry(truck)
+            self.actors[truck.id] = truck
+        for node in self.nodes.values():
+            if isinstance(node, Actor):
+                self.actors[node.id] = node
+        for edge in self.edges.values():
+            if isinstance(edge,Actor):
+                self.actors[edge.id] = edge
 
-
-    def step(self, actions: Dict[int, float], dt: float =1/30) -> None:
+    def update(self, actions: Dict[int, float], dt: float =1/30) -> Dict:
         """
         Runs logic.
 
@@ -57,16 +67,18 @@ class Realm:
         Returns:
             dead: list of destroyed trucks
         """
-
-        # Update accelerations
-        for truck in self.trucks.values():
-            truck.update(actions[truck.id],dt)
+        # Take actions
+        for actor in self.actors.values():
+            if actor.id in actions:
+                actor.act(actions[actor.id], dt)
+            else:
+                actor.act(None, dt)
 
         # Step nodes and roads
         for node in self.nodes.values():
-            node.step(dt)
-        for road in self.roads.values():
-            road.step(dt)
-
+            node.update(dt)
+        for edge in self.edges.values():
+            edge.update(dt)
 
         #TODO(mark) completed trucks (finished desired route)
+        return {}
