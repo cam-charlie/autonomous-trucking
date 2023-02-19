@@ -1,4 +1,4 @@
-name: Mypy
+name: BackendTest
 
 on: [push]
 
@@ -18,3 +18,7 @@ jobs:
     - name: mypy
       run: |
         mypy backend/
+    - name: unit-tests
+      run: |
+        python3 backend/test/test_env.py
+        python3 backend/test/test_graph.py
