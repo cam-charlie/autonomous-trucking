@@ -46,7 +46,6 @@ class Visualiser:
         for edge in self.realm.edges.values():
             self.draw_road(edge)
 
-
     def draw_node(self, node: Node) -> None:
         pygame.draw.circle(self.screen, "blue", node.pos.to_tuple(), 10)
         for _ in node._trucks:
