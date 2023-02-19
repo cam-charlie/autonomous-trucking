@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/utilities/animated_input_range.dart';
+import 'package:frontend/utilities/camera_transform.dart';
+import 'package:frontend/utilities/range.dart';
 import 'package:frontend/widgets/move_detector.dart';
 import 'package:frontend/widgets/move_detector_controller.dart';
 import 'package:frontend/widgets/simulation_visualisation.dart';
@@ -18,7 +21,21 @@ class _InteractiveSimulationState extends State<InteractiveSimulation>
   @override
   void initState() {
     super.initState();
-    _controller = MoveDetectorController(tickerProvider: this);
+    const moveDetectorAnimationOptions = MoveDetectorAnimationOptions(
+        boundOptions: AnimatedInputRangeBoundOptions(
+            stretchSpace: 300, snapBackTime: Duration(milliseconds: 300)),
+        slowStopOptions: AnimatedInputRangeSlowStopOptions(
+            drag: constants.translateDragCoefficient));
+    _controller = MoveDetectorController(
+      tickerProvider: this,
+      initialTransform:
+          const CameraTransform(position: Offset(0, 0), rotation: 0, zoom: 1),
+      panBounds: Rect.fromCenter(center: Offset.zero, width: 500, height: 500),
+      zoomBounds: const LogarithmicRange(0.1, 10),
+      panAnimations: moveDetectorAnimationOptions,
+      zoomAnimations: moveDetectorAnimationOptions,
+      rotateAnimations: moveDetectorAnimationOptions,
+    );
   }
 
   @override
@@ -33,11 +50,10 @@ class _InteractiveSimulationState extends State<InteractiveSimulation>
       controller: _controller,
       child: AnimatedBuilder(
         animation: _controller,
-        builder: (BuildContext context, _) =>
-            SimulationVisualisation(
-              state: constants.exampleState,
-              transform: _controller.transform,
-            ),
+        builder: (BuildContext context, _) => SimulationVisualisation(
+          state: constants.exampleState,
+          transform: _controller.transform,
+        ),
       ),
     );
   }
