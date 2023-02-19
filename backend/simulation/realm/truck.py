@@ -2,7 +2,7 @@ from __future__ import annotations
 from .entity import Actor
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from typing import Any, List
+    from typing import Any, List, Optional
     from ..config import Config
 
 class Truck(Actor):
@@ -15,13 +15,14 @@ class Truck(Actor):
         self.config = config
         self._route = route[::-1]
 
-    def act(self, acceleration, dt) -> None:
+
+    def act(self, acceleration: Optional[float], dt: float) -> None:
         """Apply actions
 
         Called once each turn, before step()
         """
         self.stepped = False
-        if acceleration != None:
+        if acceleration is not None:
             achieved_acceleration = min(self.config.MAX_ACCELERATION, abs(acceleration))
             if acceleration < 0:
                 achieved_acceleration = achieved_acceleration * -1

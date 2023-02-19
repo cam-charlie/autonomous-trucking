@@ -1,7 +1,7 @@
 COUNTER = 0
 _taken = {}
 
-def registerID(id: int):
+def registerID(id: int) -> None:
     _taken[id] = True
 
 def generateID() -> int:
@@ -12,4 +12,3 @@ def generateID() -> int:
     return COUNTER
 
 
-    

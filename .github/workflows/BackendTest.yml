@@ -17,7 +17,7 @@ jobs:
         pip install -r backend/requirements.txt
     - name: mypy
       run: |
-        mypy backend/
+        cd backend && mypy .
     - name: unit-tests
       run: |
         cd backend

@@ -4,12 +4,16 @@ from .realm.realm import Realm
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from typing import Dict, Tuple
+    from typing import Dict, Tuple, Any
+    from simulation.realm.truck import Truck
+    EnvState = Tuple[Dict[Any, Any], float, Dict[Truck, bool], Dict[Any, Any]]
 
 '''
 Wrapper for interfacing with algorithm
 #TODO(mark) Fully interface with PettingZoo API to run RL as extension :D
 '''
+
+
 
 class Env:
     """Environment wrapper for autonomous-trucking simulator following format commonly used
@@ -18,7 +22,7 @@ class Env:
     Also applicable for rule based solutions
     """
 
-    def reset(self, config_json_path: str):
+    def reset(self, config_json_path: str) -> EnvState:
         """ Reset realm to map and conditions specified in config
 
         Returns:
@@ -31,8 +35,9 @@ class Env:
         self.realm = Realm(self.config)
 
         return self.step()
-    
-    def step(self, actions: Dict[int, float] = {}):
+
+    # TODO: Define a single 'state' type for this return type
+    def step(self, actions: Dict[int, float] = {}) -> EnvState:
         """ Simulates one realm tick.
 
         Args:
@@ -56,7 +61,7 @@ class Env:
                 entire route.
             infos: A dictionary of agents to debug information.
         """
-        
+
         dones = self.realm.update(actions)
         obs = self._compute_observations()
         rewards, infos = self._compute_rewards()
@@ -64,7 +69,7 @@ class Env:
         return obs, rewards, dones, infos
 
 
-    def _compute_rewards(self) -> Tuple[float, Dict]:
+    def _compute_rewards(self) -> Tuple[float, Dict[Any, Any]]:
         """ Computes the metric to optimize for
 
         By default overall throughput of trucks reaching destination.
@@ -75,7 +80,7 @@ class Env:
         """
         return 0, {}
 
-    def _compute_observations(self):
+    def _compute_observations(self) -> Dict[Any, Any]:
         """Autonomous trucking observation API.
 
         Returns:
