@@ -49,8 +49,23 @@ const Truck$json = const {
     const {'1': 'curr_accel', '3': 4, '4': 1, '5': 1, '10': 'currAccel'},
     const {'1': 'road_id', '3': 5, '4': 1, '5': 5, '10': 'roadId'},
     const {'1': 'progress', '3': 6, '4': 1, '5': 1, '10': 'progress'},
+    const {'1': 'path', '3': 7, '4': 3, '5': 11, '6': '.PathElement', '10': 'path'},
   ],
 };
 
 /// Descriptor for `Truck`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List truckDescriptor = $convert.base64Decode('CgVUcnVjaxIZCgh0cnVja19pZBgBIAEoBVIHdHJ1Y2tJZBIlCg5kZXN0aW5hdGlvbl9pZBgCIAEoBVINZGVzdGluYXRpb25JZBIdCgpjdXJyX3NwZWVkGAMgASgBUgljdXJyU3BlZWQSHQoKY3Vycl9hY2NlbBgEIAEoAVIJY3VyckFjY2VsEhcKB3JvYWRfaWQYBSABKAVSBnJvYWRJZBIaCghwcm9ncmVzcxgGIAEoAVIIcHJvZ3Jlc3M=');
+final $typed_data.Uint8List truckDescriptor = $convert.base64Decode('CgVUcnVjaxIZCgh0cnVja19pZBgBIAEoBVIHdHJ1Y2tJZBIlCg5kZXN0aW5hdGlvbl9pZBgCIAEoBVINZGVzdGluYXRpb25JZBIdCgpjdXJyX3NwZWVkGAMgASgBUgljdXJyU3BlZWQSHQoKY3Vycl9hY2NlbBgEIAEoAVIJY3VyckFjY2VsEhcKB3JvYWRfaWQYBSABKAVSBnJvYWRJZBIaCghwcm9ncmVzcxgGIAEoAVIIcHJvZ3Jlc3MSIAoEcGF0aBgHIAMoCzIMLlBhdGhFbGVtZW50UgRwYXRo');
+@$core.Deprecated('Use pathElementDescriptor instead')
+const PathElement$json = const {
+  '1': 'PathElement',
+  '2': const [
+    const {'1': 'node_id', '3': 1, '4': 1, '5': 5, '9': 0, '10': 'nodeId'},
+    const {'1': 'road_id', '3': 2, '4': 1, '5': 5, '9': 0, '10': 'roadId'},
+  ],
+  '8': const [
+    const {'1': 'NodeOrRoad'},
+  ],
+};
+
+/// Descriptor for `PathElement`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List pathElementDescriptor = $convert.base64Decode('CgtQYXRoRWxlbWVudBIZCgdub2RlX2lkGAEgASgFSABSBm5vZGVJZBIZCgdyb2FkX2lkGAIgASgFSABSBnJvYWRJZEIMCgpOb2RlT3JSb2Fk');

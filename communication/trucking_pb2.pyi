@@ -5,6 +5,14 @@ from typing import ClassVar as _ClassVar, Iterable as _Iterable, Mapping as _Map
 
 DESCRIPTOR: _descriptor.FileDescriptor
 
+class PathElement(_message.Message):
+    __slots__ = ["node_id", "road_id"]
+    NODE_ID_FIELD_NUMBER: _ClassVar[int]
+    ROAD_ID_FIELD_NUMBER: _ClassVar[int]
+    node_id: int
+    road_id: int
+    def __init__(self, node_id: _Optional[int] = ..., road_id: _Optional[int] = ...) -> None: ...
+
 class PositionDataStream(_message.Message):
     __slots__ = ["trucks"]
     TRUCKS_FIELD_NUMBER: _ClassVar[int]
@@ -18,20 +26,22 @@ class TimeDelta(_message.Message):
     def __init__(self, seconds: _Optional[float] = ...) -> None: ...
 
 class Truck(_message.Message):
-    __slots__ = ["curr_accel", "curr_speed", "destination_id", "progress", "road_id", "truck_id"]
+    __slots__ = ["curr_accel", "curr_speed", "destination_id", "path", "progress", "road_id", "truck_id"]
     CURR_ACCEL_FIELD_NUMBER: _ClassVar[int]
     CURR_SPEED_FIELD_NUMBER: _ClassVar[int]
     DESTINATION_ID_FIELD_NUMBER: _ClassVar[int]
+    PATH_FIELD_NUMBER: _ClassVar[int]
     PROGRESS_FIELD_NUMBER: _ClassVar[int]
     ROAD_ID_FIELD_NUMBER: _ClassVar[int]
     TRUCK_ID_FIELD_NUMBER: _ClassVar[int]
     curr_accel: float
     curr_speed: float
     destination_id: int
+    path: _containers.RepeatedCompositeFieldContainer[PathElement]
     progress: float
     road_id: int
     truck_id: int
-    def __init__(self, truck_id: _Optional[int] = ..., destination_id: _Optional[int] = ..., curr_speed: _Optional[float] = ..., curr_accel: _Optional[float] = ..., road_id: _Optional[int] = ..., progress: _Optional[float] = ...) -> None: ...
+    def __init__(self, truck_id: _Optional[int] = ..., destination_id: _Optional[int] = ..., curr_speed: _Optional[float] = ..., curr_accel: _Optional[float] = ..., road_id: _Optional[int] = ..., progress: _Optional[float] = ..., path: _Optional[_Iterable[_Union[PathElement, _Mapping]]] = ...) -> None: ...
 
 class TruckPositionsAtTime(_message.Message):
     __slots__ = ["time", "trucks"]

@@ -160,6 +160,7 @@ class Truck extends $pb.GeneratedMessage {
     ..a<$core.double>(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'currAccel', $pb.PbFieldType.OD)
     ..a<$core.int>(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'roadId', $pb.PbFieldType.O3)
     ..a<$core.double>(6, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'progress', $pb.PbFieldType.OD)
+    ..pc<PathElement>(7, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'path', $pb.PbFieldType.PM, subBuilder: PathElement.create)
     ..hasRequiredFields = false
   ;
 
@@ -171,6 +172,7 @@ class Truck extends $pb.GeneratedMessage {
     $core.double? currAccel,
     $core.int? roadId,
     $core.double? progress,
+    $core.Iterable<PathElement>? path,
   }) {
     final _result = create();
     if (truckId != null) {
@@ -190,6 +192,9 @@ class Truck extends $pb.GeneratedMessage {
     }
     if (progress != null) {
       _result.progress = progress;
+    }
+    if (path != null) {
+      _result.path.addAll(path);
     }
     return _result;
   }
@@ -267,5 +272,84 @@ class Truck extends $pb.GeneratedMessage {
   $core.bool hasProgress() => $_has(5);
   @$pb.TagNumber(6)
   void clearProgress() => clearField(6);
+
+  @$pb.TagNumber(7)
+  $core.List<PathElement> get path => $_getList(6);
+}
+
+enum PathElement_NodeOrRoad {
+  nodeId, 
+  roadId, 
+  notSet
+}
+
+class PathElement extends $pb.GeneratedMessage {
+  static const $core.Map<$core.int, PathElement_NodeOrRoad> _PathElement_NodeOrRoadByTag = {
+    1 : PathElement_NodeOrRoad.nodeId,
+    2 : PathElement_NodeOrRoad.roadId,
+    0 : PathElement_NodeOrRoad.notSet
+  };
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'PathElement', createEmptyInstance: create)
+    ..oo(0, [1, 2])
+    ..a<$core.int>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'nodeId', $pb.PbFieldType.O3)
+    ..a<$core.int>(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'roadId', $pb.PbFieldType.O3)
+    ..hasRequiredFields = false
+  ;
+
+  PathElement._() : super();
+  factory PathElement({
+    $core.int? nodeId,
+    $core.int? roadId,
+  }) {
+    final _result = create();
+    if (nodeId != null) {
+      _result.nodeId = nodeId;
+    }
+    if (roadId != null) {
+      _result.roadId = roadId;
+    }
+    return _result;
+  }
+  factory PathElement.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory PathElement.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  PathElement clone() => PathElement()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  PathElement copyWith(void Function(PathElement) updates) => super.copyWith((message) => updates(message as PathElement)) as PathElement; // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static PathElement create() => PathElement._();
+  PathElement createEmptyInstance() => create();
+  static $pb.PbList<PathElement> createRepeated() => $pb.PbList<PathElement>();
+  @$core.pragma('dart2js:noInline')
+  static PathElement getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<PathElement>(create);
+  static PathElement? _defaultInstance;
+
+  PathElement_NodeOrRoad whichNodeOrRoad() => _PathElement_NodeOrRoadByTag[$_whichOneof(0)]!;
+  void clearNodeOrRoad() => clearField($_whichOneof(0));
+
+  @$pb.TagNumber(1)
+  $core.int get nodeId => $_getIZ(0);
+  @$pb.TagNumber(1)
+  set nodeId($core.int v) { $_setSignedInt32(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasNodeId() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearNodeId() => clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.int get roadId => $_getIZ(1);
+  @$pb.TagNumber(2)
+  set roadId($core.int v) { $_setSignedInt32(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasRoadId() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearRoadId() => clearField(2);
 }
 

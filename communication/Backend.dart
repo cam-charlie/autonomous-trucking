@@ -5,17 +5,6 @@ import './trucking.pbgrpc.dart';
 
 // so far no error checking
 
-//class Truck{
-//  int truck_id;
-//  int destination_id;
-//  double curr_speed;
-//  int road_id;
-//  // from 0 to 100 (indicating percentage along that road)
-//  double progress;
-//
-//  Truck(this.truck_id, this.destination_id, this.curr_speed, this.road_id, this.progress);
-//}
-
 final _channel = ClientChannel(
   'localhost',
   port: 50051,
@@ -39,10 +28,10 @@ Future<void> _fillFirstBuffer() async{
 
 _getBufferData() async{
   var delta = TimeDelta(seconds: 3.0);
-  // will throw error if server not yet started
-  final response = await _PositionDataStreamerStub.getPositionData(
-      delta);
-  //options: CallOptions(compression: const GzipCodec()),
+  // will throw error if server not yet started/up
+    final response = await _PositionDataStreamerStub.getPositionData(
+        delta);
+
   return response;
 
 }
@@ -50,7 +39,6 @@ _getBufferData() async{
 Future<List<TruckPositionsAtTime>> getPositionData(double timeStamp) async{
   // could be if assuming timeStamps will never "skip" a full buffer worth of data
   while (timeStamp > _buffer.trucks.last.time){
-    //var tmp = _secondBuffer;
     // should already have the data!
     var tmp = _buffer;
     _buffer = await _nextBufferFiller;
@@ -70,11 +58,11 @@ Future<List<TruckPositionsAtTime>> getPositionData(double timeStamp) async{
     return [_buffer.trucks[_lastBufferPtr]];
   }
 
-  // might not be needed
+  // might not be needed - only relevant in case very first buffer's entry has smallest time-slot greater than 0 (should not happen)
   else if(_lastBufferPtr == 0){
     return [_buffer.trucks[0]];
   }
-  // work for interpolater function!
+  // work for interpolator function!
   else {
     // this fails if, on the very first buffer frontend receives, we do not start with timeStamp 0
     assert (_lastBufferPtr > 0);
@@ -88,27 +76,7 @@ Future<void> startFromConfig(var config) async {
   await _fillFirstBuffer();
 }
 
-
-//Future<double> doStuff() async{
-//  try {
-//    var delta = TimeDelta(seconds:3.0);
-//    final response = _PositionDataStreamerStub.getPositionData(
-//      delta,
-//      options: CallOptions(compression: const GzipCodec()),
-//    );
-//    //for (int i = 0; i < 5000000; i++){
-//    //  print(i);
-//    //}
-//    var res = await response;
-//    // sleep(Duration(seconds:7));
-//
-//    print('slept!');
-//    return res.trucks[0].time;
-//    for (var t in res.trucks){
-//      print(t.time);
-//    }
-//   } catch (e) {
-//    print('Caught error: $e');
-//  }
-//  return 0;
-//}
+/* TODO: after MVP is finished, add start from config (includes adding/removing vehicles)
+*  and allow change of params including vehicle position and destination
+* (need to know backend data structures for that)
+*/
