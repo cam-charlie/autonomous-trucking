@@ -74,7 +74,7 @@ class TestGraph(unittest.TestCase):
         self.assertAlmostEqual(road_end._trucks[0].position, 0.2)
         self.assertEqual(len(road_start._trucks),0)
 
-    def test_depot(self):
+    def test_depot(self) -> None:
         depot_start = Depot(0, Point(0,0))
         depot_start._routing_table[1] = 0
         depot_end = Depot(1, Point(10,0))
