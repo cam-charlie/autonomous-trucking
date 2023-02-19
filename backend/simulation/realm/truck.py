@@ -7,7 +7,7 @@ if TYPE_CHECKING:
 
 class Truck(Actor):
 
-    def __init__(self, route: List[int], config: Config):
+    def __init__(self, route: List[int], config: Config) -> None:
         super().__init__()
         self._velocity: float = 0
         self.destination: int = route[0]
@@ -15,7 +15,6 @@ class Truck(Actor):
         self.stepped = False
         self.config = config
         self._route = route
-
 
     def act(self, acceleration, dt) -> None:
         """Apply actions
@@ -42,7 +41,7 @@ class Truck(Actor):
         return self._route
 
     @staticmethod
-    def from_json(json: Any, config: Config) -> 'Truck':
+    def from_json(json: Any, config: Config) -> Truck:
         truck = Truck([int(x) for x in json["route"]], config)
         truck.position = json['current_position']
         return truck

@@ -7,7 +7,7 @@ from .entity import Actor, Entity
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from .truck import Truck
-    from typing import List, Dict, Any
+    from typing import List, Dict, Any, Optional
 
 class TruckContainer(Entity, ABC):
 
@@ -75,11 +75,13 @@ class Junction(Node):
     def from_json(json: Any) -> Junction:
         return Junction(json["id"], Point.from_json(json["position"]))
 
-class Source(Node, Actor):
-    pass
+class Depot(Node, Actor):
+    
+    def entry(self, truck: Truck) -> None:
+        pass
 
-class Sink(Node):
-    pass
+    def act(self, action: Optional[float], dt: float) -> None:
+        return super().act(action, dt)
 
 class Road(Edge):
     """One way road.

@@ -7,9 +7,9 @@ class Config:
             self.data = json.load(f)
 
     @property
-    def MAX_ACCELERATION(self):
+    def MAX_ACCELERATION(self) -> float:
         return self.data["globals"]["max_truck_acceleration"]
 
     @property
-    def MAX_VELOCITY(self):
+    def MAX_VELOCITY(self) -> float:
         self.data["globals"]["max_truck_velocity"]
