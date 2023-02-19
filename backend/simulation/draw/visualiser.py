@@ -1,10 +1,11 @@
 from __future__ import annotations
 import pygame
 import sys
+from ..realm.graph import Road
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from ..realm.graph import Node, Edge, Road
+    from ..realm.graph import Node, Edge
     from ..realm.realm import Realm
 
 

@@ -8,13 +8,13 @@ from simulation.realm.truck import Collision, Truck
 from simulation.config import Config
 
 class TestConfig(Config):
-    def __init__(self):
+    def __init__(self) -> None:
         pass
     MAX_ACCELERATION = 100
     MAX_VELOCITY = 100
 test_config = TestConfig()
 class TestGraph(unittest.TestCase):
-    def test_road_definition(self):
+    def test_road_definition(self) -> None:
         junction_start = Junction(0, Point(1,1))
         junction_end = Junction(1, Point(2,3))
 
@@ -26,7 +26,7 @@ class TestGraph(unittest.TestCase):
         self.assertAlmostEqual(test_road_a._end.pos.y, 3)
 
 
-    def test_road_step(self):
+    def test_road_step(self) -> None:
         junction_start = Junction(0, Point(0,0))
         junction_next = Junction(1, Point(10,0))
         road = Road(2, junction_start,junction_next, 10)
@@ -55,7 +55,7 @@ class TestGraph(unittest.TestCase):
         self.assertRaises(Collision, road.update, 1.0)
 
 
-    def test_junction_continuation(self):
+    def test_junction_continuation(self) -> None:
         junction_start = Junction(0, Point(0,0))
         junction_test = Junction(1, Point(0,5))
         junction_end = Junction(2, Point(0,10))

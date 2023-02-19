@@ -1,11 +1,12 @@
 '''
 2D vector representation. Use immutably.
 '''
+from math import sqrt
 from typing import Any, Tuple
 
 class Point:
 
-    def __init__(self, x: float,y: float) -> None:
+    def __init__(self, x: float, y: float) -> None:
         self._x = x
         self._y = y
 
@@ -17,19 +18,19 @@ class Point:
     def y(self) -> float:
         return self._y
 
-    def __add__(self, o):
+    def __add__(self, o: 'Point') -> 'Point':
         return Point(self.x+o.x, self.y+o.y)
 
-    def __sub__(self, o):
+    def __sub__(self, o: 'Point') -> 'Point':
         return Point(self.x-o.x, self.y-o.y)
 
-    def __mul__(self, l: float):
+    def __mul__(self, l: float) -> 'Point':
         return Point(self.x*l, self.y*l)
 
     def magnitude(self) -> float:
-        return (self.x**2 + self.y**2)**0.5
+        return sqrt(self.x**2 + self.y**2)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return "({} {})".format(self.x, self.y)
 
     @staticmethod

@@ -5,7 +5,7 @@ from .graph import Node, Road, Edge, Junction
 from .entity import Actor
 if TYPE_CHECKING:
     from ..config import Config
-    from typing import Dict
+    from typing import Dict, List
 
 class Realm:
     def __init__(self, config: Config) -> None:
@@ -32,7 +32,7 @@ class Realm:
                     self.nodes[int(r["end_node_id"])],
                     r["length"]
                 )
-    
+
         # TODO(mark) temp
         for k,node in self.nodes.items():
             if isinstance(node, Junction) and node.id==3:
@@ -43,9 +43,9 @@ class Realm:
         for t in data["trucks"]:
             truck = Truck.from_json(t, config)
             self.trucks[truck.id] = truck
-            self.nodes[t['current_node']].entry(truck)       
+            self.nodes[t['current_node']].entry(truck)
 
-        # TODO(mark) temp  
+        # TODO(mark) temp
         self.trucks[0]._velocity = 1
 
         for truck in self.trucks.values():
@@ -57,7 +57,7 @@ class Realm:
             if isinstance(edge,Actor):
                 self.actors[edge.id] = edge
 
-    def update(self, actions: Dict[int, float], dt: float =1/30) -> Dict:
+    def update(self, actions: Dict[int, float], dt: float =1/30) -> Dict[Truck, bool]:
         """
         Runs logic.
 
