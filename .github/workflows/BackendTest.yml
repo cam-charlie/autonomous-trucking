@@ -20,5 +20,6 @@ jobs:
         mypy backend/
     - name: unit-tests
       run: |
-        python3 backend/test/test_env.py
-        python3 backend/test/test_graph.py
+        cd backend
+        python3 test/test_env.py
+        python3 test/test_graph.py
