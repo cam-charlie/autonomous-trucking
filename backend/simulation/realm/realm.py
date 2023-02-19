@@ -14,9 +14,6 @@ class Realm:
         self.actors: Dict[int, Actor] = {}
         self.nodes: Dict[int, Node] = {}
         self.edges: Dict[int, Edge] = {}
-
-        # TODO(mark)
-        # Run Floyd-Warshall to creating routing tables for junctions
         self._initialise(config)
 
     def _initialise(self, config: Config) -> None:
