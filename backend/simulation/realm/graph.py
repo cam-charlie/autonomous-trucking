@@ -45,6 +45,7 @@ class Node(TruckContainer, ABC):
         self._pos = pos
         self._incoming: List[Edge] = []
         self._outgoing: List[Edge] = []
+        self._routing_table: Dict[int, int] = {} # Mapping from destination id to outgoing index
 
     @property
     def pos(self) -> Point:
@@ -64,9 +65,6 @@ class Node(TruckContainer, ABC):
             raise NotImplementedError
 
 class Junction(Node):
-    def __init__(self, id: int, pos: Point) -> None:
-        super().__init__(id, pos)
-        self._routing_table: Dict[int, int] = {} # Mapping from destination id to outgoing index
 
     def entry(self, truck: Truck) -> None:
         self._outgoing[self._routing_table[truck.destination]].entry(truck)
@@ -76,12 +74,37 @@ class Junction(Node):
         return Junction(json["id"], Point.from_json(json["position"]))
 
 class Depot(Node, Actor):
+
+    def __init__(self, id: int, pos: Point, size: int = 10) -> None:
+        super().__init__(id, pos)
+        self._storage: Dict[int,Truck] = {}
+        self._storage_size = size
     
     def entry(self, truck: Truck) -> None:
-        pass
+        if truck.destination == self.id:
+            truck.reached_next_destination()
+        if truck.done():
+            # TODO(mark) reward
+            return
+
+        self._storage[truck.id] = truck
+        # TODO(mark) no space
+        if len(self._storage) > self._storage_size:
+            pass
 
     def act(self, action: Optional[float], dt: float) -> None:
-        return super().act(action, dt)
+        """ Release the truck with id: action
+        """
+        if action is None:
+            return
+        tid = int(action)
+        if tid in self._storage:
+            truck = self._storage.pop(tid)
+            self._outgoing[self._routing_table[truck.destination]].entry(truck)
+
+    def update(self, dt: float) -> None:
+        for truck in self._storage.values():
+            truck._velocity = 0
 
 class Road(Edge):
     """One way road.
