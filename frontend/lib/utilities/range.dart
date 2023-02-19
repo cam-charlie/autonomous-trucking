@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:ui';
 
 const mmin = min;
 const mmax = max;
@@ -10,9 +11,11 @@ abstract class Range<T> {
 
   T get center;
 
-  bool inside(T value);
+  bool contains(T value);
 
   T clamp(T value);
+
+  T distance(T value);
 }
 
 class LinearRange implements Range<double> {
@@ -28,16 +31,21 @@ class LinearRange implements Range<double> {
           : max.isFinite ? max : 0;
 
   const LinearRange(this.min, this.max) : assert(min <= max);
+  LinearRange.fromRectW(Rect r) : min = r.left, max = r.right;
+  LinearRange.fromRectH(Rect r) : min = r.top, max = r.bottom;
 
   const LinearRange.all()
       : min = double.negativeInfinity,
         max = double.infinity;
 
   @override
-  bool inside(double value) => min <= value && value <= max;
+  bool contains(double value) => min <= value && value <= max;
 
   @override
   double clamp(double value) => mmin(mmax(value, min), max);
+
+  @override
+  double distance(double value) => (value - clamp(value)).abs();
 }
 
 class LogarithmicRange implements Range<double> {
@@ -54,13 +62,18 @@ class LogarithmicRange implements Range<double> {
 
   const LogarithmicRange(this.min, this.max)
       : assert(min <= max),
-        assert(min >= 0);
+        assert(min > 0);
+
+  const LogarithmicRange.all() : min = 0, max = double.infinity;
 
   @override
-  bool inside(double value) => min <= value && value <= max;
+  bool contains(double value) => min <= value && value <= max;
 
   @override
   double clamp(double value) => mmin(mmax(value, min), max);
+
+  @override
+  double distance(double value) => (value - clamp(value)).abs();
 }
 
 class AngularRange implements Range<double> {
@@ -84,7 +97,7 @@ class AngularRange implements Range<double> {
         max = double.infinity;
 
   @override
-  bool inside(double value) {
+  bool contains(double value) {
     final mid = (value - min) % (2 * pi);
     return min.isFinite && max.isFinite
         ? 0 <= mid && mid <= (max - min) % (2*pi)
@@ -93,6 +106,7 @@ class AngularRange implements Range<double> {
 
   @override
   double clamp(double value) {
+    if (contains(value)) return value;
     final minClosest = mmin(
       (min-value).abs(),
       ((min + ((min<value? 1 : -1) * 2*pi) % (2*pi)) - value).abs(),
@@ -103,4 +117,7 @@ class AngularRange implements Range<double> {
     );
     return minClosest < maxClosest ? min : max;
   }
+
+  @override
+  double distance(double value) => (value - clamp(value)).abs();
 }

@@ -35,20 +35,32 @@ const Size carSize = Size(8, 15);
 const double maxZoomIn = 10;
 const double maxZoomOut = 0.1;
 
-const double panDragCoefficient = 0.00001;
-const double zoomDragCoefficient = 0.00001;
-const double rotateDragCoefficient = 0.00001;
+const double translateDragCoefficient = 0.00001;
 
 const SimulationState exampleState = SimulationState(
-  vehicles: [Vehicle(id: VID(0), position: Offset(10, 20), direction: 0.25 * 3.14)],
+  vehicles: [
+    Vehicle(id: VID(0), position: Offset(10, 20), direction: 0.25 * 3.14)
+  ],
   roads: [
-    StraightRenderRoad(id: RID(1), start: Offset(10, 70), end: Offset(60, 100)),
+    StraightRenderRoad(
+        id: RID(1), start: Offset(-150, -150), end: Offset(150, 150)),
+    StraightRenderRoad(
+        id: RID(2), start: Offset(150, -150), end: Offset(-150, 150)),
     RenderArcRoad(
-        id: RID(2),
-        centre: Offset(50, 150),
-        radius: 60,
-        arcStart: 0.75 * 3.14,
-        arcEnd: 1.25 * 3.14,
-        clockwise: true),
+      id: RID(3),
+      centre: Offset(0, 0),
+      radius: 150,
+      arcStart: 0.25 * 3.14 * 2,
+      arcEnd: 1 * 3.14 * 2,
+      clockwise: true,
+    ),
+    RenderArcRoad(
+      id: RID(4),
+      centre: Offset(0, 0),
+      radius: 250,
+      arcStart: 0.75 * 3.14 * 2,
+      arcEnd: 0 * 3.14 * 2,
+      clockwise: true,
+    ),
   ],
 );

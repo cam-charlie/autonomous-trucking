@@ -14,12 +14,15 @@ class RID extends Equatable {
 
 abstract class RenderRoad {
   const RenderRoad();
+
   RID get id;
+
   double get length;
 
   void draw({required Canvas canvas});
 
   Offset positionAt({double? distance, double? fraction});
+
   double direction({double? distance, double? fraction});
 }
 
@@ -33,6 +36,7 @@ class StraightRenderRoad extends RenderRoad with EquatableMixin {
   const StraightRenderRoad(
       {required this.id, required this.start, required this.end});
 
+  @override
   void draw({required Canvas canvas}) {
     final Paint paint = Paint()
       ..color = constants.roadColour
@@ -109,14 +113,17 @@ class RenderArcRoad extends RenderRoad with EquatableMixin {
       : arcStart = arcStart % (2 * pi),
         arcEnd = arcEnd % (2 * pi);
 
+  @override
   void draw({required Canvas canvas}) {
     final Paint paint = Paint()
       ..color = constants.roadColour
       ..strokeWidth = constants.roadWidth // * zoom
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.stroke;
-    canvas.drawArc(Rect.fromCircle(center: centre, radius: radius), arcStart,
-        arcEnd - arcStart, false, paint);
+    final start = clockwise ? arcStart : arcEnd;
+    final sweep = clockwise ? arcEnd - arcStart : arcStart - arcEnd;
+    canvas.drawArc(Rect.fromCircle(center: centre, radius: radius), start,
+        sweep, false, paint);
   }
 
   @override
