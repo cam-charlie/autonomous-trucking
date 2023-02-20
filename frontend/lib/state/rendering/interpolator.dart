@@ -11,29 +11,24 @@ class Interpolator {
   const Interpolator({required this.roads});
 
   // Find the % of road covered
-  double _truckDistCovered(Truck start, Truck end, double time, double frac) {
-    /*
-    double interspeed = (frac * ( endspeed - startspeed)) + startspeed;
-    double totaldist = (startspeed + endspeed) * time * 0.5;
-    double interdist = (startspeed + interspeed) * frac * time * 0.5;
-    double fracdist = interdist/totaldist;
-    ^ This is the above reorganised to have no allocations
-    */
-    return ((end.progress + end.roadId == start.roadId ? 0 : 1.0) -
-            start.progress) *
-        ((start.currSpeed +
-                ((frac * (end.currSpeed - start.currSpeed)) +
-                    start.currSpeed)) *
-            frac *
-            time *
-            0.5) /
-        ((start.currSpeed + end.currSpeed) * time * 0.5);
+  double _truckFracDistCovered(
+      Truck start, Truck end, double t0, double ti, Map<RID, RenderRoad> map) {
+    double juncDist = start.roadId == end.roadId
+        ? double.infinity
+        : (1 - start.progress) * map[start.roadId]!.length;
+    double interDist = (start.currSpeed + end.currSpeed) / 2 + (ti - t0);
+    double fracDist = interDist < juncDist
+        ? interDist / map[start.roadId]!.length
+        : 1 - start.progress + (interDist - juncDist) / map[end.roadId]!.length;
+
+    return fracDist;
   }
 
   // Determine if truck has switched between raod A and road B
 
-  bool _truckRoadChange(Truck start, Truck end, double time, double frac) {
-    return start.progress + _truckDistCovered(start, end, time, frac) > 1;
+  bool _truckRoadChange(
+      Truck start, Truck end, double t0, double ti, Map<RID, RenderRoad> map) {
+    return start.progress + _truckFracDistCovered(start, end, t0, ti, map) > 1;
   }
 
   // Generates new SimulationState for rendering
@@ -45,7 +40,7 @@ class Interpolator {
 
     List<TruckPositionsAtTime> positions = await getPositionData(time);
 
-    // time == generated time т, state matches generation
+    // time == generated time t0, state matches generation
 
     if (positions.length == 1) {
       List<Vehicle> vehicles = positions[0]
@@ -58,29 +53,24 @@ class Interpolator {
       return SimulationState(vehicles: vehicles, roads: roads);
     }
 
-    // time != generated time т, tomfoolery ensues
+    // time != generated time t0, tomfoolery ensues
     /*
 
 
     */
     else {
-      double frac =
-          (positions[1].time - time) / (positions[1].time - positions[0].time);
-
-      List<Vehicle> vehicles = IterableZip(
-              [positions[0].trucks, positions[1].trucks])
+      List<Vehicle> vehicles = IterableZip([positions[0].trucks, positions[1].trucks])
           .map((e) => Vehicle(
               id: VID(e[0].truckId),
-              position:
-                  roadMap[e[_truckRoadChange(e[0], e[1], time, frac) ? 1 : 0].roadId]!
-                      .positionAt(
-                          fraction: e[0].progress +
-                              _truckDistCovered(e[0], e[1], time, frac) % 1.0),
-              direction:
-                  roadMap[e[_truckRoadChange(e[0], e[1], time, frac) ? 1 : 0].roadId]!
-                      .direction(
-                          fraction: e[0].progress +
-                              _truckDistCovered(e[0], e[1], time, frac))))
+              position: roadMap[e[_truckRoadChange(e[0], e[1], time, positions[0].time, roadMap) ? 1 : 0].roadId]!.positionAt(
+                  fraction: (e[0].progress +
+                          _truckFracDistCovered(
+                              e[0], e[1], time, positions[0].time, roadMap)) %
+                      1.0),
+              direction: roadMap[e[_truckRoadChange(e[0], e[1], time, positions[0].time, roadMap) ? 1 : 0].roadId]!
+                  .direction(
+                      fraction: e[0].progress +
+                          _truckFracDistCovered(e[0], e[1], time, positions[0].time, roadMap))))
           .toList();
       return SimulationState(vehicles: vehicles, roads: roads);
     }
