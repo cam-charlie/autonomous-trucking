@@ -15,7 +15,7 @@ class PositionDataStreamerServicer(trucking_pb2_grpc.PositionDataStreamerService
         s = request.seconds
         stream = []
         for i in range(int(s) * 10):
-            t = trucking_pb2.Truck(truck_id=1, destination_id=1, road_id=1, progress = round(self.currTime * 10) % 100)
+            t = trucking_pb2.Truck(truck_id=1, destination_id=1, road_id=1, progress = (round(self.currTime * 10) % 100)/100)
             trucksPosAtTime = trucking_pb2.TruckPositionsAtTime(trucks=[t], time=float(self.currTime))
             stream.append(trucksPosAtTime)
             self.currTime += 0.1
