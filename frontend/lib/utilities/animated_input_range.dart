@@ -65,7 +65,7 @@ class AnimatedInputRange extends ChangeNotifier {
     super.dispose();
   }
 
-  void log(String s) {
+  void log(s) {
     if (debug) print(s);
   }
 
@@ -142,8 +142,7 @@ class AnimatedInputRange extends ChangeNotifier {
         ..animateTo(
           _bounds.clamp(pos),
           duration: _boundOptions!.snapBackTime,
-          curve: Curves
-              .ease, // TODO: create custom curve that considers initial velocity?
+          curve: Curves.ease,
         );
     }
   }
@@ -166,8 +165,7 @@ class AnimatedInputRange extends ChangeNotifier {
   void _onSlowStopAnimationUpdate() {
     _x = _controller.value;
     if (!_bounds.contains(_x)) {
-      _controller.stop();
-      _x = _bounds.clamp(_x);
+      _animateBackToBounds(_x, _velocityCalculator.velocity);
     }
     _velocityCalculator.pushValue(_x);
     notifyListeners();
