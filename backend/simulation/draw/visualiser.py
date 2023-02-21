@@ -41,10 +41,12 @@ class Visualiser:
 
     def draw_graph(self) -> None:
         for node in self.realm.nodes.values():
-            self.draw_node(node)
+            node.draw(self.screen)
 
         for edge in self.realm.edges.values():
-            self.draw_road(edge)
+            edge.draw(self.screen)
+
+    '''
 
     def draw_node(self, node: Node) -> None:
         pygame.draw.circle(self.screen, "blue", node.pos.to_tuple(), 10)
@@ -56,3 +58,4 @@ class Visualiser:
             pygame.draw.line(self.screen, "black", road._start.pos.to_tuple(), road._end.pos.to_tuple(), width=5)
             for truck in road._trucks:
                 pygame.draw.circle(self.screen, "green", road.getPosition(truck.position).to_tuple(), 5)
+    '''

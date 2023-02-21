@@ -30,7 +30,7 @@ class TestGraph(unittest.TestCase):
         junction_start = Junction(0, Point(0,0))
         junction_next = Junction(1, Point(10,0))
         road = Road(2, junction_start,junction_next, 10)
-        t0 = Truck([junction_next.id], test_config)
+        t0 = Truck(100,[junction_next.id], test_config)
         t0._velocity = 1
         # Step for 5 seconds at constant velocity
         road.entry(t0)
@@ -39,9 +39,9 @@ class TestGraph(unittest.TestCase):
             road.update(1.0)
         self.assertAlmostEqual(road._trucks[0].position, 0.5)
         # Collision
-        t1 = Truck([junction_next.id], test_config)
+        t1 = Truck(101, [junction_next.id], test_config)
         t1._velocity = 1
-        t2 = Truck([junction_next.id], test_config)
+        t2 = Truck(102, [junction_next.id], test_config)
         t2._velocity = 3
         road.entry(t1)
         t1.act(0,0)
@@ -62,7 +62,7 @@ class TestGraph(unittest.TestCase):
         road_start = Road(3, junction_start, junction_test, 5)
         road_end = Road(4, junction_test, junction_end, 5)
         junction_test._routing_table[junction_end.id] = 0
-        t = Truck([junction_end.id], test_config)
+        t = Truck(100, [junction_end.id], test_config)
         t._velocity = 2
 
         road_start.entry(t)
@@ -80,7 +80,7 @@ class TestGraph(unittest.TestCase):
         depot_end = Depot(1, Point(10,0))
 
         road = Road(2, depot_start, depot_end, 10)
-        t = Truck([depot_end.id], test_config)
+        t = Truck(100, [depot_end.id], test_config)
         t._velocity = 1
 
         depot_start.entry(t)

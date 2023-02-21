@@ -46,7 +46,8 @@ class Realm:
             self.nodes[t['current_node']].entry(truck)
 
         # TODO(mark) temp
-        self.trucks[0]._velocity = 1
+        for t in self.trucks.values():
+            t._velocity = 1
 
         for truck in self.trucks.values():
             self.actors[truck.id] = truck
