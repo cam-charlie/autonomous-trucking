@@ -37,7 +37,43 @@ List<TruckPositionsAtTime> testData = [
         currAccel: 0,
         roadId: 1,
         progress: 0.5)
-  ], time: 0.5)
+  ], time: 0.5),
+  TruckPositionsAtTime(trucks: [
+    Truck(
+        truckId: 1,
+        destinationId: 0,
+        currSpeed: 0,
+        currAccel: 2,
+        roadId: 1,
+        progress: 0)
+  ], time: 1.0),
+  TruckPositionsAtTime(trucks: [
+    Truck(
+        truckId: 1,
+        destinationId: 0,
+        currSpeed: 1,
+        currAccel: 2,
+        roadId: 1,
+        progress: 0.25)
+  ], time: 1.5),
+  TruckPositionsAtTime(trucks: [
+    Truck(
+        truckId: 1,
+        destinationId: 0,
+        currSpeed: 0,
+        currAccel: 0,
+        roadId: 1,
+        progress: 0)
+  ], time: 2.0),
+  TruckPositionsAtTime(trucks: [
+    Truck(
+        truckId: 1,
+        destinationId: 0,
+        currSpeed: 0.75,
+        currAccel: 3,
+        roadId: 1,
+        progress: 0.125)
+  ], time: 2.5),
 ];
 
 Future<List<TruckPositionsAtTime>> testFunc(double t) async {
@@ -45,8 +81,12 @@ Future<List<TruckPositionsAtTime>> testFunc(double t) async {
     return [testData[0], testData[1]];
   } else if (t == 0) {
     return [testData[0]];
-  } else {
+  } else if (t == 0.5) {
     return [testData[1]];
+  } else if (t < 2) {
+    return [testData[2], testData[3]];
+  } else {
+    return [testData[4], testData[5]];
   }
 }
 
@@ -66,15 +106,15 @@ void main() async {
     expect(temp.roads, roads);
   });
 
-  test("Vehicle moves linearly between two points", () async {
+  // Tests regarding movement calculation
+  // s = s0 + v0(t) + (1/2)a0(t^2) + (1/6)j(t^3)
+  test("Vehicle constant speed between two points", () async {
     SimulationState ti0 = await inter.getState(0.0);
     SimulationState ti1 = await inter.getState(0.1);
     SimulationState ti2 = await inter.getState(0.2);
     SimulationState ti3 = await inter.getState(0.3);
     SimulationState ti4 = await inter.getState(0.4);
     SimulationState ti5 = await inter.getState(0.5);
-    print(ti1.vehicles[0].position.dy);
-    print(ti2.vehicles[0].position.dy);
     expect((ti0.vehicles[0].position - const Offset(0, 0.0)).distance < 0.001,
         true);
     expect((ti1.vehicles[0].position - const Offset(0, 0.1)).distance < 0.001,
@@ -86,6 +126,48 @@ void main() async {
     expect((ti4.vehicles[0].position - const Offset(0, 0.4)).distance < 0.001,
         true);
     expect((ti5.vehicles[0].position - const Offset(0, 0.5)).distance < 0.001,
+        true);
+  });
+
+  test("Vehicle linear speed between two points", () async {
+    SimulationState ti0 = await inter.getState(1.0);
+    SimulationState ti1 = await inter.getState(1.1);
+    SimulationState ti2 = await inter.getState(1.2);
+    SimulationState ti3 = await inter.getState(1.3);
+    SimulationState ti4 = await inter.getState(1.4);
+    SimulationState ti5 = await inter.getState(1.5);
+    expect((ti0.vehicles[0].position - const Offset(0, 0.0)).distance < 0.001,
+        true);
+    expect((ti1.vehicles[0].position - const Offset(0, 0.01)).distance < 0.001,
+        true);
+    expect((ti2.vehicles[0].position - const Offset(0, 0.04)).distance < 0.001,
+        true);
+    expect((ti3.vehicles[0].position - const Offset(0, 0.09)).distance < 0.001,
+        true);
+    expect((ti4.vehicles[0].position - const Offset(0, 0.16)).distance < 0.001,
+        true);
+    expect((ti5.vehicles[0].position - const Offset(0, 0.25)).distance < 0.001,
+        true);
+  });
+
+  test("Vehicle quadratic speed between two points", () async {
+    SimulationState ti0 = await inter.getState(2.0);
+    SimulationState ti1 = await inter.getState(2.1);
+    SimulationState ti2 = await inter.getState(2.2);
+    SimulationState ti3 = await inter.getState(2.3);
+    SimulationState ti4 = await inter.getState(2.4);
+    SimulationState ti5 = await inter.getState(2.5);
+    expect((ti0.vehicles[0].position - const Offset(0, 0.0)).distance < 0.001,
+        true);
+    expect((ti1.vehicles[0].position - const Offset(0, 0.001)).distance < 0.001,
+        true);
+    expect((ti2.vehicles[0].position - const Offset(0, 0.008)).distance < 0.001,
+        true);
+    expect((ti3.vehicles[0].position - const Offset(0, 0.027)).distance < 0.001,
+        true);
+    expect((ti4.vehicles[0].position - const Offset(0, 0.064)).distance < 0.001,
+        true);
+    expect((ti5.vehicles[0].position - const Offset(0, 0.125)).distance < 0.001,
         true);
   });
 }
