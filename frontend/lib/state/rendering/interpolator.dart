@@ -1,26 +1,34 @@
+import 'package:flutter/material.dart';
 import 'package:frontend/state/rendering/road.dart';
 import 'package:frontend/state/rendering/simulation.dart';
 import 'package:frontend/state/rendering/vehicle.dart';
 import 'package:collection/collection.dart';
 import 'faketrucking.dart';
 
-// TODO: Testing
+@visibleForTesting
 class Interpolator {
   List<RenderRoad> roads;
-  Map<RID,RenderRoad> roadMap;
+  Map<RID, RenderRoad> _roadMap;
+  Function(double time) getData;
 
-  Interpolator({required this.roads}): roadMap = Map.fromIterable(roads.map((e) => {e.id: e}));
+  Interpolator({required this.roads, required this.getData})
+      : _roadMap = Map.fromIterable(roads,
+            key: (road) => road.id, value: (road) => road);
 
   // Find the % of road covered
   double _truckFracDistCovered(
       Truck start, Truck end, double t0, double ti, Map<RID, RenderRoad> map) {
     double juncDist = start.roadId == end.roadId
         ? double.infinity
-        : (1 - start.progress) * map[start.roadId]!.length;
-    double interDist = (start.currSpeed + end.currSpeed) / 2 + (ti - t0);
+        : (1 - start.progress) * map[RID(start.roadId)]!.length;
+
+    double interDist = ((start.currSpeed + end.currSpeed) / 2) * (ti - t0);
+    print(interDist);
     double fracDist = interDist < juncDist
-        ? interDist / map[start.roadId]!.length
-        : 1 - start.progress + (interDist - juncDist) / map[end.roadId]!.length;
+        ? interDist / map[RID(start.roadId)]!.length
+        : 1 -
+            start.progress +
+            (interDist - juncDist) / map[RID(end.roadId)]!.length;
 
     return fracDist;
   }
@@ -33,9 +41,8 @@ class Interpolator {
   }
 
   // Generates new SimulationState for rendering
-  Future<SimulationState> getState({double time = 0.0}) async {
-
-    List<TruckPositionsAtTime> positions = await getPositionData(time);
+  Future<SimulationState> getState(double time) async {
+    List<TruckPositionsAtTime> positions = await getData(time);
 
     // time == generated time t0, state matches generation
 
@@ -44,8 +51,10 @@ class Interpolator {
           .trucks
           .map((e) => Vehicle(
               id: VID(e.truckId),
-              position: roadMap[e.roadId]!.positionAt(fraction: e.progress),
-              direction: roadMap[e.roadId]!.direction(fraction: e.progress)))
+              position:
+                  _roadMap[RID(e.roadId)]!.positionAt(fraction: e.progress),
+              direction:
+                  _roadMap[RID(e.roadId)]!.direction(fraction: e.progress)))
           .toList();
       return SimulationState(vehicles: vehicles, roads: roads);
     }
@@ -59,17 +68,22 @@ class Interpolator {
       List<Vehicle> vehicles = IterableZip([positions[0].trucks, positions[1].trucks])
           .map((e) => Vehicle(
               id: VID(e[0].truckId),
-              position: roadMap[e[_truckRoadChange(e[0], e[1], time, positions[0].time, roadMap) ? 1 : 0].roadId]!.positionAt(
+              position: _roadMap[RID(e[_truckRoadChange(e[0], e[1], positions[0].time, time, _roadMap) ? 1 : 0].roadId)]!.positionAt(
                   fraction: (e[0].progress +
                           _truckFracDistCovered(
-                              e[0], e[1], time, positions[0].time, roadMap)) %
+                              e[0], e[1], positions[0].time, time, _roadMap)) %
                       1.0),
-              direction: roadMap[e[_truckRoadChange(e[0], e[1], time, positions[0].time, roadMap) ? 1 : 0].roadId]!
-                  .direction(
-                      fraction: e[0].progress +
-                          _truckFracDistCovered(e[0], e[1], time, positions[0].time, roadMap))))
+              direction:
+                  _roadMap[RID(e[_truckRoadChange(e[0], e[1], positions[0].time, time, _roadMap) ? 1 : 0].roadId)]!
+                      .direction(
+                          fraction: e[0].progress +
+                              _truckFracDistCovered(e[0], e[1], positions[0].time, time, _roadMap))))
           .toList();
       return SimulationState(vehicles: vehicles, roads: roads);
     }
   }
 }
+/*
+class Interpolator extends _Interpolator {
+  Interpolator({roads}) : super(roads: roads, getData: getPositionData);
+} */
