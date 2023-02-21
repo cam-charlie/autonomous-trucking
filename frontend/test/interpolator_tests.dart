@@ -91,7 +91,8 @@ Future<List<TruckPositionsAtTime>> testFunc(double t) async {
 }
 
 void main() async {
-  Interpolator inter = Interpolator(roads: roads, getData: testFunc);
+  PartialInterpolator inter =
+      PartialInterpolator(roads: roads, getData: testFunc);
 
   print("Beginning tests");
 
@@ -170,4 +171,6 @@ void main() async {
     expect((ti5.vehicles[0].position - const Offset(0, 0.125)).distance < 0.001,
         true);
   });
+  int t = 5;
+  t++;
 }

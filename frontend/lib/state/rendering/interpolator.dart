@@ -8,12 +8,12 @@ import 'package:collection/collection.dart';
 import 'faketrucking.dart';
 
 @visibleForTesting
-class Interpolator {
+class PartialInterpolator {
   List<RenderRoad> roads;
   Map<RID, RenderRoad> _roadMap;
   Function(double time) getData;
 
-  Interpolator({required this.roads, required this.getData})
+  PartialInterpolator({required this.roads, required this.getData})
       : _roadMap = Map.fromIterable(roads,
             key: (road) => road.id, value: (road) => road);
 
@@ -92,7 +92,7 @@ class Interpolator {
     }
   }
 }
-/*
-class Interpolator extends _Interpolator {
+
+class Interpolator extends PartialInterpolator {
   Interpolator({roads}) : super(roads: roads, getData: getPositionData);
-} */
+}
