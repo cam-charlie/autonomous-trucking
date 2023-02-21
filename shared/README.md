@@ -1,1 +1,1 @@
-# Shared Files Will Live Here ()
+# Shared between both frontend and backend

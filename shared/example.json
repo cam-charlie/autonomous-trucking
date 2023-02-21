@@ -1,0 +1,42 @@
+{
+  "roads": [
+    {
+      "id": 1,
+      "start_node_id": 3,
+      "end_node_id": 4,
+      "length": 200.0
+    }
+  ],
+
+  "nodes": [
+    {
+      "type" : "junction",
+      "id": 3,
+      "position": {
+        "x": 200,
+        "y": 200
+      }
+    },
+    {
+      "type": "junction",
+      "id": 4,
+      "position": {
+        "x": 400,
+        "y": 200
+      }
+    }
+  ],
+
+  "trucks": [
+    {
+      "current_node": 3,
+      "current_position": 0,
+      "route": [4]
+    }
+  ],
+
+  "globals": {
+        "max_truck_acceleration": 1.0,
+        "max_truck_velocity": 1.0
+  }
+}
