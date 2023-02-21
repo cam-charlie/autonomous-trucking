@@ -4,12 +4,15 @@ from ..lib.geometry import Point
 from collections import deque
 from .truck import Collision
 from .entity import Actor, Entity
+from simulation.draw.utils import Drawable, DEFAULT_FONT
+import pygame
+
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from .truck import Truck
     from typing import List, Dict, Any, Optional
 
-class TruckContainer(Entity, ABC):
+class TruckContainer(Entity, Drawable, ABC):
 
     def __init__(self, id: int) -> None:
         super().__init__(id)
@@ -73,13 +76,25 @@ class Junction(Node):
     def from_json(json: Any) -> Junction:
         return Junction(json["id"], Point.from_json(json["position"]))
 
+    def draw(self, screen: pygame.Surface) -> None:
+
+        pygame.draw.circle(screen, "blue", self.pos.to_tuple(), 10)
+
+        text_surface = DEFAULT_FONT.render('J', False, (255, 255, 255))
+        text_rect = text_surface.get_rect(center=self.pos.to_tuple())
+        screen.blit(text_surface, text_rect)
+
+        for _ in self._trucks:
+            pygame.draw.circle(screen, "green", self.pos.to_tuple(), 2)
+
+
 class Depot(Node, Actor):
 
     def __init__(self, id: int, pos: Point, size: int = 10) -> None:
         super().__init__(id, pos)
         self._storage: Dict[int,Truck] = {}
         self._storage_size = size
-    
+
     def entry(self, truck: Truck) -> None:
         if truck.destination == self.id:
             truck.reached_next_destination()
@@ -105,6 +120,17 @@ class Depot(Node, Actor):
     def update(self, dt: float) -> None:
         for truck in self._storage.values():
             truck._velocity = 0
+
+    def draw(self, screen: pygame.Surface) -> None:
+
+        pygame.draw.circle(screen, "blue", self.pos.to_tuple(), 10)
+
+        text_surface = DEFAULT_FONT.render('D', False, (255, 255, 255))
+        text_rect = text_surface.get_rect(center=self.pos.to_tuple())
+        screen.blit(text_surface, text_rect)
+
+        for _ in self._trucks:
+            pygame.draw.circle(screen, "green", self.pos.to_tuple(), 2)
 
 class Road(Edge):
     """One way road.
@@ -156,3 +182,8 @@ class Road(Edge):
                 self._end.entry(truck)
             else:
                 break
+
+    def draw(self, screen: pygame.Surface) -> None:
+        pygame.draw.line(screen, "black", self._start.pos.to_tuple(), self._end.pos.to_tuple(), width=5)
+        for truck in self._trucks:
+            pygame.draw.circle(screen, "green", self.getPosition(truck.position).to_tuple(), 5)

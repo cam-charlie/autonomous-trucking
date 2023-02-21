@@ -7,8 +7,8 @@ if TYPE_CHECKING:
 
 class Truck(Actor):
 
-    def __init__(self, route: List[int], config: Config) -> None:
-        super().__init__()
+    def __init__(self, id: int, route: List[int], config: Config) -> None:
+        super().__init__(id)
         self._velocity: float = 0
         self.position: float = 0
         self.stepped = False
@@ -54,7 +54,7 @@ class Truck(Actor):
 
     @staticmethod
     def from_json(json: Any, config: Config) -> Truck:
-        truck = Truck([int(x) for x in json["route"]], config)
+        truck = Truck(int(json["id"]), [int(x) for x in json["route"]], config)
         truck.position = json['current_position']
         return truck
 
