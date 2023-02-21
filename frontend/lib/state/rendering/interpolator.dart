@@ -6,9 +6,10 @@ import 'faketrucking.dart';
 
 // TODO: Testing
 class Interpolator {
-  final List<RenderRoad> roads;
+  List<RenderRoad> roads;
+  Map<RID,RenderRoad> roadMap;
 
-  const Interpolator({required this.roads});
+  Interpolator({required this.roads}): roadMap = Map.fromIterable(roads.map((e) => {e.id: e}));
 
   // Find the % of road covered
   double _truckFracDistCovered(
@@ -33,10 +34,6 @@ class Interpolator {
 
   // Generates new SimulationState for rendering
   Future<SimulationState> getState({double time = 0.0}) async {
-    // TODO: Dart refuses to allow constant maps, any ideas to fix this would be appreciated
-
-    Map<RID, RenderRoad> roadMap =
-        Map.fromIterable(roads.map((e) => {e.id: e}));
 
     List<TruckPositionsAtTime> positions = await getPositionData(time);
 
