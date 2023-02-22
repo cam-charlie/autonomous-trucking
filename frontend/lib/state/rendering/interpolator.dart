@@ -7,17 +7,22 @@ import 'package:frontend/state/rendering/vehicle.dart';
 import 'package:collection/collection.dart';
 import 'faketrucking.dart';
 
-@visibleForTesting
-class PartialInterpolator {
-  List<RenderRoad> roads;
-  Map<RID, RenderRoad> _roadMap;
+// Dart doesn't implement pairs, must do so myself
+class _Result {
+  final bool roadChange;
+  final double fracDist;
+  const _Result({required this.roadChange, required this.fracDist});
+}
+
+class _Interpolator {
+  final List<RenderRoad> roads;
+  final Map<RID, RenderRoad> _roadMap;
   Function(double time) getData;
 
-  PartialInterpolator({required this.roads, required this.getData})
-      : _roadMap = Map.fromIterable(roads,
-            key: (road) => road.id, value: (road) => road);
+  _Interpolator({required this.roads, required this.getData})
+      : _roadMap = {for (var road in roads) road.id: road};
 
-  // Find the % of road covered
+  // Find the % of start road covered, increment to beyond 100% if road change
   double _truckFracDistCovered(Truck start, Truck end, double t0, double ti,
       double t1, Map<RID, RenderRoad> map) {
     double juncDist = start.roadId == end.roadId
@@ -29,10 +34,8 @@ class PartialInterpolator {
         (((end.currAccel - start.currAccel) / (t1 - t0)) * pow((ti - t0), 3)) /
             6;
     double fracDist = interDist < juncDist
-        ? interDist / map[RID(start.roadId)]!.length
-        : 1 -
-            start.progress +
-            (interDist - juncDist) / map[RID(end.roadId)]!.length;
+        ? start.progress + interDist / map[RID(start.roadId)]!.length
+        : 1 + (interDist - juncDist) / map[RID(end.roadId)]!.length;
     return fracDist;
   }
 
@@ -40,8 +43,7 @@ class PartialInterpolator {
 
   bool _truckRoadChange(Truck start, Truck end, double t0, double ti, double t1,
       Map<RID, RenderRoad> map) {
-    return start.progress + _truckFracDistCovered(start, end, t0, ti, t1, map) >
-        1;
+    return _truckFracDistCovered(start, end, t0, ti, t1, map) > 1;
   }
 
   // Generates new SimulationState for rendering
@@ -64,35 +66,39 @@ class PartialInterpolator {
     }
 
     // time != generated time t0, tomfoolery ensues
-    /*
-
-
-    */
     else {
-      List<Vehicle> vehicles = IterableZip([positions[0].trucks, positions[1].trucks])
+      // Pre calculate distances
+      Iterable<_Result> results =
+          IterableZip([positions[0].trucks, positions[1].trucks]).map((e) =>
+              _Result(
+                  roadChange: _truckRoadChange(e[0], e[1], positions[0].time,
+                      time, positions[1].time, _roadMap),
+                  fracDist: _truckFracDistCovered(e[0], e[1], positions[0].time,
+                      time, positions[1].time, _roadMap)));
+
+      List<Vehicle> vehicles = IterableZip(
+              [positions[0].trucks, positions[1].trucks, results])
           .map((e) => Vehicle(
-              id: VID(e[0].truckId),
+              id: VID((e[0] as Truck).truckId),
               position:
-                  _roadMap[RID(e[_truckRoadChange(e[0], e[1], positions[0].time, time, positions[1].time, _roadMap) ? 1 : 0].roadId)]!
-                      .positionAt(
-                          fraction: (e[0].progress +
-                                  _truckFracDistCovered(
-                                      e[0],
-                                      e[1],
-                                      positions[0].time,
-                                      time,
-                                      positions[1].time,
-                                      _roadMap)) %
-                              1.0),
-              direction: _roadMap[RID(e[_truckRoadChange(e[0], e[1], positions[0].time, time, positions[1].time, _roadMap) ? 1 : 0].roadId)]!
-                  .direction(
-                      fraction: e[0].progress + _truckFracDistCovered(e[0], e[1], positions[0].time, time, positions[1].time, _roadMap))))
+                  _roadMap[RID((e[(e[2] as _Result).roadChange ? 1 : 0] as Truck).roadId)]!
+                      .positionAt(fraction: (e[2] as _Result).fracDist % 1.0),
+              direction: _roadMap[RID(
+                          (e[(e[2] as _Result).roadChange ? 1 : 0] as Truck)
+                              .roadId)]!
+                      .direction(fraction: (e[2] as _Result).fracDist % 1.0) %
+                  (2 * pi)))
           .toList();
       return SimulationState(vehicles: vehicles, roads: roads);
     }
   }
 }
 
-class Interpolator extends PartialInterpolator {
+class Interpolator extends _Interpolator {
   Interpolator({roads}) : super(roads: roads, getData: getPositionData);
+}
+
+@visibleForTesting
+class TestInterpolator extends _Interpolator {
+  TestInterpolator({roads, getData}) : super(roads: roads, getData: getData);
 }

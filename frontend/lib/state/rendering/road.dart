@@ -68,21 +68,11 @@ class StraightRenderRoad extends RenderRoad with EquatableMixin {
           "Exactly one of distance and fraction must be non-null");
     }
 
-    Offset travel = end - start;
+    double rotation = (end - start).direction;
 
-    if (travel.dy == 0) {
-      return travel.dx > 0 ? pi / 2 : 3 * pi / 2;
-    } else if (travel.dy > 0) {
-      return travel.dx > 0
-          ? atan(travel.dx / travel.dy)
-          : 2 * pi - atan(travel.dx.abs() / travel.dy);
-    } else {
-      return travel.dx > 0
-          ? pi / 2 + atan(travel.dy.abs() / travel.dx.abs())
-          : travel.dx < 0
-              ? 3 * pi / 2 - atan(travel.dy.abs() / travel.dx.abs())
-              : pi;
-    }
+    return ((rotation + (3 * pi / 2)) - (2 * pi)).abs();
+
+    // return travel.direction + (3 * pi / 2) % (2 * pi);
   }
 
   @override

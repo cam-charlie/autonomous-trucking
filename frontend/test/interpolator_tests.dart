@@ -74,25 +74,60 @@ List<TruckPositionsAtTime> testData = [
         roadId: 1,
         progress: 0.125)
   ], time: 2.5),
+  TruckPositionsAtTime(trucks: [
+    Truck(
+        truckId: 1,
+        destinationId: 0,
+        currSpeed: 1,
+        currAccel: 0,
+        roadId: 1,
+        progress: 0.75)
+  ], time: 3.0),
+  TruckPositionsAtTime(trucks: [
+    Truck(
+        truckId: 1,
+        destinationId: 0,
+        currSpeed: 1,
+        currAccel: 0,
+        roadId: 2,
+        progress: 0.25)
+  ], time: 3.5),
+  TruckPositionsAtTime(trucks: [
+    Truck(
+        truckId: 1,
+        destinationId: 0,
+        currSpeed: 1,
+        currAccel: 0,
+        roadId: 2,
+        progress: 0.75)
+  ], time: 4.0),
+  TruckPositionsAtTime(trucks: [
+    Truck(
+        truckId: 1,
+        destinationId: 0,
+        currSpeed: 1,
+        currAccel: 0,
+        roadId: 3,
+        progress: 0.125)
+  ], time: 4.5),
 ];
 
 Future<List<TruckPositionsAtTime>> testFunc(double t) async {
-  if (0 < t && t < 0.5) {
+  if (0 <= t && t <= 0.5) {
     return [testData[0], testData[1]];
-  } else if (t == 0) {
-    return [testData[0]];
-  } else if (t == 0.5) {
-    return [testData[1]];
   } else if (t < 2) {
     return [testData[2], testData[3]];
-  } else {
+  } else if (t < 3) {
     return [testData[4], testData[5]];
+  } else if (t < 4) {
+    return [testData[6], testData[7]];
+  } else {
+    return [testData[8], testData[9]];
   }
 }
 
 void main() async {
-  PartialInterpolator inter =
-      PartialInterpolator(roads: roads, getData: testFunc);
+  TestInterpolator inter = TestInterpolator(roads: roads, getData: testFunc);
 
   print("Beginning tests");
 
@@ -171,6 +206,61 @@ void main() async {
     expect((ti5.vehicles[0].position - const Offset(0, 0.125)).distance < 0.001,
         true);
   });
-  int t = 5;
-  t++;
+
+  // Tests regarding road interaction
+  test("Vehicle road change with similar roads", () async {
+    SimulationState ti0 = await inter.getState(3.0);
+    SimulationState ti1 = await inter.getState(3.1);
+    SimulationState ti2 = await inter.getState(3.2);
+    SimulationState ti3 = await inter.getState(3.3);
+    SimulationState ti4 = await inter.getState(3.4);
+    SimulationState ti5 = await inter.getState(3.5);
+
+    expect((ti0.vehicles[0].position - const Offset(0, 0.75)).distance < 0.01,
+        true);
+    expect((ti1.vehicles[0].position - const Offset(0, 0.85)).distance < 0.01,
+        true);
+    expect((ti2.vehicles[0].position - const Offset(0, 0.95)).distance < 0.01,
+        true);
+    expect((ti3.vehicles[0].position - const Offset(0, 1.05)).distance < 0.01,
+        true);
+    expect((ti4.vehicles[0].position - const Offset(0, 1.15)).distance < 0.01,
+        true);
+    expect((ti5.vehicles[0].position - const Offset(0, 1.25)).distance < 0.01,
+        true);
+
+    expect(ti2.vehicles[0].direction, 0);
+    expect(ti3.vehicles[0].direction, 0);
+  });
+
+  test("Vehicle road change with roads of different length and orientation",
+      () async {
+    SimulationState ti0 = await inter.getState(4.0);
+    SimulationState ti1 = await inter.getState(4.1);
+    SimulationState ti2 = await inter.getState(4.2);
+    SimulationState ti3 = await inter.getState(4.3);
+    SimulationState ti4 = await inter.getState(4.4);
+    SimulationState ti5 = await inter.getState(4.5);
+
+    expect((ti0.vehicles[0].position - const Offset(0, 1.75)).distance < 0.01,
+        true);
+
+    expect((ti1.vehicles[0].position - const Offset(0, 1.85)).distance < 0.01,
+        true);
+
+    expect((ti2.vehicles[0].position - const Offset(0, 1.95)).distance < 0.01,
+        true);
+
+    expect((ti3.vehicles[0].position - const Offset(0.05, 2)).distance < 0.01,
+        true);
+
+    expect((ti4.vehicles[0].position - const Offset(0.15, 2)).distance < 0.01,
+        true);
+
+    expect((ti5.vehicles[0].position - const Offset(0.25, 2)).distance < 0.01,
+        true);
+
+    expect(ti2.vehicles[0].direction, 0);
+    expect(ti3.vehicles[0].direction, pi / 2);
+  });
 }
