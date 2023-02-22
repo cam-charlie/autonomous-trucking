@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from typing import Dict, Tuple, Any
     from simulation.realm.truck import Truck
-    EnvState = Tuple[Dict[Any, Any], float, Dict[Truck, bool], Dict[Any, Any]]
+    EnvState = Tuple[Dict[Any, Any], float, Dict[int, bool], Dict[Any, Any]]
 
 '''
 Wrapper for interfacing with algorithm
