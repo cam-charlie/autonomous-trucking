@@ -5,7 +5,6 @@ from .realm.realm import Realm
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from typing import Dict, Tuple, Any
-    from simulation.realm.truck import Truck
     EnvState = Tuple[Dict[Any, Any], float, Dict[int, bool], Dict[Any, Any]]
 
 '''
@@ -36,7 +35,6 @@ class Env:
 
         return self.step()
 
-    # TODO: Define a single 'state' type for this return type
     def step(self, actions: Dict[int, float] = {}) -> EnvState:
         """ Simulates one realm tick.
 

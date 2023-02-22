@@ -71,6 +71,8 @@ class Node(TruckContainer, ABC):
     def from_json(json: Any) -> Node:
         if json["type"] == "junction":
             return Junction.from_json(json)
+        elif json["type"] == "depot":
+            return Depot.from_json(json)
         else:
             raise NotImplementedError
 
@@ -127,6 +129,10 @@ class Depot(Node, Actor):
     def update(self, dt: float) -> None:
         for truck in self._storage.values():
             truck._velocity = 0
+
+    @staticmethod
+    def from_json(json: Any) -> Depot:
+        return Depot(json["id"], Point.from_json(json["position"]))
 
     def draw(self, screen: pygame.Surface) -> None:
 
