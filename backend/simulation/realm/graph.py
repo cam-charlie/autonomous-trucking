@@ -40,6 +40,13 @@ class Edge(TruckContainer, ABC):
         super().__init__(id)
         start.addOutgoing(self)
         end.addIncoming(self)
+        self._start: Node = start
+        self._end: Node = end
+        self._cost: float = 1
+
+    @property
+    def cost(self) -> float:
+        return self._cost
 
 class Node(TruckContainer, ABC):
 
@@ -146,8 +153,7 @@ class Road(Edge):
         super().__init__(id, start, end)
 
         self._length = length
-        self._start = start
-        self._end = end
+        self._cost = length
 
     def getPosition(self, u: float) -> Point:
         """ Obtains interpolated position
