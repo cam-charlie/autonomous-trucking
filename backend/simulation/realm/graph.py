@@ -29,7 +29,7 @@ class TruckContainer(Entity, Drawable, ABC):
                 Invariant: truck position is normalized
         """
         self._trucks.append(truck)
-        truck._current_graph_object = self
+        truck.set_current_truck_container(self)
 
         if truck.destination == self.id:
             truck.reached_next_destination()
