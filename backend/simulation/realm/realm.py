@@ -47,6 +47,11 @@ class Realm:
                         distance[(s.id,d.id)] = distance[(s.id,k.id)] + distance[(k.id,d.id)]
                         direction[(s.id,d.id)] = direction[(s.id,k.id)]
             # Put direction into routing table format
+        #TODO(mark) is this desired behavior - add as a JSON option?
+        for edge in self.edges.values():
+            distance[(edge._start.id,edge._end.id)] = edge.cost
+            direction[(edge._start.id,edge._end.id)] = edge._start._outgoing.index(edge)
+
         for s in self.nodes.values():
             for d in self.nodes.values():
                 if (s.id,d.id) in direction and direction[(s.id,d.id)] != None:
@@ -56,7 +61,6 @@ class Realm:
         self.trucks = {}
         for t in data["trucks"]:
             truck = Truck.from_json(t, config)
-            truck._velocity = config.MAX_VELOCITY #TODO(mark) just here for testing. Remove
             self.trucks[truck.id] = truck
             self.nodes[t['current_node']].entry(truck)
             

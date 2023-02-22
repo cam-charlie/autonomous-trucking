@@ -25,6 +25,16 @@ class Entity(ABC):
 
 class Actor(Entity, ABC):
 
+    def __init__(self, id: Optional[int]):
+        super().__init__(id)
+        self._accumulated_reward: float = 0
+
     def act(self, action: Optional[float], dt: float) -> None:
         raise NotImplementedError
+
+    def get_accumulated_reward(self) -> float: 
+        res = self._accumulated_reward
+        self._accumulated_reward = 0
+        return res
+
     

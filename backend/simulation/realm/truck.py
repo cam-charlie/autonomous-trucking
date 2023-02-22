@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from typing import Any, List, Optional
     from ..config import Config
+    from .graph import Node
 
 class Truck(Actor):
 
@@ -14,7 +15,7 @@ class Truck(Actor):
         self.stepped = False
         self.config = config
         self._route = route[::-1]
-
+        self._current_graph_object = None
 
     def act(self, acceleration: Optional[float], dt: float) -> None:
         """Apply actions
@@ -35,6 +36,10 @@ class Truck(Actor):
 
     def done(self) -> bool:
         return True if len(self._route) == 0 else False
+    
+    @property
+    def current_graph_object(self) -> Node:
+        return self._current_graph_object
 
     @property
     def destination(self) -> int:

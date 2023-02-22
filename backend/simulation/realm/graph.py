@@ -29,6 +29,12 @@ class TruckContainer(Entity, Drawable, ABC):
                 Invariant: truck position is normalized
         """
         self._trucks.append(truck)
+        truck._current_graph_object = self
+
+        if truck.destination == self.id:
+            truck.reached_next_destination()
+        if truck.done():
+            truck._accumulated_reward += 1
 
     @property
     def id(self) -> int:
@@ -79,6 +85,10 @@ class Node(TruckContainer, ABC):
 class Junction(Node):
 
     def entry(self, truck: Truck) -> None:
+        super().entry(truck)
+        if truck.done():
+            return
+        self._trucks.pop()
         self._outgoing[self._routing_table[truck.destination]].entry(truck)
 
     @staticmethod
@@ -105,12 +115,9 @@ class Depot(Node, Actor):
         self._storage_size = size
 
     def entry(self, truck: Truck) -> None:
-        if truck.destination == self.id:
-            truck.reached_next_destination()
+        super().entry(truck)
         if truck.done():
-            # TODO(mark) reward
             return
-
         self._storage[truck.id] = truck
         # TODO(mark) no space
         if len(self._storage) > self._storage_size:
@@ -177,6 +184,8 @@ class Road(Edge):
 
     def entry(self, truck: Truck) -> None:
         super().entry(truck)
+        if truck.done():
+            return
         truck.position = truck.position / self._length
 
     def update(self, dt: float) -> None:
