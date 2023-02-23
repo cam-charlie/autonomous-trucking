@@ -20,7 +20,7 @@ if __name__ == '__main__':
         #Work out actions
         for actor in env.realm.actors.values():
             if type(actor) is Depot:
-                act = actor.compute_actions()
+                act = actor.compute_actions(truck_size, safety_margin)
                 if act is not None:
                     actions[actor.id] = act
 

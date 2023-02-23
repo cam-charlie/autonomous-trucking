@@ -126,7 +126,7 @@ class Depot(Node, Actor):
         for truck in self._storage.values():
             truck._velocity = 0
 
-    def compute_actions(self) -> float:
+    def compute_actions(self, truck_size: int = 2, safety_margin: int = 5) -> float:
         for truck in self._storage.values:
                     if truck.done == False: #Truck is waiting to be released
                         next_road = self.edges[truck.destination]
