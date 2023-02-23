@@ -1,11 +1,11 @@
-name: Mypy
+name: BackendTest
 
 on: [push]
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    name: Mypy
+    name: BackendTest
     steps:
     - uses: actions/checkout@v1
     - name: Set up Python 3.8
@@ -17,4 +17,9 @@ jobs:
         pip install -r backend/requirements.txt
     - name: mypy
       run: |
-        mypy backend/
+        cd backend && mypy .
+    - name: unit-tests
+      run: |
+        cd backend
+        python3 test/test_env.py
+        python3 test/test_graph.py
