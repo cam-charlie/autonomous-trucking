@@ -5,7 +5,11 @@ import 'package:frontend/state/rendering/road.dart';
 import 'package:frontend/state/rendering/simulation.dart';
 import 'package:frontend/state/rendering/vehicle.dart';
 import 'package:collection/collection.dart';
-import 'faketrucking.dart';
+
+import '../communication/Backend.dart';
+import 'package:grpc/grpc.dart';
+import '../communication/grpc/trucking.pbgrpc.dart';
+// import 'faketrucking.dart';
 
 // Dart doesn't implement pairs, must do so myself
 class _Result {
