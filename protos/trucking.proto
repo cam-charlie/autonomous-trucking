@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+//option py_generic_services = true;
+
+service PositionDataStreamer{
+    rpc getPositionData(TimeDelta) returns (PositionDataStream);
+} 
+
+message TimeDelta{
+    double seconds = 1;
+}
+
+message PositionDataStream{
+    repeated TruckPositionsAtTime trucks = 1;
+} 
+
+message TruckPositionsAtTime{
+    repeated Truck trucks = 1;
+    double time = 2;
+}
+
+
+message Truck{
+    int32 truck_id = 1;
+    int32 destination_id = 2;
+    double curr_speed = 3;
+    double curr_accel = 4;
+    int32 road_id = 5;
+    double progress = 6;
+    repeated PathElement path = 7;
+}
+
+
+message PathElement{
+    oneof NodeOrRoad {
+        int32 node_id = 1;
+        int32 road_id = 2;
+    } 
+}
+
+
+
+
+
+
