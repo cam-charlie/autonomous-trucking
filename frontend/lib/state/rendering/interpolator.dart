@@ -36,6 +36,7 @@ class _Interpolator {
     double fracDist = interDist < juncDist
         ? start.progress + interDist / map[RID(start.roadId)]!.length
         : 1 + (interDist - juncDist) / map[RID(end.roadId)]!.length;
+
     return fracDist;
   }
 
@@ -80,14 +81,18 @@ class _Interpolator {
               [positions[0].trucks, positions[1].trucks, results])
           .map((e) => Vehicle(
               id: VID((e[0] as Truck).truckId),
-              position:
+              position: _roadMap[RID((e[(e[2] as _Result).roadChange ? 1 : 0] as Truck).roadId)]!
+                  .positionAt(
+                      fraction: (e[2] as _Result).fracDist > 1.0
+                          ? (e[2] as _Result).fracDist - 1.0
+                          : (e[2] as _Result).fracDist),
+              direction:
                   _roadMap[RID((e[(e[2] as _Result).roadChange ? 1 : 0] as Truck).roadId)]!
-                      .positionAt(fraction: (e[2] as _Result).fracDist % 1.0),
-              direction: _roadMap[RID(
-                          (e[(e[2] as _Result).roadChange ? 1 : 0] as Truck)
-                              .roadId)]!
-                      .direction(fraction: (e[2] as _Result).fracDist % 1.0) %
-                  (2 * pi)))
+                          .direction(
+                              fraction: ((e[2] as _Result).fracDist > 1.0
+                                  ? (e[2] as _Result).fracDist - 1.0
+                                  : (e[2] as _Result).fracDist)) %
+                      (2 * pi)))
           .toList();
       return SimulationState(vehicles: vehicles, roads: roads);
     }
