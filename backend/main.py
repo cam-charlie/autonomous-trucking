@@ -20,7 +20,8 @@ if __name__ == '__main__':
         #Work out actions
         for actor in env.realm.actors.values():
             if type(actor) is Depot:
-                for truck in actor._storage:
+                for t in actor._storage:
+                    truck = actor._storage[t]
                     if truck.done == False: #Truck is waiting to be released
                         next_road = env.realm.edges[truck.next_container_id()]
                         if type(next_road) is Road:
