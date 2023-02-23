@@ -43,13 +43,6 @@ class Truck(Actor):
         return self._route[-1]
 
     @property
-    def next_container_id(self) -> int:
-        if len(self._route) == 0:
-            return -1
-        else:
-            return self._route[0]
-
-    @property
     def velocity(self) -> float:
         """ Change in normalized position
         """

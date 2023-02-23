@@ -126,6 +126,17 @@ class Depot(Node, Actor):
         for truck in self._storage.values():
             truck._velocity = 0
 
+    def compute_actions(self) -> float:
+        for truck in self._storage.values:
+                    if truck.done == False: #Truck is waiting to be released
+                        next_road = self.edges[truck.destination]
+                        assert type(next_road) is Road
+                        first_car_pos = next_road._trucks[0].position * next_road._length
+                        if first_car_pos > truck_size + safety_margin #There is space on the road
+                            #Release this truck
+                            return float(truck.id)
+        return None
+
     def draw(self, screen: pygame.Surface) -> None:
 
         pygame.draw.circle(screen, "blue", self.pos.to_tuple(), 10)
@@ -187,6 +198,7 @@ class Road(Edge):
                 self._end.entry(truck)
             else:
                 break
+            
 
     def draw(self, screen: pygame.Surface) -> None:
         pygame.draw.line(screen, "black", self._start.pos.to_tuple(), self._end.pos.to_tuple(), width=5)
