@@ -110,6 +110,24 @@ List<TruckPositionsAtTime> testData = [
         roadId: 3,
         progress: 0.125)
   ], time: 4.5),
+  TruckPositionsAtTime(trucks: [
+    Truck(
+        truckId: 1,
+        destinationId: 0,
+        currSpeed: 2 * pi,
+        currAccel: 0,
+        roadId: 4,
+        progress: 0.0)
+  ], time: 5.0),
+  TruckPositionsAtTime(trucks: [
+    Truck(
+        truckId: 1,
+        destinationId: 0,
+        currSpeed: 2 * pi,
+        currAccel: 0,
+        roadId: 4,
+        progress: 0.99)
+  ], time: 5.5),
 ];
 
 Future<List<TruckPositionsAtTime>> testFunc(double t) async {
@@ -121,8 +139,10 @@ Future<List<TruckPositionsAtTime>> testFunc(double t) async {
     return [testData[4], testData[5]];
   } else if (t < 4) {
     return [testData[6], testData[7]];
-  } else {
+  } else if (t < 5) {
     return [testData[8], testData[9]];
+  } else {
+    return [testData[10], testData[11]];
   }
 }
 
@@ -262,5 +282,25 @@ void main() async {
 
     expect(ti2.vehicles[0].direction, 0);
     expect(ti3.vehicles[0].direction, pi / 2);
+  });
+
+  test("Vehicle positions along a curved road", () async {
+    SimulationState ti0 = await inter.getState(5.0);
+    print(ti0.vehicles[0].position);
+    SimulationState ti1 = await inter.getState(5.25);
+    print(ti1.vehicles[0].position);
+    SimulationState ti2 = await inter.getState(5.5);
+    print(ti2.vehicles[0].position);
+
+    expect(
+        (ti0.vehicles[0].position - const Offset(2, 2)).distance < 0.01, true);
+    expect(
+        (ti1.vehicles[0].position - const Offset(3, 1)).distance < 0.01, true);
+    expect(
+        (ti2.vehicles[0].position - const Offset(2, 0)).distance < 0.01, true);
+
+    expect(ti0.vehicles[0].direction, pi / 2);
+    expect(ti1.vehicles[0].direction, pi);
+    expect(ti2.vehicles[0].direction, 3 * pi / 2);
   });
 }
