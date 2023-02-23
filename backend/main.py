@@ -28,7 +28,7 @@ if __name__ == '__main__':
                             first_car_pos = next_road._trucks[0].position * next_road._length
                             if first_car_pos > car_size: #There is space on the road
                                 #Release this truck
-                                actions[actor.id] = truck.id
+                                actions[actor.id] = float(truck.id)
 
             elif type(actor) is Road:
                 for x in range(len(actor._trucks)):
@@ -37,7 +37,7 @@ if __name__ == '__main__':
                     if x == 0: #no truck in front of it: eventually going into a node
                         if this_truck.velocity < this_truck.config.MAX_VELOCITY:
                             #Accelerate
-                            actions[actor.id] = this_truck.config.MAX_ACCELERATION
+                            actions[actor.id] = float(this_truck.config.MAX_ACCELERATION)
                     else:
                         next_truck = actor._trucks[i+1]
                         #Generate stopping distance
