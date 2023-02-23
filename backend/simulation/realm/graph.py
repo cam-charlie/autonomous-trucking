@@ -108,10 +108,12 @@ class Junction(Node):
 
 class Depot(Node, Actor):
 
-    def __init__(self, id: int, pos: Point, size: int = 10) -> None:
+    def __init__(self, id: int, pos: Point, size: int = 10, cooldown: float = 5) -> None:
         super().__init__(id, pos)
         self._storage: Dict[int,Truck] = {}
         self._storage_size = size
+        self._max_cooldown = cooldown
+        self._current_cooldown = 0.0
 
     def entry(self, truck: Truck) -> None:
         super().entry(truck)
@@ -127,14 +129,28 @@ class Depot(Node, Actor):
         """
         if action is None:
             return
-        tid = int(action)
-        if tid in self._storage:
-            truck = self._storage.pop(tid)
-            self._outgoing[self._routing_table[truck.destination]].entry(truck)
+        if dt > self._current_cooldown:
+            tid = int(action)
+            if tid in self._storage:
+                truck = self._storage.pop(tid)
+                self._outgoing[self._routing_table[truck.destination]].entry(truck)
+                self._current_cooldown += self._max_cooldown
 
     def update(self, dt: float) -> None:
+        self._current_cooldown = max(0, self._current_cooldown - dt)
         for truck in self._storage.values():
             truck._velocity = 0
+
+    def compute_actions(self, truck_size: int = 2, safety_margin: int = 5) -> Optional[float]:
+        for truck in self._storage.values():
+            if truck.done == False: #Truck is waiting to be released
+                next_road = truck.destination
+                assert type(next_road) is Road
+                first_car_pos = next_road._trucks[0].position * next_road._length
+                if first_car_pos > float(truck_size + safety_margin): #There is space on the road
+                    #Release this truck
+                    return float(truck.id)
+        return None
 
     @staticmethod
     def from_json(json: Any) -> Depot:
@@ -202,6 +218,7 @@ class Road(Edge):
                 self._end.entry(truck)
             else:
                 break
+
 
     def draw(self, screen: pygame.Surface) -> None:
         pygame.draw.line(screen, "black", self._start.pos.to_tuple(), self._end.pos.to_tuple(), width=5)
