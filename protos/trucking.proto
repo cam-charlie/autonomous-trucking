@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+//option py_generic_services = true;
+
 service PositionDataStreamer{
     rpc getPositionData(TimeDelta) returns (PositionDataStream);
 } 

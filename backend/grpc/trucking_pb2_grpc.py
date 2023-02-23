@@ -6,7 +6,9 @@ import trucking_pb2 as trucking__pb2
 
 
 class PositionDataStreamerStub(object):
-    """Missing associated documentation comment in .proto file."""
+    """option py_generic_services = true;
+
+    """
 
     def __init__(self, channel):
         """Constructor.
@@ -22,7 +24,9 @@ class PositionDataStreamerStub(object):
 
 
 class PositionDataStreamerServicer(object):
-    """Missing associated documentation comment in .proto file."""
+    """option py_generic_services = true;
+
+    """
 
     def getPositionData(self, request, context):
         """Missing associated documentation comment in .proto file."""
@@ -46,7 +50,9 @@ def add_PositionDataStreamerServicer_to_server(servicer, server):
 
  # This class is part of an EXPERIMENTAL API.
 class PositionDataStreamer(object):
-    """Missing associated documentation comment in .proto file."""
+    """option py_generic_services = true;
+
+    """
 
     @staticmethod
     def getPositionData(request,

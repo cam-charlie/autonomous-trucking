@@ -1,7 +1,7 @@
 import 'dart:isolate';
 
 import 'package:grpc/grpc.dart';
-import './trucking.pbgrpc.dart';
+import './grpc/trucking.pbgrpc.dart';
 
 import './Backend.dart';
 import 'dart:io';

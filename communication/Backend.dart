@@ -1,7 +1,7 @@
 import 'dart:isolate';
 
 import 'package:grpc/grpc.dart';
-import './trucking.pbgrpc.dart';
+import './grpc/trucking.pbgrpc.dart';
 
 // so far no error checking
 
