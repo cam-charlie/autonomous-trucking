@@ -1,5 +1,8 @@
 import json
 
+class InvalidConfiguration(Exception):
+    pass
+
 class Config:
 
     def __init__(self, path: str) -> None:

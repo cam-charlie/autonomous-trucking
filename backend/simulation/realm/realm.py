@@ -34,9 +34,9 @@ class Realm:
         # Run Floyd-Warshall
         distance: Dict[Tuple[int,int],float] = {} # Distance
         direction: Dict[Tuple[int,int],int] = {} # Next path to take
-        for i, edge in enumerate(self.edges.values()):
+        for edge in self.edges.values():
             distance[(edge._start.id,edge._end.id)] = edge.cost
-            direction[(edge._start.id,edge._end.id)] = i
+            direction[(edge._start.id,edge._end.id)] = edge._start._outgoing.index(edge)
         for node in self.nodes.values():
             distance[(node.id,node.id)] = 0
             direction[(node.id,node.id)] = -1
@@ -47,6 +47,7 @@ class Realm:
                         distance[(s.id,d.id)] = distance[(s.id,k.id)] + distance[(k.id,d.id)]
                         direction[(s.id,d.id)] = direction[(s.id,k.id)]
             # Put direction into routing table format
+
         for s in self.nodes.values():
             for d in self.nodes.values():
                 if (s.id,d.id) in direction and direction[(s.id,d.id)] != None:
@@ -68,7 +69,7 @@ class Realm:
             if isinstance(edge,Actor):
                 self.actors[edge.id] = edge
 
-    def update(self, actions: Dict[int, float], dt: float =1/30) -> Dict[int, bool]:
+    def update(self, actions: Dict[int, float], dt: float=1/30) -> Dict[int, bool]:
         """
         Runs logic.
 

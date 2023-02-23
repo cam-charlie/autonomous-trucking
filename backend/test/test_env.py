@@ -9,5 +9,12 @@ class TestEnv(unittest.TestCase):
         env = Env()
         env.reset("../shared/example.json")
 
+    def test_rollout_basic(self) -> None:
+        env = Env()
+        env.reset("test/test_json/test_1.json")
+
+        for _ in range(128):
+            env.step({10001: 10.0})
+
 if __name__ == "__main__":
     unittest.main()
