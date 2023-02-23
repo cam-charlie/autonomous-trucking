@@ -47,7 +47,7 @@ class Truck(Actor):
     @property
     def destination(self) -> int:
         if self.done():
-            return False
+            return -1
         return self._route[self._route_index]
 
     @property
