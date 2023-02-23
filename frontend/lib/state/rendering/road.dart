@@ -13,17 +13,18 @@ class RID extends Equatable {
   List<Object> get props => [_id];
 }
 
-enum roadType {
+enum RoadType {
   straight,
   arc,
 }
 
+// Final track of the Star Cup:
 abstract class RenderRoad {
   const RenderRoad();
 
   RID get id;
 
-  roadType get type;
+  RoadType get type;
 
   void draw({required Canvas canvas});
 
@@ -36,14 +37,14 @@ class StraightRenderRoad extends RenderRoad with EquatableMixin {
   final Offset start;
   final Offset end;
   @override
-  final roadType type;
+  final RoadType type;
 
   @override
   final RID id;
 
   const StraightRenderRoad(
       {required this.id, required this.start, required this.end})
-      : type = roadType.straight;
+      : type = RoadType.straight;
 
   @override
   void draw({required Canvas canvas}) {
@@ -90,7 +91,7 @@ class RenderArcRoad extends RenderRoad with EquatableMixin {
   final RID id;
 
   @override
-  final roadType type;
+  final RoadType type;
 
   const RenderArcRoad(
       {required this.id,
@@ -101,7 +102,7 @@ class RenderArcRoad extends RenderRoad with EquatableMixin {
       required this.clockwise})
       : arcStart = arcStart % (2 * pi),
         arcEnd = arcEnd % (2 * pi),
-        type = roadType.arc;
+        type = RoadType.arc;
 
   @override
   void draw({required Canvas canvas}) {
@@ -141,7 +142,7 @@ class RenderArcRoad extends RenderRoad with EquatableMixin {
 
 class CalculationRoad {
   static length(RenderRoad road) {
-    if (road.type == roadType.straight) {
+    if (road.type == RoadType.straight) {
       road = road as StraightRenderRoad;
       return (road.start - road.end).distance;
     } else {
@@ -157,7 +158,7 @@ class CalculationRoad {
           "Exactly one of distance and fraction must be non-null");
     }
     fraction = distance != null ? distance / length(road) : fraction!;
-    if (road.type == roadType.straight) {
+    if (road.type == RoadType.straight) {
       road = road as StraightRenderRoad;
 
       return road.start + (road.end - road.start) * fraction;
@@ -178,7 +179,7 @@ class CalculationRoad {
           "Exactly one of distance and fraction must be non-null");
     }
     fraction = distance != null ? distance / length(road) : fraction!;
-    if (road.type == roadType.straight) {
+    if (road.type == RoadType.straight) {
       road = road as StraightRenderRoad;
       double rotation = (road.end - road.start).direction;
 
