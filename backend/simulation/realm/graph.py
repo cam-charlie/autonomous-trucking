@@ -90,10 +90,12 @@ class Junction(Node):
 
 class Depot(Node, Actor):
 
-    def __init__(self, id: int, pos: Point, size: int = 10) -> None:
+    def __init__(self, id: int, pos: Point, size: int = 10, cooldown: float = 5) -> None:
         super().__init__(id, pos)
         self._storage: Dict[int,Truck] = {}
         self._storage_size = size
+        self._max_cooldown = cooldown
+        self._current_cooldown = 0.0
 
     def entry(self, truck: Truck) -> None:
         if truck.destination == self.id:
@@ -112,12 +114,15 @@ class Depot(Node, Actor):
         """
         if action is None:
             return
-        tid = int(action)
-        if tid in self._storage:
-            truck = self._storage.pop(tid)
-            self._outgoing[self._routing_table[truck.destination]].entry(truck)
+        if dt > self._current_cooldown:
+            tid = int(action)
+            if tid in self._storage:
+                truck = self._storage.pop(tid)
+                self._outgoing[self._routing_table[truck.destination]].entry(truck)
+                self._current_cooldown += self._max_cooldown
 
     def update(self, dt: float) -> None:
+        self._current_cooldown = max(0, self._current_cooldown - dt)
         for truck in self._storage.values():
             truck._velocity = 0
 
