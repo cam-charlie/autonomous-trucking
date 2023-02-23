@@ -4,9 +4,11 @@ import 'package:frontend/utilities/range.dart';
 import 'package:frontend/utilities/velocity_calculator.dart';
 
 /*
-TODO
-  -[ ] when slow-stopping into a boundary, it should bounce back with velocity, not just stop immediately.
-*/
+TODO:
+  - should define "hard bounds" which form the upper limit of the bound slowdown. they can differ
+  - if it can accept manual movement, what should happen if a user is currently controlling it?
+
+ */
 
 class AnimatedInputRangeSlowStopOptions {
   final double drag;

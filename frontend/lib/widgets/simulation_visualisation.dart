@@ -55,7 +55,11 @@ class SimulationPainter extends CustomPainter {
 
 
     for (RenderRoad r in state.roads) {
-      r.draw(canvas: canvas);
+      r.drawOutline(canvas: canvas);
+    }
+
+    for (RenderRoad r in state.roads) {
+      r.drawBody(canvas: canvas);
     }
 
     for (Vehicle v in state.vehicles) {

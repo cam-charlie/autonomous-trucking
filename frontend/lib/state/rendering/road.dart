@@ -2,6 +2,7 @@ import 'dart:math';
 import 'dart:ui';
 import 'package:equatable/equatable.dart';
 import 'package:frontend/constants.dart' as constants;
+import 'package:frontend/utilities/colour_tools.dart' as colour_tools;
 
 /// Road ID
 class RID extends Equatable {
@@ -21,6 +22,10 @@ abstract class RenderRoad {
 
   void draw({required Canvas canvas});
 
+  void drawOutline({required Canvas canvas});
+
+  void drawBody({required Canvas canvas});
+
   Offset positionAt({double? distance, double? fraction});
 
   double direction({double? distance, double? fraction});
@@ -38,9 +43,25 @@ class StraightRenderRoad extends RenderRoad with EquatableMixin {
 
   @override
   void draw({required Canvas canvas}) {
+    drawOutline(canvas: canvas);
+    drawBody(canvas: canvas);
+  }
+
+  @override
+  void drawBody({required Canvas canvas}) {
     final Paint paint = Paint()
       ..color = constants.roadColour
       ..strokeWidth = constants.roadWidth // * zoom
+      ..strokeCap = StrokeCap.round
+      ..style = PaintingStyle.stroke;
+    canvas.drawLine(start, end, paint);
+  }
+
+  @override
+  void drawOutline({required Canvas canvas}) {
+    final Paint paint = Paint()
+      ..color = colour_tools.darken(constants.roadColour)
+      ..strokeWidth = constants.roadWidth + 8 // * zoom
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.stroke;
     canvas.drawLine(start, end, paint);
@@ -115,6 +136,25 @@ class RenderArcRoad extends RenderRoad with EquatableMixin {
 
   @override
   void draw({required Canvas canvas}) {
+    drawOutline(canvas: canvas);
+    drawBody(canvas: canvas);
+  }
+
+  @override
+  void drawOutline({required Canvas canvas}) {
+    final Paint paint = Paint()
+      ..color = colour_tools.darken(constants.roadColour)
+      ..strokeWidth = constants.roadWidth + 8 // * zoom
+      ..strokeCap = StrokeCap.round
+      ..style = PaintingStyle.stroke;
+    final start = clockwise ? arcStart : arcEnd;
+    final sweep = clockwise ? arcEnd - arcStart : arcStart - arcEnd;
+    canvas.drawArc(Rect.fromCircle(center: centre, radius: radius), start,
+        sweep, false, paint);
+  }
+
+  @override
+  void drawBody({required Canvas canvas}) {
     final Paint paint = Paint()
       ..color = constants.roadColour
       ..strokeWidth = constants.roadWidth // * zoom

@@ -4,12 +4,17 @@ import 'dart:ui';
 const mmin = min;
 const mmax = max;
 
+/*
+TODO:
+  - [] make this whole file nicer. better constructors, less useless stuff
+  - [] make a rect one?
+
+ */
+
 abstract class Range<T> {
   T get min;
 
   T get max;
-
-  T get center;
 
   bool contains(T value);
 
@@ -23,12 +28,6 @@ class LinearRange implements Range<double> {
   final double min;
   @override
   final double max;
-
-  @override
-  double get center =>
-      min.isFinite ?
-      max.isFinite ? (max + min) / 2 : min
-          : max.isFinite ? max : 0;
 
   const LinearRange(this.min, this.max) : assert(min <= max);
   LinearRange.fromRectW(Rect r) : min = r.left, max = r.right;
@@ -54,12 +53,6 @@ class LogarithmicRange implements Range<double> {
   @override
   final double max;
 
-  @override
-  double get center =>
-      (min == 0) ?
-      max.isFinite ? exp((log(max) + log(min)) / 2) : min
-          : max.isFinite ? min : 1;
-
   const LogarithmicRange(this.min, this.max)
       : assert(min <= max),
         assert(min > 0);
@@ -81,12 +74,6 @@ class AngularRange implements Range<double> {
   final double min;
   @override
   final double max;
-
-  @override
-  double get center =>
-      min.isFinite && max.isFinite ?
-      (max - (min < max ? min : min - (2 * pi)) / 2) % (2 * pi)
-          : 0;
 
   const AngularRange(min, max)
       : min = min % (2 * pi),
