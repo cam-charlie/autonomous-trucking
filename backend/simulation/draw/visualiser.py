@@ -1,11 +1,8 @@
 from __future__ import annotations
 import pygame
 import sys
-from ..realm.graph import Road
-
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from ..realm.graph import Node, Edge
     from ..realm.realm import Realm
 
 
@@ -41,18 +38,7 @@ class Visualiser:
 
     def draw_graph(self) -> None:
         for node in self.realm.nodes.values():
-            self.draw_node(node)
+            node.draw(self.screen)
 
         for edge in self.realm.edges.values():
-            self.draw_road(edge)
-
-    def draw_node(self, node: Node) -> None:
-        pygame.draw.circle(self.screen, "blue", node.pos.to_tuple(), 10)
-        for _ in node._trucks:
-            pygame.draw.circle(self.screen, "green", node.pos.to_tuple(), 2)
-
-    def draw_road(self, road: Edge) -> None:
-        if isinstance(road, Road):
-            pygame.draw.line(self.screen, "black", road._start.pos.to_tuple(), road._end.pos.to_tuple(), width=5)
-            for truck in road._trucks:
-                pygame.draw.circle(self.screen, "green", road.getPosition(truck.position).to_tuple(), 5)
+            edge.draw(self.screen)

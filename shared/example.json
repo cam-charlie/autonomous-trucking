@@ -29,6 +29,7 @@
 
   "trucks": [
     {
+      "id": 100,
       "current_node": 3,
       "current_position": 0,
       "route": [4]
