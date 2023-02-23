@@ -32,7 +32,6 @@ if __name__ == '__main__':
         for edge in env.realm.edges.values():
             if type(edge) is Road:
                 for i in range(len(edge._trucks)-1,-1,-1):
-                    i = len(edge._trucks) - x - 1
                     this_truck = edge._trucks[i]
                     if i == len(edge._trucks)-1: #no truck in front of it: eventually going into a node
                         if this_truck.velocity < this_truck.config.MAX_VELOCITY:
