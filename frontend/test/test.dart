@@ -9,7 +9,7 @@ void main() async {
     const StraightRenderRoad(
         id: RID(1), start: Offset(0, 0), end: Offset(0, 200))
   ];
-  startFromConfig(1);
+  await startFromConfig(1);
 
   Interpolator inter = Interpolator(roads: roads);
 
