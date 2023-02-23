@@ -47,10 +47,6 @@ class Realm:
                         distance[(s.id,d.id)] = distance[(s.id,k.id)] + distance[(k.id,d.id)]
                         direction[(s.id,d.id)] = direction[(s.id,k.id)]
             # Put direction into routing table format
-        #TODO(mark) is this desired behavior - add as a JSON option?
-        for edge in self.edges.values():
-            distance[(edge._start.id,edge._end.id)] = edge.cost
-            direction[(edge._start.id,edge._end.id)] = edge._start._outgoing.index(edge)
 
         for s in self.nodes.values():
             for d in self.nodes.values():

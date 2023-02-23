@@ -1,12 +1,12 @@
 from __future__ import annotations
 from abc import ABC
-from ..lib.geometry import Point
-from collections import deque
-from .truck import Collision
-from .entity import Actor, Entity
 from simulation.draw.utils import Drawable, DEFAULT_FONT
 import pygame
-
+from collections import deque
+from ..lib.geometry import Point
+from ..config import InvalidConfiguration
+from .truck import Collision
+from .entity import Actor, Entity
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from .truck import Truck
@@ -87,7 +87,7 @@ class Junction(Node):
     def entry(self, truck: Truck) -> None:
         super().entry(truck)
         if truck.done():
-            return
+            raise InvalidConfiguration()
         self._trucks.pop()
         self._outgoing[self._routing_table[truck.destination]].entry(truck)
 
@@ -105,7 +105,6 @@ class Junction(Node):
 
         for _ in self._trucks:
             pygame.draw.circle(screen, "green", self.pos.to_tuple(), 2)
-
 
 class Depot(Node, Actor):
 
