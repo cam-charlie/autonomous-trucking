@@ -51,7 +51,7 @@ if __name__ == '__main__':
                         if distance < relative_stopping_distance:
                             #Too close! Deccelerate
                             actions[actor.id] = float(this_truck.config.MAX_ACCELERATION * (-1))
-                        elif distance > relative_stopping_distance and this_truck.velocity() < this_truck.config.MAX_VELOCITY:
+                        elif distance > relative_stopping_distance and this_truck.velocity < this_truck.config.MAX_VELOCITY:
                             #There's space - accelerate
                             actions[actor.id] = float(this_truck.config.MAX_ACCELERATION)
 
