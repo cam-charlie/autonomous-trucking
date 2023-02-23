@@ -11,7 +11,7 @@ import 'faketrucking.dart';
 class _Result {
   final bool roadChange;
   final double fracDist;
-  const _Result({required this.roadChange, required this.fracDist});
+  const _Result({required this.fracDist}) : roadChange = fracDist > 1;
 }
 
 class _Interpolator {
@@ -76,8 +76,6 @@ class _Interpolator {
       Iterable<_Result> results =
           IterableZip([positions[0].trucks, positions[1].trucks]).map((e) =>
               _Result(
-                  roadChange: _truckRoadChange(e[0], e[1], positions[0].time,
-                      time, positions[1].time, _roadMap),
                   fracDist: _truckFracDistCovered(e[0], e[1], positions[0].time,
                       time, positions[1].time, _roadMap)));
 
