@@ -27,15 +27,19 @@ class _Interpolator {
       double t1, Map<RID, RenderRoad> map) {
     double juncDist = start.roadId == end.roadId
         ? double.infinity
-        : (1 - start.progress) * map[RID(start.roadId)]!.length;
+        : (1 - start.progress) *
+            CalculationRoad.length(map[RID(start.roadId)]!);
     // Assumes jerk is constant between two points
     double interDist = start.currSpeed * (ti - t0) +
         0.5 * start.currAccel * pow((ti - t0), 2) +
         (((end.currAccel - start.currAccel) / (t1 - t0)) * pow((ti - t0), 3)) /
             6;
     double fracDist = interDist < juncDist
-        ? start.progress + interDist / map[RID(start.roadId)]!.length
-        : 1 + (interDist - juncDist) / map[RID(end.roadId)]!.length;
+        ? start.progress +
+            interDist / CalculationRoad.length(map[RID(start.roadId)]!)
+        : 1 +
+            (interDist - juncDist) /
+                CalculationRoad.length(map[RID(end.roadId)]!);
 
     return fracDist;
   }
@@ -58,10 +62,10 @@ class _Interpolator {
           .trucks
           .map((e) => Vehicle(
               id: VID(e.truckId),
-              position:
-                  _roadMap[RID(e.roadId)]!.positionAt(fraction: e.progress),
-              direction:
-                  _roadMap[RID(e.roadId)]!.direction(fraction: e.progress)))
+              position: CalculationRoad.positionAt(_roadMap[RID(e.roadId)]!,
+                  fraction: e.progress),
+              direction: CalculationRoad.direction(_roadMap[RID(e.roadId)]!,
+                  fraction: e.progress)))
           .toList();
       return SimulationState(vehicles: vehicles, roads: roads);
     }
@@ -81,18 +85,16 @@ class _Interpolator {
               [positions[0].trucks, positions[1].trucks, results])
           .map((e) => Vehicle(
               id: VID((e[0] as Truck).truckId),
-              position: _roadMap[RID((e[(e[2] as _Result).roadChange ? 1 : 0] as Truck).roadId)]!
-                  .positionAt(
+              position: CalculationRoad
+                  .positionAt(_roadMap[RID((e[(e[2] as _Result).roadChange ? 1 : 0] as Truck).roadId)]!,
                       fraction: (e[2] as _Result).fracDist > 1.0
                           ? (e[2] as _Result).fracDist - 1.0
                           : (e[2] as _Result).fracDist),
-              direction:
-                  _roadMap[RID((e[(e[2] as _Result).roadChange ? 1 : 0] as Truck).roadId)]!
-                          .direction(
-                              fraction: ((e[2] as _Result).fracDist > 1.0
-                                  ? (e[2] as _Result).fracDist - 1.0
-                                  : (e[2] as _Result).fracDist)) %
-                      (2 * pi)))
+              direction: CalculationRoad.direction(_roadMap[RID((e[(e[2] as _Result).roadChange ? 1 : 0] as Truck).roadId)]!,
+                      fraction: ((e[2] as _Result).fracDist > 1.0
+                          ? (e[2] as _Result).fracDist - 1.0
+                          : (e[2] as _Result).fracDist)) %
+                  (2 * pi)))
           .toList();
       return SimulationState(vehicles: vehicles, roads: roads);
     }
