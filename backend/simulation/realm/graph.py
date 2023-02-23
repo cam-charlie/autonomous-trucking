@@ -1,12 +1,12 @@
 from __future__ import annotations
 from abc import ABC
-from ..lib.geometry import Point
-from collections import deque
-from .truck import Collision
-from .entity import Actor, Entity
 from simulation.draw.utils import Drawable, DEFAULT_FONT
 import pygame
-
+from collections import deque
+from ..lib.geometry import Point
+from ..config import InvalidConfiguration
+from .truck import Collision
+from .entity import Actor, Entity
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from .truck import Truck
@@ -29,6 +29,12 @@ class TruckContainer(Entity, Drawable, ABC):
                 Invariant: truck position is normalized
         """
         self._trucks.append(truck)
+        truck.set_current_truck_container(self)
+
+        if truck.destination == self.id:
+            truck.reached_next_destination()
+        if truck.done():
+            truck._accumulated_reward += 1
 
     @property
     def id(self) -> int:
@@ -40,6 +46,13 @@ class Edge(TruckContainer, ABC):
         super().__init__(id)
         start.addOutgoing(self)
         end.addIncoming(self)
+        self._start: Node = start
+        self._end: Node = end
+        self._cost: float = 1
+
+    @property
+    def cost(self) -> float:
+        return self._cost
 
 class Node(TruckContainer, ABC):
 
@@ -64,12 +77,18 @@ class Node(TruckContainer, ABC):
     def from_json(json: Any) -> Node:
         if json["type"] == "junction":
             return Junction.from_json(json)
+        elif json["type"] == "depot":
+            return Depot.from_json(json)
         else:
             raise NotImplementedError
 
 class Junction(Node):
 
     def entry(self, truck: Truck) -> None:
+        super().entry(truck)
+        if truck.done():
+            raise InvalidConfiguration()
+        self._trucks.pop()
         self._outgoing[self._routing_table[truck.destination]].entry(truck)
 
     @staticmethod
@@ -87,7 +106,6 @@ class Junction(Node):
         for _ in self._trucks:
             pygame.draw.circle(screen, "green", self.pos.to_tuple(), 2)
 
-
 class Depot(Node, Actor):
 
     def __init__(self, id: int, pos: Point, size: int = 10, cooldown: float = 5) -> None:
@@ -98,12 +116,9 @@ class Depot(Node, Actor):
         self._current_cooldown = 0.0
 
     def entry(self, truck: Truck) -> None:
-        if truck.destination == self.id:
-            truck.reached_next_destination()
+        super().entry(truck)
         if truck.done():
-            # TODO(mark) reward
             return
-
         self._storage[truck.id] = truck
         # TODO(mark) no space
         if len(self._storage) > self._storage_size:
@@ -137,6 +152,10 @@ class Depot(Node, Actor):
                     return float(truck.id)
         return None
 
+    @staticmethod
+    def from_json(json: Any) -> Depot:
+        return Depot(json["id"], Point.from_json(json["position"]))
+
     def draw(self, screen: pygame.Surface) -> None:
 
         pygame.draw.circle(screen, "blue", self.pos.to_tuple(), 10)
@@ -162,8 +181,7 @@ class Road(Edge):
         super().__init__(id, start, end)
 
         self._length = length
-        self._start = start
-        self._end = end
+        self._cost = length
 
     def getPosition(self, u: float) -> Point:
         """ Obtains interpolated position
@@ -181,6 +199,8 @@ class Road(Edge):
 
     def entry(self, truck: Truck) -> None:
         super().entry(truck)
+        if truck.done():
+            return
         truck.position = truck.position / self._length
 
     def update(self, dt: float) -> None:
