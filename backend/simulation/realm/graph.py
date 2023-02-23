@@ -132,7 +132,7 @@ class Depot(Node, Actor):
                         next_road = self.edges[truck.destination]
                         assert type(next_road) is Road
                         first_car_pos = next_road._trucks[0].position * next_road._length
-                        if first_car_pos > (truck_size + safety_margin) #There is space on the road
+                        if first_car_pos > float(truck_size + safety_margin) #There is space on the road
                             #Release this truck
                             return float(truck.id)
         return None
