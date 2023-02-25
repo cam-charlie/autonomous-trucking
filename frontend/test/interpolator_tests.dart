@@ -1,7 +1,7 @@
 import 'dart:ui';
 import 'package:frontend/state/rendering/interpolator.dart';
 import 'package:frontend/state/rendering/road.dart';
-import 'package:frontend/state/rendering/faketrucking.dart';
+import 'package:frontend/state/communication/grpc/trucking.pbgrpc.dart';
 import 'dart:math';
 
 import 'package:frontend/state/rendering/simulation.dart';

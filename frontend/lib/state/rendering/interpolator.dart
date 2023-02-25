@@ -5,7 +5,11 @@ import 'package:frontend/state/rendering/road.dart';
 import 'package:frontend/state/rendering/simulation.dart';
 import 'package:frontend/state/rendering/vehicle.dart';
 import 'package:collection/collection.dart';
-import 'faketrucking.dart';
+
+import '../communication/Backend.dart';
+import 'package:grpc/grpc.dart';
+import '../communication/grpc/trucking.pbgrpc.dart';
+// import 'faketrucking.dart';
 
 // Dart doesn't implement pairs, must do so myself
 class _Result {
@@ -20,7 +24,7 @@ class _Interpolator {
   Function(double time) getData;
 
   _Interpolator({required this.roads, required this.getData})
-      : _roadMap = {for (var road in roads) road.id: road};
+      : _roadMap = {for (var road in roads) road.id: road} {}
 
   // Find the % of start road covered, increment to beyond 100% if road change
   double _truckFracDistCovered(Truck start, Truck end, double t0, double ti,
@@ -45,11 +49,12 @@ class _Interpolator {
   }
 
   // Determine if truck has switched between raod A and road B
-
+  /*
   bool _truckRoadChange(Truck start, Truck end, double t0, double ti, double t1,
       Map<RID, RenderRoad> map) {
     return _truckFracDistCovered(start, end, t0, ti, t1, map) > 1;
   }
+  */
 
   // Generates new SimulationState for rendering
   Future<SimulationState> getState(double time) async {
@@ -74,13 +79,17 @@ class _Interpolator {
     else {
       // Pre calculate distances
       Iterable<_Result> results =
-          IterableZip([positions[0].trucks, positions[1].trucks]).map((e) =>
-              _Result(
+          IterableZip([positions[0].trucks, positions[1].trucks])
+              .map((e) => _Result(
                   fracDist: _truckFracDistCovered(e[0], e[1], positions[0].time,
-                      time, positions[1].time, _roadMap)));
+                      time, positions[1].time, _roadMap)))
+              .toList();
 
-      List<Vehicle> vehicles = IterableZip(
-              [positions[0].trucks, positions[1].trucks, results])
+      List<Vehicle> vehicles = IterableZip([
+        positions[0].trucks as List<Truck>,
+        positions[1].trucks as List<Truck>,
+        results as List<_Result>
+      ])
           .map((e) => Vehicle(
               id: VID((e[0] as Truck).truckId),
               position: CalculationRoad
@@ -88,7 +97,10 @@ class _Interpolator {
                       fraction: (e[2] as _Result).fracDist > 1.0
                           ? (e[2] as _Result).fracDist - 1.0
                           : (e[2] as _Result).fracDist),
-              direction: CalculationRoad.direction(_roadMap[RID((e[(e[2] as _Result).roadChange ? 1 : 0] as Truck).roadId)]!,
+              direction: CalculationRoad.direction(
+                      _roadMap[RID(
+                          (e[(e[2] as _Result).roadChange ? 1 : 0] as Truck)
+                              .roadId)]!,
                       fraction: ((e[2] as _Result).fracDist > 1.0
                           ? (e[2] as _Result).fracDist - 1.0
                           : (e[2] as _Result).fracDist)) %
