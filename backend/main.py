@@ -5,6 +5,7 @@ from simulation.env import Env
 from simulation.realm.graph import Depot, Road
 from simulation.draw.visualiser import Visualiser
 
+
 def setUp() -> Env: 
     print("Usage: main.py \"path-to-config-json\"")
     env = Env()
@@ -53,7 +54,6 @@ def step(env: Env) -> None:
     #Actually do the step        
     env.step(actions)
     
-
 
 if __name__ == '__main__':
     print("Usage: main.py \"path-to-config-json\"")

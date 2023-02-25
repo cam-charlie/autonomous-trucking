@@ -22,6 +22,7 @@ class PositionDataStreamerServicer(trucking_pb2_grpc.PositionDataStreamerService
         self.currTime = 0
         self.env = env
 
+
     def getPositionData(self, request: trucking_pb2.TimeDelta, context: Any) -> trucking_pb2.PositionDataStream:
         stream = []
 
@@ -50,9 +51,6 @@ def serve(env: Env) -> None:
 
 
 if __name__ == '__main__':
-    #print("Usage: main.py \"path-to-config-json\"")
-    #env = Env()
-    #env.reset(sys.argv[1])
     env = setUp()
 
     serve(env)
