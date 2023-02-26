@@ -7,6 +7,7 @@ import sys
 
 sys.path.append(os.getcwd())
 from simulation.env import Env
+from main import setUp, step
 
 import trucking_pb2
 import trucking_pb2_grpc
@@ -17,8 +18,10 @@ if TYPE_CHECKING:
 
 
 class PositionDataStreamerServicer(trucking_pb2_grpc.PositionDataStreamerServicer):
-    def __init__(self) -> None:
+    def __init__(self, env: Env) -> None:
         self.currTime = 0
+        self.env = env
+
 
     def getPositionData(self, request: trucking_pb2.TimeDelta, context: Any) -> trucking_pb2.PositionDataStream:
         stream = []
@@ -33,23 +36,21 @@ class PositionDataStreamerServicer(trucking_pb2_grpc.PositionDataStreamerService
 
             trucksPosAtTime = trucking_pb2.TruckPositionsAtTime(trucks=trucks_at_time, time=(self.currTime + curr_time)/30)
             stream.append(trucksPosAtTime)
-            env.step({})
+            step(env)
         self.currTime += s * 30
         return trucking_pb2.PositionDataStream(trucks=stream)
 
 
-def serve() -> None:
+def serve(env: Env) -> None:
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     trucking_pb2_grpc.add_PositionDataStreamerServicer_to_server(
-        PositionDataStreamerServicer(), server)
+        PositionDataStreamerServicer(env), server)
     server.add_insecure_port('[::]:50051')
     server.start()
     server.wait_for_termination()
 
 
 if __name__ == '__main__':
-    print("Usage: main.py \"path-to-config-json\"")
-    env = Env()
-    env.reset(sys.argv[1])
+    env = setUp()
 
-    serve()
+    serve(env)
