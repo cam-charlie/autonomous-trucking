@@ -31,7 +31,7 @@ class Point:
         return sqrt(self.x**2 + self.y**2)
 
     def __str__(self) -> str:
-        return "({} {})".format(self.x, self.y)
+        return "({self.x} {self.y})"
 
     @staticmethod
     def from_json(json: Any) -> 'Point':

@@ -14,9 +14,12 @@ if TYPE_CHECKING:
 
 class TruckContainer(Entity, Drawable, ABC):
 
-    def __init__(self, id: int) -> None:
-        super().__init__(id)
+    def __init__(self, id_: int) -> None:
+        super().__init__(id_)
         self._trucks: deque[Truck] = deque()
+
+    def get(self, i: int) -> Truck:
+        return self._trucks[i]
 
     def update(self, dt: float) -> None:
         pass
@@ -31,19 +34,19 @@ class TruckContainer(Entity, Drawable, ABC):
         self._trucks.append(truck)
         truck.set_current_truck_container(self)
 
-        if truck.destination == self.id:
+        if truck.destination == self.id_:
             truck.reached_next_destination()
         if truck.done():
             truck._accumulated_reward += 1
 
     @property
-    def id(self) -> int:
+    def id_(self) -> int:
         return self._id
 
 class Edge(TruckContainer, ABC):
 
-    def __init__(self, id: int, start: Node, end: Node) -> None:
-        super().__init__(id)
+    def __init__(self, id_: int, start: Node, end: Node) -> None:
+        super().__init__(id_)
         start.addOutgoing(self)
         end.addIncoming(self)
         self._start: Node = start
@@ -54,14 +57,22 @@ class Edge(TruckContainer, ABC):
     def cost(self) -> float:
         return self._cost
 
+    @property
+    def start(self) -> Node:
+        return self._start
+
+    @property
+    def end(self) -> Node:
+        return self._end
+
 class Node(TruckContainer, ABC):
 
-    def __init__(self, id: int, pos: Point) -> None:
-        super().__init__(id)
+    def __init__(self, id_: int, pos: Point) -> None:
+        super().__init__(id_)
         self._pos = pos
         self._incoming: List[Edge] = []
         self._outgoing: List[Edge] = []
-        self._routing_table: Dict[int, int] = {} # Mapping from destination id to outgoing index
+        self._routing_table: Dict[int, int] = {} # Mapping from destination id_ to outgoing index
 
     @property
     def pos(self) -> Point:
@@ -77,10 +88,9 @@ class Node(TruckContainer, ABC):
     def from_json(json: Any) -> Node:
         if json["type"] == "junction":
             return Junction.from_json(json)
-        elif json["type"] == "depot":
+        if json["type"] == "depot":
             return Depot.from_json(json)
-        else:
-            raise NotImplementedError
+        raise NotImplementedError
 
 class Junction(Node):
 
@@ -108,8 +118,8 @@ class Junction(Node):
 
 class Depot(Node, Actor):
 
-    def __init__(self, id: int, pos: Point, size: int = 10, cooldown: float = 5) -> None:
-        super().__init__(id, pos)
+    def __init__(self, id_: int, pos: Point, size: int = 10, cooldown: float = 5) -> None:
+        super().__init__(id_, pos)
         self._storage: Dict[int,Truck] = {}
         self._storage_size = size
         self._max_cooldown = cooldown
@@ -119,7 +129,7 @@ class Depot(Node, Actor):
         super().entry(truck)
         if truck.done():
             return
-        self._storage[truck.id] = truck
+        self._storage[truck.id_] = truck
         # TODO(mark) no space
         if len(self._storage) > self._storage_size:
             pass
@@ -139,17 +149,17 @@ class Depot(Node, Actor):
     def update(self, dt: float) -> None:
         self._current_cooldown = max(0, self._current_cooldown - dt)
         for truck in self._storage.values():
-            truck._velocity = 0
+            truck.set_velocity(0)
 
     def compute_actions(self, truck_size: int = 2, safety_margin: int = 5) -> Optional[float]:
         for truck in self._storage.values():
-            if truck.done == False: #Truck is waiting to be released
+            if not truck.done: #Truck is waiting to be released
                 next_road = truck.destination
-                assert type(next_road) is Road
-                first_car_pos = next_road._trucks[0].position * next_road._length
+                assert isinstance(next_road, Road)
+                first_car_pos = next_road.get(0).position * next_road.length
                 if first_car_pos > float(truck_size + safety_margin): #There is space on the road
                     #Release this truck
-                    return float(truck.id)
+                    return float(truck.id_)
         return None
 
     @staticmethod
@@ -171,14 +181,14 @@ class Road(Edge):
     """One way road.
     """
 
-    def __init__(self, id: int, start: Node, end: Node, length: float) -> None:
+    def __init__(self, id_: int, start: Node, end: Node, length: float) -> None:
         """Initializes a road object
 
         Args:
             start:
             end:
         """
-        super().__init__(id, start, end)
+        super().__init__(id_, start, end)
 
         self._length = length
         self._cost = length
@@ -209,18 +219,23 @@ class Road(Edge):
                 truck.position += truck.velocity * dt / self._length
                 truck.stepped = True
         for i, truck in enumerate(self._trucks):
-            if i+1 < len(self._trucks) and self._trucks[i+1].position > truck.position:
+            if i+1 < len(self._trucks) and self.get(i+1).position > truck.position:
                 raise Collision
         while len(self._trucks) > 0:
-            if self._trucks[0].position > 1:
+            if self.get(0).position > 1:
                 truck = self._trucks.pop()
                 truck.position = (truck.position-1) * self._length
                 self._end.entry(truck)
             else:
                 break
 
+    @property
+    def length(self) -> float:
+        return self.length
 
     def draw(self, screen: pygame.Surface) -> None:
-        pygame.draw.line(screen, "black", self._start.pos.to_tuple(), self._end.pos.to_tuple(), width=5)
+        pygame.draw.line(screen, "black",
+                         self._start.pos.to_tuple(), self._end.pos.to_tuple(),
+                         width=5)
         for truck in self._trucks:
             pygame.draw.circle(screen, "green", self.getPosition(truck.position).to_tuple(), 5)

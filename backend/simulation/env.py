@@ -1,3 +1,5 @@
+# pylint: disable=dangerous-default-value, attribute-defined-outside-init
+
 from __future__ import annotations
 from .config import Config
 from .realm.realm import Realm
@@ -11,8 +13,6 @@ if TYPE_CHECKING:
 Wrapper for interfacing with algorithm
 #TODO(mark) Fully interface with PettingZoo API to run RL as extension :D
 '''
-
-
 
 class Env:
     """Environment wrapper for autonomous-trucking simulator following format commonly used
