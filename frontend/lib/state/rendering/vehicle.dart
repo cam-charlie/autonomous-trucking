@@ -12,6 +12,11 @@ class VID extends Equatable {
 
   @override
   List<Object> get props => [_id];
+
+  @override
+  String toString() {
+    return "VID($_id)";
+  }
 }
 
 class Vehicle with EquatableMixin {
@@ -46,13 +51,19 @@ class Vehicle with EquatableMixin {
         f: () {
           canvas.drawRRect(
             RRect.fromRectAndRadius(
-                Rect.fromCenter(center: position, width: constants.carSize.width, height: constants.carSize.height),
+                Rect.fromCenter(
+                    center: position,
+                    width: constants.carSize.width,
+                    height: constants.carSize.height),
                 const Radius.circular(2)),
             vehicleFillPaint,
           );
           canvas.drawRRect(
             RRect.fromRectAndRadius(
-                Rect.fromCenter(center: position, width: constants.carSize.width, height: constants.carSize.height),
+                Rect.fromCenter(
+                    center: position,
+                    width: constants.carSize.width,
+                    height: constants.carSize.height),
                 const Radius.circular(2)),
             vehicleStrokePaint,
           );
@@ -71,14 +82,15 @@ class Vehicle with EquatableMixin {
         canvas: canvas,
         point: shadowPos,
         rotation: direction,
-        f: () =>
-            canvas.drawRRect(
+        f: () => canvas.drawRRect(
               RRect.fromRectAndRadius(
-                  Rect.fromCenter(center: shadowPos, width: constants.carSize.width+2, height: constants.carSize.height+2),
+                  Rect.fromCenter(
+                      center: shadowPos,
+                      width: constants.carSize.width + 2,
+                      height: constants.carSize.height + 2),
                   const Radius.circular(2)),
               shadowPaint,
-            )
-    );
+            ));
   }
 
   @override

@@ -11,6 +11,11 @@ class RID extends Equatable {
 
   @override
   List<Object> get props => [_id];
+
+  @override
+  String toString() {
+    return "RID($_id)";
+  }
 }
 
 enum RoadType {

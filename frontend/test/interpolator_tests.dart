@@ -286,11 +286,8 @@ void main() async {
 
   test("Vehicle positions along a curved road", () async {
     SimulationState ti0 = await inter.getState(5.0);
-    print(ti0.vehicles[0].position);
     SimulationState ti1 = await inter.getState(5.25);
-    print(ti1.vehicles[0].position);
     SimulationState ti2 = await inter.getState(5.5);
-    print(ti2.vehicles[0].position);
 
     expect(
         (ti0.vehicles[0].position - const Offset(2, 2)).distance < 0.01, true);
@@ -302,5 +299,6 @@ void main() async {
     expect(ti0.vehicles[0].direction, pi / 2);
     expect(ti1.vehicles[0].direction, pi);
     expect(ti2.vehicles[0].direction, 3 * pi / 2);
+    print(inter.comms);
   });
 }

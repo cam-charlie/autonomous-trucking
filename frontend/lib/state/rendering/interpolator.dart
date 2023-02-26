@@ -1,6 +1,8 @@
 import 'dart:math';
+import 'package:vector_math/vector_math.dart';
 
 import 'package:flutter/material.dart';
+import 'package:frontend/state/communication/comm_log.dart';
 import 'package:frontend/state/rendering/road.dart';
 import 'package:frontend/state/rendering/simulation.dart';
 import 'package:frontend/state/rendering/vehicle.dart';
@@ -19,12 +21,75 @@ class _Result {
 }
 
 class _Interpolator {
-  final List<RenderRoad> roads;
+  final List<RenderRoad> _roads;
   final Map<RID, RenderRoad> _roadMap;
-  Function(double time) getData;
+  final Map<VID, bool> _turn;
+  final Map<VID, double> _speed;
+  final Function(double time) _getData;
+  CommunicationLog comms;
 
-  _Interpolator({required this.roads, required this.getData})
-      : _roadMap = {for (var road in roads) road.id: road} {}
+  _Interpolator(
+      {required List<RenderRoad> roads,
+      required dynamic Function(double) getData})
+      : _roads = roads,
+        _getData = getData,
+        _roadMap = {for (var road in roads) road.id: road},
+        _turn = {},
+        _speed = {},
+        comms = CommunicationLog();
+
+  // Generate logs while computing interpolated results
+  _Result _calculateAndLog(Truck start, Truck end, double t0, double ti,
+      double t1, Map<RID, RenderRoad> map) {
+    double fracDist = _truckFracDistCovered(start, end, t0, ti, t1, map);
+
+    if (!_turn.containsKey(VID(start.truckId))) {
+      comms.add(InitAction(vehicle: VID(start.truckId), time: t0));
+      _turn[VID(start.truckId)] = false;
+      _speed[VID(start.truckId)] = start.currSpeed;
+    } else if (fracDist > 1 && !(_turn[VID(start.truckId)]!)) {
+      // Claculate direction of turn
+
+      double startDir = CalculationRoad.direction(map[RID(start.roadId)]!,
+          fraction: start.progress);
+      double endDir = CalculationRoad.direction(map[RID(end.roadId)]!,
+          fraction: fracDist % 1.0);
+
+      Vector3 calcVec = Vector3(sin(startDir), cos(startDir), 0)
+          .cross(Vector3(sin(endDir), cos(endDir), 0));
+      Direction dir;
+
+      if (calcVec.z.abs() < sin(pi / 36)) {
+        dir = Direction.straight;
+      } else if (calcVec.z < 0) {
+        dir = Direction.right;
+      } else {
+        dir = Direction.left;
+      }
+
+      comms.add(TurnAction(
+          vehicle: VID(start.truckId),
+          time: ti,
+          startRoad: RID(start.roadId),
+          endRoad: RID(end.roadId),
+          direction: dir));
+      _turn[VID(start.truckId)] = true;
+    } else if (fracDist <= 1 && _turn[VID(start.truckId)]!) {
+      _turn[VID(start.truckId)] = false;
+    }
+
+    if (_speed[VID(start.truckId)]! != end.currSpeed) {
+      double speed = _speed[VID(start.truckId)]!;
+      comms.add(ChangeSpeedAction(
+          vehicle: VID(start.truckId),
+          time: t0,
+          startSpeed: speed,
+          endSpeed: end.currSpeed));
+      _speed[VID(start.truckId)] = end.currSpeed;
+    }
+
+    return _Result(fracDist: fracDist);
+  }
 
   // Find the % of start road covered, increment to beyond 100% if road change
   double _truckFracDistCovered(Truck start, Truck end, double t0, double ti,
@@ -58,7 +123,7 @@ class _Interpolator {
 
   // Generates new SimulationState for rendering
   Future<SimulationState> getState(double time) async {
-    List<TruckPositionsAtTime> positions = await getData(time);
+    List<TruckPositionsAtTime> positions = await _getData(time);
 
     // time == generated time t0, state matches generation
 
@@ -72,7 +137,7 @@ class _Interpolator {
               direction: CalculationRoad.direction(_roadMap[RID(e.roadId)]!,
                   fraction: e.progress)))
           .toList();
-      return SimulationState(vehicles: vehicles, roads: roads);
+      return SimulationState(vehicles: vehicles, roads: _roads);
     }
 
     // time != generated time t0, tomfoolery ensues
@@ -80,9 +145,8 @@ class _Interpolator {
       // Pre calculate distances
       Iterable<_Result> results =
           IterableZip([positions[0].trucks, positions[1].trucks])
-              .map((e) => _Result(
-                  fracDist: _truckFracDistCovered(e[0], e[1], positions[0].time,
-                      time, positions[1].time, _roadMap)))
+              .map((e) => _calculateAndLog(e[0], e[1], positions[0].time, time,
+                  positions[1].time, _roadMap))
               .toList();
 
       List<Vehicle> vehicles = IterableZip([
@@ -106,7 +170,7 @@ class _Interpolator {
                           : (e[2] as _Result).fracDist)) %
                   (2 * pi)))
           .toList();
-      return SimulationState(vehicles: vehicles, roads: roads);
+      return SimulationState(vehicles: vehicles, roads: _roads);
     }
   }
 }
