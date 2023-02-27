@@ -23,3 +23,7 @@ jobs:
         cd backend
         python3 test/test_env.py
         python3 test/test_graph.py
+    - name: pylint
+      run: |
+        cd backend
+        pylint --rcfile=pylint.cfg --recursive=y simulation test
