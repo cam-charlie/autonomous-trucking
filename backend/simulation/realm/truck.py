@@ -44,6 +44,11 @@ class Truck(Actor):
     def set_current_truck_container(self, truck_container: TruckContainer) -> None:
         self._current_truck_container = truck_container
 
+    def collision(self, o: Truck) -> None:
+        # pylint: disable=unused-argument
+        self._accumulated_reward += self.config.COLLISION_REWARD
+        self._accumulated_info.append("Collision {o.id_}")
+
     @property
     def current_truck_container(self) -> TruckContainer:
         return self._current_truck_container

@@ -72,8 +72,7 @@ class Realm:
                 self.actors[edge.id_] = edge
 
     def update(self, actions: Dict[int, float], dt: float=1/30) -> Dict[int, bool]:
-        """
-        Runs logic.
+        """ Runs logic.
 
         Args:
             actions: list of agent actions
@@ -96,3 +95,11 @@ class Realm:
 
         dones = {truck.id_: truck.done() for truck in self.trucks.values()}
         return dones
+
+    def compute_rewards(self) -> float:
+        """ Computes rewards
+        """
+        return sum(actor.get_accumulated_reward() for actor in self.actors.values())
+
+    def compute_infos(self) -> Dict[int,List[str]]:
+        return {actor.id_:actor.get_accumulated_info() for actor in self.actors.values()}

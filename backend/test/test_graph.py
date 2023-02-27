@@ -6,7 +6,7 @@ import sys
 sys.path.append(os.getcwd())
 from simulation.lib.geometry import Point
 from simulation.realm.graph import Depot, Road, Junction
-from simulation.realm.truck import Collision, Truck
+from simulation.realm.truck import Truck
 from simulation.config import Config
 
 class TestConfig(Config):
@@ -54,7 +54,8 @@ class TestGraph(unittest.TestCase):
         road.update(0.01)
         t1.act(0,0)
         t2.act(0,0)
-        self.assertRaises(Collision, road.update, 1.0)
+        road.update(1.0)
+        self.assertLess(t1.get_accumulated_reward(),0)
 
 
     def test_junction_continuation(self) -> None:

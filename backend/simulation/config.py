@@ -16,3 +16,7 @@ class Config:
     @property
     def MAX_VELOCITY(self) -> float:
         return float(self.data["globals"]["max_truck_velocity"])
+
+    @property
+    def COLLISION_REWARD(self) -> float:
+        return -100

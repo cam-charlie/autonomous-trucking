@@ -5,7 +5,6 @@ import pygame
 from collections import deque
 from ..lib.geometry import Point
 from ..config import InvalidConfiguration
-from .truck import Collision
 from .entity import Actor, Entity
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
@@ -220,7 +219,8 @@ class Road(Edge):
                 truck.stepped = True
         for i, truck in enumerate(self._trucks):
             if i+1 < len(self._trucks) and self.get(i+1).position > truck.position:
-                raise Collision
+                truck.collision(self.get(i+1))
+                self.get(i+1).collision(truck)
         while len(self._trucks) > 0:
             if self.get(0).position > 1:
                 truck = self._trucks.pop()
