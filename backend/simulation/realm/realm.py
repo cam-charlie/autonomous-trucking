@@ -63,6 +63,7 @@ class Realm:
             self.nodes[t['current_node']].entry(truck)
 
         for truck in self.trucks.values():
+            truck.compute_complete_route(self)
             self.actors[truck.id_] = truck
         for node in self.nodes.values():
             if isinstance(node, Actor):

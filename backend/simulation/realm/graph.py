@@ -46,8 +46,8 @@ class Edge(TruckContainer, ABC):
 
     def __init__(self, id_: int, start: Node, end: Node) -> None:
         super().__init__(id_)
-        start.addOutgoing(self)
-        end.addIncoming(self)
+        start.add_outgoing(self)
+        end.add_incoming(self)
         self._start: Node = start
         self._end: Node = end
         self._cost: float = 1
@@ -73,14 +73,17 @@ class Node(TruckContainer, ABC):
         self._outgoing: List[Edge] = []
         self._routing_table: Dict[int, int] = {} # Mapping from destination id_ to outgoing index
 
+    def route_to(self, destination: int) -> int:
+        return self._outgoing[self._routing_table[destination]].end.id_
+
     @property
     def pos(self) -> Point:
         return self._pos
 
-    def addIncoming(self, e: Edge) -> None:
+    def add_incoming(self, e: Edge) -> None:
         self._incoming.append(e)
 
-    def addOutgoing(self, e: Edge) -> None:
+    def add_outgoing(self, e: Edge) -> None:
         self._outgoing.append(e)
 
     @staticmethod

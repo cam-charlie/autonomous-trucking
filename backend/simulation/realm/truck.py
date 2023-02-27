@@ -5,6 +5,7 @@ if TYPE_CHECKING:
     from typing import Any, List, Optional
     from ..config import Config
     from .graph import TruckContainer
+    from .realm import Realm
 
 class Truck(Actor):
 
@@ -47,6 +48,21 @@ class Truck(Actor):
 
     def set_current_truck_container(self, truck_container: TruckContainer) -> None:
         self._current_truck_container = truck_container
+
+    def compute_complete_route(self, realm: Realm) -> None:
+        i = 0
+        complete_route: List[int] = [self._current_truck_container.id_]
+        if complete_route[0] in realm.edges.keys():
+            complete_route[0] = realm.edges[complete_route[0]].start.id_
+        while i < len(self._route):
+            destination = self._route[i]
+            current = complete_route[-1]
+            if current == destination:
+                i += 1
+                continue
+            complete_route.append(realm.nodes[current].route_to(destination))
+        self._route = complete_route
+        self._route_index = 1
 
     def collision(self, o: Truck) -> None:
         # pylint: disable=unused-argument
