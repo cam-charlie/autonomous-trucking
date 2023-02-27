@@ -12,8 +12,8 @@ class Truck(Actor):
         super().__init__(id_)
         self._velocity: float = 0
         self.position: float = 0
-        self.stepped = False
         self.config = config
+        self._stepped = False
         self._route = route
         self._route_index = 0
 
@@ -23,7 +23,7 @@ class Truck(Actor):
         Called once each turn, before step()
         """
         acceleration = action
-        self.stepped = False
+        self._stepped = False
         if acceleration is not None:
             achieved_acceleration = min(self.config.MAX_ACCELERATION, abs(acceleration))
             if acceleration < 0:
@@ -37,6 +37,10 @@ class Truck(Actor):
 
     def reached_next_destination(self) -> None:
         self._route_index += 1
+        assert self._route_index <= len(self._route)
+        if self.done():
+            self._accumulated_reward += self.config.COMPLETION_REWARD
+            self._accumulated_info.append("Completed Journey")
 
     def done(self) -> bool:
         return self._route_index >= len(self._route)
@@ -48,6 +52,19 @@ class Truck(Actor):
         # pylint: disable=unused-argument
         self._accumulated_reward += self.config.COLLISION_REWARD
         self._accumulated_info.append("Collision {o.id_}")
+
+    def tailgating(self, o: Truck) -> None:
+        # pylint: disable=unused-argument
+        self._accumulated_reward += self.config.TAILGATE_REWARD
+        self._accumulated_info.append("Tailgating {o.id_}")
+
+    def movement(self) -> None:
+        self._stepped = True
+        self._accumulated_reward += self._velocity * self.config.MOVEMENT_REWARD
+
+    @property
+    def stepped(self) -> bool:
+        return self._stepped
 
     @property
     def current_truck_container(self) -> TruckContainer:
@@ -74,6 +91,3 @@ class Truck(Actor):
         truck = Truck(int(json["id"]), [int(x) for x in json["route"]], config)
         truck.position = json['current_position']
         return truck
-
-class Collision(Exception):
-    pass

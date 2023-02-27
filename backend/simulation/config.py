@@ -20,3 +20,15 @@ class Config:
     @property
     def COLLISION_REWARD(self) -> float:
         return -100
+
+    @property
+    def TAILGATE_REWARD(self) -> float:
+        return -1
+
+    @property
+    def MOVEMENT_REWARD(self) -> float:
+        return 0.001
+
+    @property
+    def COMPLETION_REWARD(self) -> float:
+        return 10
