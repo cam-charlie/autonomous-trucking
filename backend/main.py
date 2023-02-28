@@ -24,7 +24,7 @@ def step(env: Env) -> None:
         if type(actor) is Depot:
             act = actor.compute_actions(truck_size, safety_margin)
             if act is not None:
-                actions[actor.id] = act
+                actions[actor.id_] = act
 
     for edge in env.realm.edges.values():
         if type(edge) is Road:
@@ -33,7 +33,7 @@ def step(env: Env) -> None:
                 if i == len(edge._trucks)-1: #no truck in front of it: eventually going into a node
                     if this_truck.velocity < this_truck.config.MAX_VELOCITY:
                         #Accelerate
-                        actions[this_truck.id] = float(this_truck.config.MAX_ACCELERATION)
+                        actions[this_truck.id_] = float(this_truck.config.MAX_ACCELERATION)
                 else:
                     next_truck = edge._trucks[i+1]
                     #Generate stopping distance
@@ -46,10 +46,10 @@ def step(env: Env) -> None:
 
                     if distance < relative_stopping_distance:
                         #Too close! Deccelerate
-                        actions[this_truck.id] = float(this_truck.config.MAX_ACCELERATION * (-1))
+                        actions[this_truck.id_] = float(this_truck.config.MAX_ACCELERATION * (-1))
                     elif distance > relative_stopping_distance and this_truck.velocity < this_truck.config.MAX_VELOCITY:
                         #There's space - accelerate
-                        actions[this_truck.id] = float(this_truck.config.MAX_ACCELERATION)
+                        actions[this_truck.id_] = float(this_truck.config.MAX_ACCELERATION)
 
     #Actually do the step        
     env.step(actions)
@@ -72,7 +72,7 @@ if __name__ == '__main__':
             if type(actor) is Depot:
                 act = actor.compute_actions(truck_size, safety_margin)
                 if act is not None:
-                    actions[actor.id] = act
+                    actions[actor.id_] = act
 
         for edge in env.realm.edges.values():
             if type(edge) is Road:
@@ -81,7 +81,7 @@ if __name__ == '__main__':
                     if i == len(edge._trucks)-1: #no truck in front of it: eventually going into a node
                         if this_truck.velocity < this_truck.config.MAX_VELOCITY:
                             #Accelerate
-                            actions[this_truck.id] = float(this_truck.config.MAX_ACCELERATION)
+                            actions[this_truck.id_] = float(this_truck.config.MAX_ACCELERATION)
                     else:
                         next_truck = edge._trucks[i+1]
                         #Generate stopping distance
@@ -94,10 +94,10 @@ if __name__ == '__main__':
 
                         if distance < relative_stopping_distance:
                             #Too close! Deccelerate
-                            actions[this_truck.id] = float(this_truck.config.MAX_ACCELERATION * (-1))
+                            actions[this_truck.id_] = float(this_truck.config.MAX_ACCELERATION * (-1))
                         elif distance > relative_stopping_distance and this_truck.velocity < this_truck.config.MAX_VELOCITY:
                             #There's space - accelerate
-                            actions[this_truck.id] = float(this_truck.config.MAX_ACCELERATION)
+                            actions[this_truck.id_] = float(this_truck.config.MAX_ACCELERATION)
 
         #Actually do the step        
         env.step(actions)

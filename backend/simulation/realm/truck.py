@@ -8,8 +8,8 @@ if TYPE_CHECKING:
 
 class Truck(Actor):
 
-    def __init__(self, id: int, route: List[int], config: Config) -> None:
-        super().__init__(id)
+    def __init__(self, id_: int, route: List[int], config: Config) -> None:
+        super().__init__(id_)
         self._velocity: float = 0
         self.position: float = 0
         self.stepped = False
@@ -17,26 +17,30 @@ class Truck(Actor):
         self._route = route
         self._route_index = 0
 
-    def act(self, acceleration: Optional[float], dt: float) -> None:
+    def act(self, action: Optional[float], dt: float) -> None:
         """Apply actions
 
         Called once each turn, before step()
         """
+        acceleration = action
         self.stepped = False
         if acceleration is not None:
             achieved_acceleration = min(self.config.MAX_ACCELERATION, abs(acceleration))
             if acceleration < 0:
                 achieved_acceleration = achieved_acceleration * -1
-            self._velocity = min(self.config.MAX_VELOCITY, self._velocity + achieved_acceleration*dt)
-            if self._velocity < 0:
-                self._velocity = 0
+            self._velocity = min(self.config.MAX_VELOCITY,
+                                 self._velocity + achieved_acceleration*dt)
+            self._velocity = max(self._velocity, 0)
+
+    def set_velocity(self, velocity: float) -> None:
+        self._velocity = velocity
 
     def reached_next_destination(self) -> None:
         self._route_index += 1
 
     def done(self) -> bool:
-        return True if self._route_index >= len(self._route) else False
-    
+        return self._route_index >= len(self._route)
+
     def set_current_truck_container(self, truck_container: TruckContainer) -> None:
         self._current_truck_container = truck_container
 

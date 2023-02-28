@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
 import 'package:frontend/constants.dart' as constants;
 import 'package:frontend/utilities/velocity_calculator.dart';
-import 'package:frontend/widgets/move_detector_controller.dart';
+import 'move_detector_controller.dart';
 
 class MoveDetector extends StatelessWidget {
   final MoveDetectorController controller;

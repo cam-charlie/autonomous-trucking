@@ -1,10 +1,10 @@
 import 'dart:ui';
-import 'package:frontend/state/rendering/interpolator.dart';
-import 'package:frontend/state/rendering/road.dart';
+import 'package:frontend/state/interpolator.dart';
+import 'package:frontend/state/road.dart';
 import 'package:frontend/state/communication/grpc/trucking.pbgrpc.dart';
 import 'dart:math';
 
-import 'package:frontend/state/rendering/simulation.dart';
+import 'package:frontend/state/simulation.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 List<RenderRoad> roads = [

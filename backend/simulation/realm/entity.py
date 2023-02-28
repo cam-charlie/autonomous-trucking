@@ -7,16 +7,16 @@ if TYPE_CHECKING:
     from typing import Optional
 
 class Entity(ABC):
-    
-    def __init__(self, id: Optional[int] = None) -> None:
-        if id is None:
+
+    def __init__(self, id_: Optional[int] = None) -> None:
+        if id_ is None:
             self._id = ID.generateID()
         else:
-            self._id = id
-            ID.registerID(id)
+            self._id = id_
+            ID.registerID(id_)
 
     @property
-    def id(self) -> int:
+    def id_(self) -> int:
         """Unique identifier
 
         Can be either defined or generated
@@ -25,16 +25,15 @@ class Entity(ABC):
 
 class Actor(Entity, ABC):
 
-    def __init__(self, id: Optional[int]):
-        super().__init__(id)
+    def __init__(self, id_: Optional[int]):
+        super().__init__(id_)
         self._accumulated_reward: float = 0
 
     def act(self, action: Optional[float], dt: float) -> None:
         raise NotImplementedError
 
-    def get_accumulated_reward(self) -> float: 
+    def get_accumulated_reward(self) -> float:
         res = self._accumulated_reward
         self._accumulated_reward = 0
         return res
-
     

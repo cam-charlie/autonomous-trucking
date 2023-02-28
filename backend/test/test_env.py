@@ -1,3 +1,4 @@
+#pylint: disable=protected-access, wrong-import-position
 import unittest
 import os
 import sys
