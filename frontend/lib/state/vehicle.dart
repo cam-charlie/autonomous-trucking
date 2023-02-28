@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:frontend/constants.dart' as constants;
 import 'package:frontend/utilities/colour_tools.dart' as colour_tools;
 
-import '../../utilities/canvas_drawing.dart';
+import '../utilities/canvas_drawing.dart';
 
 /// Vehicle ID
 class VID extends Equatable {

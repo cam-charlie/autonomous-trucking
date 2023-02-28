@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:frontend/utilities/animated_input_range.dart';
 import 'package:frontend/utilities/camera_transform.dart';
 import 'package:frontend/utilities/range.dart';
-import 'package:frontend/widgets/move_detector.dart';
-import 'package:frontend/widgets/move_detector_controller.dart';
-import 'package:frontend/widgets/simulation_visualisation.dart';
 import 'package:frontend/constants.dart' as constants;
+import 'move_detector/move_detector.dart';
+import 'move_detector/move_detector_controller.dart';
+import 'simulation_visualisation.dart';
 
 class InteractiveSimulation extends StatefulWidget {
   const InteractiveSimulation({super.key});

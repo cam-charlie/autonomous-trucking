@@ -1,14 +1,14 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:frontend/state/rendering/road.dart';
-import 'package:frontend/state/rendering/simulation.dart';
-import 'package:frontend/state/rendering/vehicle.dart';
+import 'package:frontend/state/road.dart';
+import 'package:frontend/state/simulation.dart';
+import 'package:frontend/state/vehicle.dart';
 import 'package:collection/collection.dart';
 
-import '../communication/Backend.dart';
+import 'communication/Backend.dart';
 import 'package:grpc/grpc.dart';
-import '../communication/grpc/trucking.pbgrpc.dart';
+import 'communication/grpc/trucking.pbgrpc.dart';
 // import 'faketrucking.dart';
 
 // Dart doesn't implement pairs, must do so myself
