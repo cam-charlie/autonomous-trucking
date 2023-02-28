@@ -60,7 +60,10 @@ class _CommsWidgetState extends State<CommsWidget> {
         height: small ? 60 : 686,
         padding: const EdgeInsets.all(10),
         margin: const EdgeInsets.all(10),
-        color: Colors.black,
+        //color: Colors.black,
+        decoration: const BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(20)),
+            color: Colors.black12),
         child: small
             ? TextButton(
                 onPressed: () => {
