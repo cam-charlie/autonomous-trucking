@@ -1,5 +1,8 @@
 import 'dart:math';
 
+import 'package:frontend/state/communication/comm_log.dart';
+import 'package:vector_math/vector_math.dart';
+
 import 'package:flutter/material.dart';
 
 import 'package:frontend/state/road.dart';

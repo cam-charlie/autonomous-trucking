@@ -1,5 +1,5 @@
-import '../rendering/vehicle.dart';
-import '../rendering/road.dart';
+import '../vehicle.dart';
+import '../road.dart';
 import 'package:sprintf/sprintf.dart';
 
 class CommunicationLog {
