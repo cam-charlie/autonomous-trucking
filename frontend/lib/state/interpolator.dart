@@ -57,9 +57,9 @@ class _Interpolator {
     } else if (fracDist > 1 && !(_turn[VID(start.truckId)]!)) {
       // Claculate direction of turn
 
-      double startDir = CalculationRoad.direction(map[RID(start.roadId)]!,
+      double startDir = road_calc.direction(map[RID(start.roadId)]!,
           fraction: start.progress);
-      double endDir = CalculationRoad.direction(map[RID(end.roadId)]!,
+      double endDir = road_calc.direction(map[RID(end.roadId)]!,
           fraction: fracDist % 1.0);
 
       Vector3 calcVec = Vector3(sin(startDir), cos(startDir), 0)
