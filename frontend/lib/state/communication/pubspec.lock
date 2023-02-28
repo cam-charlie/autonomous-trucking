@@ -145,6 +145,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.9.1"
+  sprintf:
+    dependency: "direct main"
+    description:
+      name: sprintf
+      sha256: b6041625ba960702d833168e86f8ab7cbf1c0f45258b76d2c61654121b71c27a
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.0.0"
   string_scanner:
     dependency: transitive
     description:
