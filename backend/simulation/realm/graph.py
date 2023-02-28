@@ -219,7 +219,7 @@ class Road(Edge):
         for truck in self._trucks:
             if not truck.stepped:
                 truck.position += truck.velocity * dt / self._length
-                truck.movement()
+                truck.on_movement(dt)
         for i, truck in enumerate(self._trucks):
             if i+1 < len(self._trucks) and self.get(i+1).position > truck.position:
                 truck.collision(self.get(i+1))

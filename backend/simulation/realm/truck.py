@@ -74,9 +74,9 @@ class Truck(Actor):
         self._accumulated_reward += self.config.TAILGATE_REWARD
         self._accumulated_info.append("Tailgating {o.id_}")
 
-    def movement(self) -> None:
+    def on_movement(self, dt: float) -> None:
         self._stepped = True
-        self._accumulated_reward += self._velocity * self.config.MOVEMENT_REWARD
+        self._accumulated_reward += self._velocity * self.config.MOVEMENT_REWARD * dt
 
     @property
     def stepped(self) -> bool:
