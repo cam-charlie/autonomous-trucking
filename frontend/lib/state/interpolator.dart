@@ -22,6 +22,11 @@ class _Result {
   const _Result({required this.fracDist}) : roadChange = fracDist > 1;
 }
 
+CommunicationLog _startWithSideEffect() {
+  startFromConfig(1);
+  return CommunicationLog();
+}
+
 class _Interpolator {
   final List<RenderRoad> _roads;
   final Map<RID, RenderRoad> _roadMap;
@@ -38,7 +43,7 @@ class _Interpolator {
         _roadMap = {for (var road in roads) road.id: road},
         _turn = {},
         _speed = {},
-        comms = CommunicationLog();
+        comms = _startWithSideEffect();
 
   // Generate logs while computing interpolated results
   _Result _calculateAndLog(Truck start, Truck end, double t0, double ti,
