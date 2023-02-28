@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:frontend/constants.dart' as constants;
 import 'package:frontend/utilities/camera_transform.dart';
 
-import '../../state/rendering/road.dart';
-import '../../state/rendering/simulation.dart';
-import '../../state/rendering/vehicle.dart';
+import '../../state/road.dart';
+import '../../state/simulation.dart';
+import '../../state/vehicle.dart';
 
 class SimulationVisualisation extends StatelessWidget {
   final SimulationState state;
@@ -54,9 +54,9 @@ class SimulationPainter extends CustomPainter {
     canvas.translate(-position.dx, -position.dy);
 
 
-    for (RenderRoad r in state.roads) {
-      r.drawOutline(canvas: canvas);
-    }
+    // for (RenderRoad r in state.roads) {
+    //   r.drawOutline(canvas: canvas);
+    // }
 
     for (RenderRoad r in state.roads) {
       r.drawBody(canvas: canvas);
