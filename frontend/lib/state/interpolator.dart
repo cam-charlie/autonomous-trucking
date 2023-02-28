@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:frontend/state/road.dart';
+import 'package:frontend/state/road_calculation.dart' as road_calc;
 import 'package:frontend/state/simulation.dart';
 import 'package:frontend/state/vehicle.dart';
 import 'package:collection/collection.dart';
@@ -9,7 +10,6 @@ import 'package:collection/collection.dart';
 import 'communication/Backend.dart';
 import 'package:grpc/grpc.dart';
 import 'communication/grpc/trucking.pbgrpc.dart';
-// import 'faketrucking.dart';
 
 // Dart doesn't implement pairs, must do so myself
 class _Result {
@@ -32,7 +32,7 @@ class _Interpolator {
     double juncDist = start.roadId == end.roadId
         ? double.infinity
         : (1 - start.progress) *
-            CalculationRoad.length(map[RID(start.roadId)]!);
+            road_calc.length(map[RID(start.roadId)]!);
     // Assumes jerk is constant between two points
     double interDist = start.currSpeed * (ti - t0) +
         0.5 * start.currAccel * pow((ti - t0), 2) +
@@ -40,10 +40,10 @@ class _Interpolator {
             6;
     double fracDist = interDist < juncDist
         ? start.progress +
-            interDist / CalculationRoad.length(map[RID(start.roadId)]!)
+            interDist / road_calc.length(map[RID(start.roadId)]!)
         : 1 +
             (interDist - juncDist) /
-                CalculationRoad.length(map[RID(end.roadId)]!);
+                road_calc.length(map[RID(end.roadId)]!);
 
     return fracDist;
   }
@@ -67,9 +67,9 @@ class _Interpolator {
           .trucks
           .map((e) => Vehicle(
               id: VID(e.truckId),
-              position: CalculationRoad.positionAt(_roadMap[RID(e.roadId)]!,
+              position: road_calc.positionAt(_roadMap[RID(e.roadId)]!,
                   fraction: e.progress),
-              direction: CalculationRoad.direction(_roadMap[RID(e.roadId)]!,
+              direction: road_calc.direction(_roadMap[RID(e.roadId)]!,
                   fraction: e.progress)))
           .toList();
       return SimulationState(vehicles: vehicles, roads: roads);
@@ -86,18 +86,18 @@ class _Interpolator {
               .toList();
 
       List<Vehicle> vehicles = IterableZip([
-        positions[0].trucks as List<Truck>,
-        positions[1].trucks as List<Truck>,
+        positions[0].trucks,
+        positions[1].trucks,
         results as List<_Result>
       ])
           .map((e) => Vehicle(
               id: VID((e[0] as Truck).truckId),
-              position: CalculationRoad
+              position: road_calc
                   .positionAt(_roadMap[RID((e[(e[2] as _Result).roadChange ? 1 : 0] as Truck).roadId)]!,
                       fraction: (e[2] as _Result).fracDist > 1.0
                           ? (e[2] as _Result).fracDist - 1.0
                           : (e[2] as _Result).fracDist),
-              direction: CalculationRoad.direction(
+              direction: road_calc.direction(
                       _roadMap[RID(
                           (e[(e[2] as _Result).roadChange ? 1 : 0] as Truck)
                               .roadId)]!,

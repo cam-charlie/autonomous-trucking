@@ -38,6 +38,8 @@ const double maxZoomOut = 0.1;
 
 const double translateDragCoefficient = 0.00001;
 
+const double vehicleSelectionRadius = 20;
+
 const SimulationState exampleState = SimulationState(
   vehicles: v,
   roads: [
