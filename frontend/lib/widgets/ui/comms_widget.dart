@@ -63,7 +63,7 @@ class _CommsWidgetState extends State<CommsWidget> {
         //color: Colors.black,
         decoration: const BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(20)),
-            color: Colors.black12),
+            color: Color(0x66000000)),
         child: small
             ? TextButton(
                 onPressed: () => {
@@ -74,7 +74,12 @@ class _CommsWidgetState extends State<CommsWidget> {
                         });
                       })
                     },
-                child: const Text("+"))
+                child: const Text("➕",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 10,
+                    )))
             : AnimatedOpacity(
                 opacity: textVisible ? 1 : 0,
                 duration: const Duration(milliseconds: 100),
@@ -91,6 +96,7 @@ class _CommsWidgetState extends State<CommsWidget> {
                               style: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
+                                fontSize: 15,
                               )),
                         ),
                         TextButton(
@@ -102,7 +108,12 @@ class _CommsWidgetState extends State<CommsWidget> {
                                   textVisible = false
                                 })
                           },
-                          child: const Text("-"),
+                          child: const Text("✖",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 10,
+                              )),
                         )
                       ]),
                   Expanded(
@@ -110,7 +121,8 @@ class _CommsWidgetState extends State<CommsWidget> {
                       scrollDirection: Axis.vertical,
                       child: Text(
                         logs,
-                        style: const TextStyle(color: Colors.white),
+                        style:
+                            const TextStyle(color: Colors.white, fontSize: 6),
                       ),
                     ),
                   )
