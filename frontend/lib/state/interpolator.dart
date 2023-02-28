@@ -1,9 +1,9 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:frontend/state/rendering/road.dart';
-import 'package:frontend/state/rendering/simulation.dart';
-import 'package:frontend/state/rendering/vehicle.dart';
+import 'package:frontend/state/road.dart';
+import 'package:frontend/state/simulation.dart';
+import 'package:frontend/state/vehicle.dart';
 import 'package:collection/collection.dart';
 import 'faketrucking.dart';
 

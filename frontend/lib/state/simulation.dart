@@ -1,4 +1,4 @@
-import 'package:frontend/state/rendering/road.dart';
+import 'package:frontend/state/road.dart';
 import 'package:collection/collection.dart';
 
 import 'vehicle.dart';
