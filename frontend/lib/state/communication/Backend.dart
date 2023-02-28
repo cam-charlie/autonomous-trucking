@@ -17,13 +17,18 @@ final _channel = ClientChannel(
 
 final _PositionDataStreamerStub = PositionDataStreamerClient(_channel);
 
+bool _isBuffering = false;
+
 var _buffer = null;
 int _lastBufferPtr = 0;
 var _nextBufferFiller;
 
 Future<void> _fillFirstBuffer() async{
   _buffer = await _getBufferData();
+
+  _isBuffering = true;
   _nextBufferFiller = Isolate.run(_getBufferData);
+  _nextBufferFiller.then((x) => _isBuffering = false);
 }
 
 _getBufferData() async{
@@ -46,7 +51,10 @@ Future<List<TruckPositionsAtTime>> getPositionData(double timeStamp) async{
     _buffer.trucks.insert(0, tmp.trucks.last);
 
     _lastBufferPtr = 0;
+
+    _isBuffering = true; 
     _nextBufferFiller = Isolate.run(_getBufferData);
+    _nextBufferFiller.then((x) => _isBuffering = false);
   }
 
   while (_buffer.trucks[_lastBufferPtr].time < timeStamp){
@@ -76,7 +84,14 @@ Future<void> startFromConfig(var config) async {
   await _fillFirstBuffer();
 }
 
+
+bool isBufferingOnTimestamp(double timeStamp){
+    return  (timeStamp > _buffer.trucks.last.time && _isBuffering);
+}
+
 /* TODO: after MVP is finished, add start from config (includes adding/removing vehicles)
 *  and allow change of params including vehicle position and destination
 * (need to know backend data structures for that)
 */
+
+
