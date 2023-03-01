@@ -65,14 +65,12 @@ class Truck(Actor):
         self._route_index = 1
 
     def collision(self, o: Truck) -> None:
-        # pylint: disable=unused-argument
         self._accumulated_reward += self.config.COLLISION_REWARD
-        self._accumulated_info.append("Collision {o.id_}")
+        self._accumulated_info.append(f"Collision {o.id_}")
 
     def tailgating(self, o: Truck) -> None:
-        # pylint: disable=unused-argument
         self._accumulated_reward += self.config.TAILGATE_REWARD
-        self._accumulated_info.append("Tailgating {o.id_}")
+        self._accumulated_info.append(f"Tailgating {o.id_}")
 
     def on_movement(self, dt: float) -> None:
         self._stepped = True
