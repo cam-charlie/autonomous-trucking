@@ -5,7 +5,6 @@ import pygame
 from collections import deque
 from ..lib.geometry import Point
 from ..config import InvalidConfiguration
-from .truck import Collision
 from .entity import Actor, Entity
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
@@ -47,8 +46,8 @@ class Edge(TruckContainer, ABC):
 
     def __init__(self, id_: int, start: Node, end: Node) -> None:
         super().__init__(id_)
-        start.addOutgoing(self)
-        end.addIncoming(self)
+        start.add_outgoing(self)
+        end.add_incoming(self)
         self._start: Node = start
         self._end: Node = end
         self._cost: float = 1
@@ -74,14 +73,17 @@ class Node(TruckContainer, ABC):
         self._outgoing: List[Edge] = []
         self._routing_table: Dict[int, int] = {} # Mapping from destination id_ to outgoing index
 
+    def route_to(self, destination: int) -> int:
+        return self._outgoing[self._routing_table[destination]].end.id_
+
     @property
     def pos(self) -> Point:
         return self._pos
 
-    def addIncoming(self, e: Edge) -> None:
+    def add_incoming(self, e: Edge) -> None:
         self._incoming.append(e)
 
-    def addOutgoing(self, e: Edge) -> None:
+    def add_outgoing(self, e: Edge) -> None:
         self._outgoing.append(e)
 
     @staticmethod
@@ -217,10 +219,11 @@ class Road(Edge):
         for truck in self._trucks:
             if not truck.stepped:
                 truck.position += truck.velocity * dt / self._length
-                truck.stepped = True
+                truck.on_movement(dt)
         for i, truck in enumerate(self._trucks):
             if i+1 < len(self._trucks) and self.get(i+1).position > truck.position:
-                raise Collision
+                truck.collision(self.get(i+1))
+                self.get(i+1).collision(truck)
         while len(self._trucks) > 0:
             if self.get(0).position > 1:
                 truck = self._trucks.pop()

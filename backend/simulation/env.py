@@ -6,7 +6,7 @@ from .realm.realm import Realm
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from typing import Dict, Tuple, Any
+    from typing import Any, Dict, List, Tuple
     EnvState = Tuple[Dict[Any, Any], float, Dict[int, bool], Dict[Any, Any]]
 
 '''
@@ -67,7 +67,7 @@ class Env:
         return obs, rewards, dones, infos
 
 
-    def _compute_rewards(self) -> Tuple[float, Dict[Any, Any]]:
+    def _compute_rewards(self) -> Tuple[float, Dict[int, List[str]]]:
         """ Computes the metric to optimize for
 
         By default overall throughput of trucks reaching destination.
@@ -76,7 +76,7 @@ class Env:
         Returns
             Change in metric on most recent step
         """
-        return 0, {}
+        return self.realm.compute_rewards(), self.realm.compute_infos()
 
     def _compute_observations(self) -> Dict[Any, Any]:
         """Autonomous trucking observation API.
@@ -90,8 +90,3 @@ class Env:
 
         # TODO(mark) this is a placeholder. Wrap into a dictionary of primitives.
         return {}
-
-    def render(self) -> float:
-        """ Pass required game state to frontend module
-        """
-        raise NotImplementedError
