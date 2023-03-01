@@ -84,9 +84,10 @@ class Node(TruckContainer, ABC):
     def addOutgoing(self, e: Edge) -> None:
         self._outgoing.append(e)
 
-    def green_in(self, dt: float) -> Edge:
-        #Needed for junction (there's probably a better way of doing this)
-        return self._incoming[0]
+    def green_in(self, dt: float) -> Optional[Edge]:
+        #Needed for junction (there's probably a better way of doing this). 
+        dt = dt #for passing pylint
+        return None
 
     @staticmethod
     def from_json(json: Any) -> Node:
@@ -116,7 +117,7 @@ class Junction(Node):
         if len(self._incoming) > 1: #There are multiple incoming roads
             self._timer -= dt
             if self._timer < 0:
-                #Switch incoming road 
+                #Switch incoming road
                 self._timer += self._interval
                 self._green = (self._green + 1) % len(self._incoming)
 
