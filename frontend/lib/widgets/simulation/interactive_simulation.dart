@@ -3,12 +3,14 @@ import 'package:frontend/utilities/animated_input_range.dart';
 import 'package:frontend/utilities/camera_transform.dart';
 import 'package:frontend/utilities/range.dart';
 import 'package:frontend/constants.dart' as constants;
+import '../../state/simulation.dart';
 import 'move_detector/move_detector.dart';
 import 'move_detector/move_detector_controller.dart';
 import 'simulation_visualisation.dart';
 
 class InteractiveSimulation extends StatefulWidget {
-  const InteractiveSimulation({super.key});
+  final ValueNotifier<SimulationState> stateNotifier;
+  const InteractiveSimulation({required this.stateNotifier, super.key});
 
   @override
   State<InteractiveSimulation> createState() => _InteractiveSimulationState();
@@ -53,10 +55,10 @@ class _InteractiveSimulationState extends State<InteractiveSimulation>
           controller: _controller,
           // onTap:
           child: AnimatedBuilder(
-            animation: _controller,
+            animation: Listenable.merge([_controller, widget.stateNotifier]),
             builder: (BuildContext context, _) =>
                 SimulationVisualisation(
-                  state: constants.exampleState,
+                  state: widget.stateNotifier.value,
                   transform: _controller.transform,
                 ),
           ),

@@ -8,8 +8,8 @@ import 'package:frontend/widgets/ui/comms_widget.dart';
 
 import 'widgets/ui/buffer_overlay.dart';
 
-void main() {
-  startFromConfig(1);
+void main() async {
+  await startFromConfig(1);
   runApp(TruckingApp());
 }
 
@@ -45,7 +45,7 @@ class _TruckingAppState extends State<TruckingApp> with SingleTickerProviderStat
         inactiveTimeout: const Duration(seconds: 2),
         child: Stack(
           children: [
-            const Positioned.fill(child: InteractiveSimulation()),
+            Positioned.fill(child: InteractiveSimulation(stateNotifier: _controller.stateNotifier)),
             const BufferOverlay(buffering: true),
             ControlUI(
               playing: _controller.playing,

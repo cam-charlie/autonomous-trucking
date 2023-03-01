@@ -86,7 +86,8 @@ Future<void> startFromConfig(var config) async {
 
 
 bool isBufferingOnTimestamp(double timeStamp){
-    return  (timeStamp > _buffer.trucks.last.time && _isBuffering);
+    return (timeStamp > _buffer.trucks.last.time && _isBuffering);
+    // return (_buffer != null && timeStamp > _buffer.trucks.last.time && _isBuffering);
 }
 
 /* TODO: after MVP is finished, add start from config (includes adding/removing vehicles)
