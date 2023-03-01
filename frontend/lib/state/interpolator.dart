@@ -22,9 +22,12 @@ class _Result {
   const _Result({required this.fracDist}) : roadChange = fracDist > 1;
 }
 
-CommunicationLog _startWithSideEffect() {
-  startFromConfig(1);
-  return CommunicationLog();
+class Buffering {
+  bool buffering;
+  Future<SimulationState> state;
+  Buffering({required double time, required _Interpolator interpolator})
+      : buffering = isBufferingOnTimestamp(time),
+        state = interpolator.getState(time);
 }
 
 class _Interpolator {
@@ -43,7 +46,7 @@ class _Interpolator {
         _roadMap = {for (var road in roads) road.id: road},
         _turn = {},
         _speed = {},
-        comms = _startWithSideEffect();
+        comms = CommunicationLog();
 
   // Generate logs while computing interpolated results
   _Result _calculateAndLog(Truck start, Truck end, double t0, double ti,
@@ -59,8 +62,8 @@ class _Interpolator {
 
       double startDir = road_calc.direction(map[RID(start.roadId)]!,
           fraction: start.progress);
-      double endDir = road_calc.direction(map[RID(end.roadId)]!,
-          fraction: fracDist % 1.0);
+      double endDir =
+          road_calc.direction(map[RID(end.roadId)]!, fraction: fracDist % 1.0);
 
       Vector3 calcVec = Vector3(sin(startDir), cos(startDir), 0)
           .cross(Vector3(sin(endDir), cos(endDir), 0));
@@ -103,19 +106,15 @@ class _Interpolator {
       double t1, Map<RID, RenderRoad> map) {
     double juncDist = start.roadId == end.roadId
         ? double.infinity
-        : (1 - start.progress) *
-            road_calc.length(map[RID(start.roadId)]!);
+        : (1 - start.progress) * road_calc.length(map[RID(start.roadId)]!);
     // Assumes jerk is constant between two points
     double interDist = start.currSpeed * (ti - t0) +
         0.5 * start.currAccel * pow((ti - t0), 2) +
         (((end.currAccel - start.currAccel) / (t1 - t0)) * pow((ti - t0), 3)) /
             6;
     double fracDist = interDist < juncDist
-        ? start.progress +
-            interDist / road_calc.length(map[RID(start.roadId)]!)
-        : 1 +
-            (interDist - juncDist) /
-                road_calc.length(map[RID(end.roadId)]!);
+        ? start.progress + interDist / road_calc.length(map[RID(start.roadId)]!)
+        : 1 + (interDist - juncDist) / road_calc.length(map[RID(end.roadId)]!);
 
     return fracDist;
   }
@@ -127,8 +126,11 @@ class _Interpolator {
     return _truckFracDistCovered(start, end, t0, ti, t1, map) > 1;
   }
   */
-
+  Buffering getBufferingState(double time) {
+    return Buffering(time: time, interpolator: this);
+  }
   // Generates new SimulationState for rendering
+
   Future<SimulationState> getState(double time) async {
     List<TruckPositionsAtTime> positions = await _getData(time);
 
@@ -156,11 +158,8 @@ class _Interpolator {
                   positions[1].time, _roadMap))
               .toList();
 
-      List<Vehicle> vehicles = IterableZip([
-        positions[0].trucks,
-        positions[1].trucks,
-        results as List<_Result>
-      ])
+      List<Vehicle> vehicles = IterableZip(
+              [positions[0].trucks, positions[1].trucks, results as List<_Result>])
           .map((e) => Vehicle(
               id: VID((e[0] as Truck).truckId),
               position: road_calc
@@ -168,14 +167,12 @@ class _Interpolator {
                       fraction: (e[2] as _Result).fracDist > 1.0
                           ? (e[2] as _Result).fracDist - 1.0
                           : (e[2] as _Result).fracDist),
-              direction: road_calc.direction(
-                      _roadMap[RID(
-                          (e[(e[2] as _Result).roadChange ? 1 : 0] as Truck)
-                              .roadId)]!,
-                      fraction: ((e[2] as _Result).fracDist > 1.0
-                          ? (e[2] as _Result).fracDist - 1.0
-                          : (e[2] as _Result).fracDist)) %
-                  (2 * pi)))
+              direction:
+                  road_calc.direction(_roadMap[RID((e[(e[2] as _Result).roadChange ? 1 : 0] as Truck).roadId)]!,
+                          fraction: ((e[2] as _Result).fracDist > 1.0
+                              ? (e[2] as _Result).fracDist - 1.0
+                              : (e[2] as _Result).fracDist)) %
+                      (2 * pi)))
           .toList();
       return SimulationState(vehicles: vehicles, roads: _roads);
     }

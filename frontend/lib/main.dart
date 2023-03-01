@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/app_controller.dart';
+import 'package:frontend/state/communication/Backend.dart';
 import 'package:frontend/widgets/simulation/interactive_simulation.dart';
 import 'package:frontend/widgets/ui/control.dart';
 import 'package:frontend/widgets/ui/inactivity_detector.dart';
@@ -8,6 +9,7 @@ import 'package:frontend/widgets/ui/comms_widget.dart';
 import 'widgets/ui/buffer_overlay.dart';
 
 void main() {
+  startFromConfig(1);
   runApp(TruckingApp());
 }
 
