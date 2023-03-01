@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/state/communication/Backend.dart';
 import 'package:frontend/widgets/simulation/interactive_simulation.dart';
 import 'package:frontend/widgets/ui/control.dart';
 import 'package:frontend/widgets/ui/inactivity_detector.dart';
@@ -6,6 +7,7 @@ import 'package:frontend/widgets/ui/ui_overlay.dart';
 import 'package:frontend/widgets/ui/comms_widget.dart';
 
 void main() {
+  startFromConfig(1);
   runApp(TruckingApp());
 }
 
