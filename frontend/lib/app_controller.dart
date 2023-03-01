@@ -39,14 +39,14 @@ class AppController extends ChangeNotifier {
     activityNotifier = ValueNotifier(false);
     stateNotifier = ValueNotifier(constants.exampleState);
     _interpolator = Interpolator(roads: [
-      StraightRenderRoad(id: RID(1), start: Offset(0,0), end: Offset(0,200)),
+      StraightRenderRoad(id: RID(1), start: Offset(0, 0), end: Offset(0, 200)),
     ]);
   }
 
   double _prevTime = 0;
 
   _tick(Duration elapsed) {
-    _currentTime += _playbackSpeed * elapsed.inMicroseconds * 1000 * 1000;
+    _currentTime += _playbackSpeed * elapsed.inMicroseconds / (1000 * 1000);
     Buffering b = _interpolator.getBufferingState(_currentTime);
     bufferingNotifier.value = b.buffering;
     b.state.then((SimulationState s) => stateNotifier.value = s);
