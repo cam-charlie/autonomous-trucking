@@ -32,7 +32,7 @@ def step(env: Env) -> None:
                 this_truck = edge._trucks[i]
                 if i == len(edge._trucks)-1: #no truck in front of it: eventually going into a node
                     if env.realm.nodes[this_truck.destination] is Junction:
-                        next_node: Junction = env.realm.nodes[this_truck.destination] #<-- MyPy throws a fit at this line
+                        next_node = env.realm.nodes[this_truck.destination] 
                         #Work out how long before we hit the junction
                         distance = (1-this_truck.position) * edge.length
                         time = distance / this_truck.velocity

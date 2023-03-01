@@ -84,6 +84,10 @@ class Node(TruckContainer, ABC):
     def addOutgoing(self, e: Edge) -> None:
         self._outgoing.append(e)
 
+    def green_in(self, dt: float) -> Edge:
+        #Needed for junction (there's probably a better way of doing this)
+        return self._incoming[0]
+
     @staticmethod
     def from_json(json: Any) -> Node:
         if json["type"] == "junction":
@@ -109,11 +113,12 @@ class Junction(Node):
         self._outgoing[self._routing_table[truck.destination]].entry(truck)
 
     def update(self, dt: float) -> None:
-        self._timer -= dt
-        if self._timer < 0:
-            #Switch incoming road 
-            self._timer += self._interval
-            self._green = (self._green + 1) % len(self._incoming)
+        if len(self._incoming) > 1: #There are multiple incoming roads
+            self._timer -= dt
+            if self._timer < 0:
+                #Switch incoming road 
+                self._timer += self._interval
+                self._green = (self._green + 1) % len(self._incoming)
 
     def green_in(self, dt: float) -> Edge:
         #Returns the edge that will be allowed to enter the junction (green) in dt seconds
