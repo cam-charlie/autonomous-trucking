@@ -86,7 +86,6 @@ class Node(TruckContainer, ABC):
 
     def green_in(self, dt: float) -> Optional[Edge]:
         #Needed for junction (there's probably a better way of doing this). 
-        dt = dt #for passing pylint
         return None
 
     @staticmethod
