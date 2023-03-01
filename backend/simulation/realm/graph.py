@@ -94,12 +94,35 @@ class Node(TruckContainer, ABC):
 
 class Junction(Node):
 
+    def __init__(self, id_: int, pos:Point, traffic_interval : float = 20) -> None:
+        super().__init__(id_, pos)
+        self._interval = traffic_interval
+        self._timer = traffic_interval
+        self._green : int = 0
+
+
     def entry(self, truck: Truck) -> None:
         super().entry(truck)
         if truck.done():
             raise InvalidConfiguration()
         self._trucks.pop()
         self._outgoing[self._routing_table[truck.destination]].entry(truck)
+
+    def update(self, dt: float) -> None:
+        self._timer -= dt
+        if self._timer < 0:
+            #Switch incoming road 
+            self._timer += self._interval
+            self._green = (self._green + 1) % len(self._incoming)
+
+    def green_in(self, dt: float) -> Edge:
+        #Returns the edge that will be allowed to enter the junction (green) in dt seconds
+        ans = self._green
+        if dt > self._timer:
+            ans += int((dt - self._timer) / self._interval)
+            ans = ans & len(self._incoming)
+        return self._incoming[ans]
+
 
     @staticmethod
     def from_json(json: Any) -> Junction:
