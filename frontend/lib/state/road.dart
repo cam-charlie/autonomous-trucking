@@ -70,7 +70,7 @@ class StraightRenderRoad extends RenderRoad with EquatableMixin {
   List<Object> get props => [start, end, id];
 }
 
-class RenderArcRoad extends RenderRoad with EquatableMixin {
+class ArcRenderRoad extends RenderRoad with EquatableMixin {
   final Offset centre;
   final double radius;
   final bool clockwise;
@@ -84,7 +84,7 @@ class RenderArcRoad extends RenderRoad with EquatableMixin {
   @override
   final RID id;
 
-  const RenderArcRoad(
+  const ArcRenderRoad(
       {required this.id,
       required this.centre,
       required this.radius,

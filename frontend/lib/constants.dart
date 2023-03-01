@@ -47,7 +47,7 @@ const SimulationState exampleState = SimulationState(
         id: RID(1), start: Offset(-150, -150), end: Offset(150, 150)),
     StraightRenderRoad(
         id: RID(2), start: Offset(150, -150), end: Offset(-150, 150)),
-    RenderArcRoad(
+    ArcRenderRoad(
       id: RID(3),
       centre: Offset(0, 0),
       radius: 150,
@@ -55,7 +55,7 @@ const SimulationState exampleState = SimulationState(
       arcEnd: 1 * 3.14 * 2,
       clockwise: true,
     ),
-    RenderArcRoad(
+    ArcRenderRoad(
       id: RID(4),
       centre: Offset(0, 0),
       radius: 250,

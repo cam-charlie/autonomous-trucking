@@ -6,7 +6,7 @@ import 'package:frontend/state/road.dart';
 double length(RenderRoad road) {
   if (road is StraightRenderRoad) {
     return (road.start - road.end).distance;
-  } else if (road is RenderArcRoad) {
+  } else if (road is ArcRenderRoad) {
     double arcDif = (road.arcEnd - road.arcStart) * (road.clockwise ? 1 : -1);
     return (arcDif % (2 * pi)) * road.radius;
   }
@@ -21,7 +21,7 @@ Offset positionAt(RenderRoad road, {double? distance, double? fraction}) {
   fraction = distance != null ? distance / length(road) : fraction!;
   if (road is StraightRenderRoad) {
     return road.start + (road.end - road.start) * fraction;
-  } else if (road is RenderArcRoad) {
+  } else if (road is ArcRenderRoad) {
     double arcDif = (road.arcEnd - road.arcStart) * (road.clockwise ? 1 : -1);
     double angle = road.arcStart + (arcDif * fraction);
 
@@ -41,7 +41,7 @@ double direction(RenderRoad road, {double? distance, double? fraction}) {
     double rotation = (road.end - road.start).direction;
 
     return ((rotation + (3 * pi / 2)) - (2 * pi)).abs();
-  } else if (road is RenderArcRoad) {
+  } else if (road is ArcRenderRoad) {
     Offset travel =
         road.centre - positionAt(road, distance: distance, fraction: fraction);
     double angle;
