@@ -4,15 +4,21 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:frontend/constants.dart' as constants;
 import 'package:frontend/widgets/ui/control_button.dart';
 
-
-
-abstract class ControlItem extends Widget {}
-
 class ControlUI extends StatefulWidget {
-  ControlUI({required this.children, this.visible = true, super.key});
+  const ControlUI(
+      {required this.playing,
+      this.mouseActive = true,
+      this.onBackwards,
+      this.onPlayPause,
+      this.onForwards,
+      super.key});
 
-  final List<Widget> children;
-  final bool visible;
+  final VoidCallback? onBackwards;
+  final VoidCallback? onPlayPause;
+  final VoidCallback? onForwards;
+
+  final bool playing;
+  final bool mouseActive;
 
   @override
   State<ControlUI> createState() => _ControlUIState();
@@ -21,50 +27,69 @@ class ControlUI extends StatefulWidget {
 class _ControlUIState extends State<ControlUI> {
   _ControlUIState();
 
-  bool get visible => widget.visible;
-  bool playing = false;
+  bool get visible => widget.mouseActive || _hover;
+  bool _hover = false;
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedContainer(
-      transform:
-          visible ? Matrix4.identity() : Matrix4.translationValues(0, 200, 0),
-      duration: const Duration(milliseconds: 500),
-      curve: !visible ? Curves.easeInBack : Curves.easeOutBack,
-      child: AnimatedScale(
-        duration: const Duration(milliseconds: 500),
-        scale: visible ? 1.0 : 0.7,
-        curve: visible ? Curves.easeInBack : Curves.easeOutBack,
-        child: Padding(
-          padding: const EdgeInsets.all(50),
-          child: Container(
-              padding: const EdgeInsets.all(15),
-              decoration: BoxDecoration(
-                  boxShadow: const [
-                    BoxShadow(
-                        color: Color(0x66000000),
-                        blurRadius: 20,
-                        offset: Offset(10, 15)),
-                  ],
-                  color: constants.opaqueUIColour,
-                  borderRadius: BorderRadius.circular(50)),
-              child: Row(
-                // children: widget.children,
-                mainAxisSize: MainAxisSize.min,
-
-                children: [
-                  ControlButton(icon: FontAwesomeIcons.backward,
-                    align: FractionalOffset(0.4, 0.5),),
-                  SizedBox(width: 15),
-                  ControlButton(
-                    icon: playing ? FontAwesomeIcons.pause : FontAwesomeIcons.play,
-                    onTap: () => setState(() => playing = !playing),
-                    align: playing ? Alignment.center : FractionalOffset(0.6, 0.5),
-                  ),
-                  SizedBox(width: 15),
-                  ControlButton(icon: FontAwesomeIcons.forward, align: FractionalOffset(0.6, 0.5),),
-                ],
-              )),
+    return Align(
+      alignment: Alignment.bottomCenter,
+      child: MouseRegion(
+        onEnter: (_) => setState(() => _hover = true),
+        onExit: (_) => setState(() => _hover = false),
+        child: GestureDetector(
+          child: AnimatedContainer(
+            transform: visible
+                ? Matrix4.identity()
+                : Matrix4.translationValues(0, 200, 0),
+            duration: const Duration(milliseconds: 500),
+            curve: !visible ? Curves.easeInBack : Curves.easeOutBack,
+            child: AnimatedScale(
+              duration: const Duration(milliseconds: 500),
+              scale: visible ? 1.0 : 0.7,
+              curve: visible ? Curves.easeInBack : Curves.easeOutBack,
+              child: Padding(
+                padding: const EdgeInsets.all(50),
+                child: Container(
+                    padding: const EdgeInsets.all(15),
+                    decoration: BoxDecoration(
+                        boxShadow: const [
+                          BoxShadow(
+                              color: Color(0x66000000),
+                              blurRadius: 20,
+                              offset: Offset(10, 15)),
+                        ],
+                        color: constants.transparentUiColour,
+                        borderRadius: BorderRadius.circular(50)),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        ControlButton(
+                          icon: FontAwesomeIcons.backward,
+                          align: const FractionalOffset(0.4, 0.5),
+                          onTap: widget.onBackwards,
+                        ),
+                        const SizedBox(width: 15),
+                        ControlButton(
+                          icon: widget.playing
+                              ? FontAwesomeIcons.pause
+                              : FontAwesomeIcons.play,
+                          onTap: widget.onPlayPause,
+                          align: widget.playing
+                              ? Alignment.center
+                              : const FractionalOffset(0.6, 0.5),
+                        ),
+                        const SizedBox(width: 15),
+                        ControlButton(
+                          icon: FontAwesomeIcons.forward,
+                          align: const FractionalOffset(0.6, 0.5),
+                          onTap: widget.onForwards,
+                        ),
+                      ],
+                    )),
+              ),
+            ),
+          ),
         ),
       ),
     );

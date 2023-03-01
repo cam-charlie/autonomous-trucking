@@ -46,15 +46,22 @@ class _InteractiveSimulationState extends State<InteractiveSimulation>
 
   @override
   Widget build(BuildContext context) {
-    return MoveDetector(
-      controller: _controller,
-      child: AnimatedBuilder(
-        animation: _controller,
-        builder: (BuildContext context, _) => SimulationVisualisation(
-          state: constants.exampleState,
-          transform: _controller.transform,
-        ),
-      ),
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        return MoveDetector(
+          size: constraints.biggest,
+          controller: _controller,
+          // onTap:
+          child: AnimatedBuilder(
+            animation: _controller,
+            builder: (BuildContext context, _) =>
+                SimulationVisualisation(
+                  state: constants.exampleState,
+                  transform: _controller.transform,
+                ),
+          ),
+        );
+      }
     );
   }
 }

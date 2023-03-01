@@ -11,7 +11,7 @@ List<RenderRoad> roads = [
   const StraightRenderRoad(id: RID(1), start: Offset(0, 0), end: Offset(0, 1)),
   const StraightRenderRoad(id: RID(2), start: Offset(0, 1), end: Offset(0, 2)),
   const StraightRenderRoad(id: RID(3), start: Offset(0, 2), end: Offset(2, 2)),
-  const RenderArcRoad(
+  const ArcRenderRoad(
       id: RID(4),
       centre: Offset(2, 1),
       radius: 1,

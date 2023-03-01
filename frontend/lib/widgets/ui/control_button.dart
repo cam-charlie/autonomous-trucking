@@ -30,36 +30,39 @@ class _ControlButtonState extends State<ControlButton> {
         onTap: widget.onTap,
         behavior: HitTestBehavior.translucent,
         child: AnimatedScale(
-          duration: Duration(milliseconds: 400),
+          duration: const Duration(milliseconds: 400),
           scale: scale,
           curve: Curves.elasticOut,
-          child: Container(
-            width: 56,
-            height: 56,
-            // margin: const EdgeInsets.all(15),
-            decoration: const BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  Color(0xff878E83),
-                  Color(0xff5C6357),
-                ],
-              ),
-            ),
-            child: Align(
-              alignment: widget.align ?? Alignment.center,
-              child: GradientIcon(
-                icon: widget.icon,
-                size: 32,
-                gradient: const LinearGradient(
+          child: Opacity(
+            opacity: 0.9,
+            child: Container(
+              width: 56,
+              height: 56,
+              // margin: const EdgeInsets.all(15),
+              decoration: const BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: [
-                    Color(0xffFFFFFF),
-                    Color(0x10FFFFFF),
+                    Color(0xff878E83),
+                    Color(0xff5C6357),
                   ],
+                ),
+              ),
+              child: Align(
+                alignment: widget.align ?? Alignment.center,
+                child: GradientIcon(
+                  icon: widget.icon,
+                  size: 32,
+                  gradient: const LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      Color(0xffFFFFFF),
+                      Color(0x10FFFFFF),
+                    ],
+                  ),
                 ),
               ),
             ),
