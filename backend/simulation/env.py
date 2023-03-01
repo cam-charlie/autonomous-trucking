@@ -35,7 +35,7 @@ class Env:
 
         return self.step()
 
-    def step(self, actions: Dict[int, float] = {}) -> EnvState:
+    def step(self, actions: Dict[int, float] = {}, dt: float=1/30) -> EnvState:
         """ Simulates one realm tick.
 
         Args:
@@ -60,7 +60,8 @@ class Env:
             infos: A dictionary of agents to debug information.
         """
 
-        dones = self.realm.update(actions)
+        dones = self.realm.update(actions, dt)
+        self.config.SIM_TIME += dt
         obs = self._compute_observations()
         rewards, infos = self._compute_rewards()
 

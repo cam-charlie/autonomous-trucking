@@ -6,14 +6,14 @@ from simulation.realm.graph import Depot, Road
 from simulation.draw.visualiser import Visualiser
 
 
-def setUp() -> Env: 
+def setUp() -> Env:
     print("Usage: main.py \"path-to-config-json\"")
     env = Env()
     env.reset(sys.argv[1])
     return env
 
 
-def step(env: Env) -> None: 
+def step(env: Env) -> None:
     #Temporary constants
     truck_size = 2
     safety_margin = 5
@@ -51,9 +51,9 @@ def step(env: Env) -> None:
                         #There's space - accelerate
                         actions[this_truck.id_] = float(this_truck.config.MAX_ACCELERATION)
 
-    #Actually do the step        
+    #Actually do the step
     env.step(actions)
-    
+
 
 if __name__ == '__main__':
     print("Usage: main.py \"path-to-config-json\"")
@@ -64,7 +64,7 @@ if __name__ == '__main__':
     #Temporary constants
     truck_size = 2
     safety_margin = 5
-    
+
     while True:
         actions = {}
         #Work out actions
@@ -99,7 +99,8 @@ if __name__ == '__main__':
                             #There's space - accelerate
                             actions[this_truck.id_] = float(this_truck.config.MAX_ACCELERATION)
 
-        #Actually do the step        
+        #Actually do the step
+        print(f"Simulation time: {env.config.SIM_TIME}")
         env.step(actions)
         visualiser.refresh()
-    
+

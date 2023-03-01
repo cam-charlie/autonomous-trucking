@@ -71,7 +71,7 @@ class Realm:
             if isinstance(edge,Actor):
                 self.actors[edge.id_] = edge
 
-    def update(self, actions: Dict[int, float], dt: float=1/30) -> Dict[int, bool]:
+    def update(self, actions: Dict[int, float], dt: float) -> Dict[int, bool]:
         """
         Runs logic.
 
