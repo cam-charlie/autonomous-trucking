@@ -30,8 +30,8 @@ class Env:
             dones
             infos
         """
-        self.config = Config(config_json_path)
-        self.realm = Realm(self.config)
+        Config.initialise(config_json_path)
+        self.realm = Realm()
 
         return self.step()
 
@@ -61,7 +61,7 @@ class Env:
         """
 
         dones = self.realm.update(actions, dt)
-        self.config.SIM_TIME += dt
+        Config.get_instance().SIM_TIME += dt
         obs = self._compute_observations()
         rewards, infos = self._compute_rewards()
 

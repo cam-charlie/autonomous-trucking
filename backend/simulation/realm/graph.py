@@ -4,7 +4,7 @@ from simulation.draw.utils import Drawable, DEFAULT_FONT
 import pygame
 from collections import deque
 from ..lib.geometry import Point
-from ..config import InvalidConfiguration
+from ..config import InvalidConfiguration, Config
 from .truck import Collision
 from .entity import Actor, Entity
 from typing import TYPE_CHECKING
@@ -126,9 +126,9 @@ class Depot(Node, Actor):
         self._current_cooldown = 0.0
 
     def entry(self, truck: Truck) -> None:
-        super().entry(truck)
         if truck.done():
             return
+        super().entry(truck)
         self._storage[truck.id_] = truck
         # TODO(mark) no space
         if len(self._storage) > self._storage_size:
@@ -143,6 +143,8 @@ class Depot(Node, Actor):
             tid = int(action)
             if tid in self._storage:
                 truck = self._storage.pop(tid)
+                # bodge, need to have a discussion about having both a 'storage' and '_trucks'
+                self._trucks = deque(filter(lambda t: t.id_ != tid, self._trucks))
                 self._outgoing[self._routing_table[truck.destination]].entry(truck)
                 self._current_cooldown += self._max_cooldown
 
@@ -153,10 +155,14 @@ class Depot(Node, Actor):
 
     def compute_actions(self, truck_size: int = 2, safety_margin: int = 5) -> Optional[float]:
         for truck in self._storage.values():
+            if truck.start_time >= Config.get_instance().SIM_TIME:
+                continue
             if not truck.done(): #Truck is waiting to be released
-                next_road = truck.destination
-                assert isinstance(next_road, Road)
-                first_car_pos = next_road.get(0).position * next_road.length
+                next_road = self._outgoing[0]
+                if len(next_road._trucks) == 0:
+                    return float(truck._id)
+
+                first_car_pos = next_road.get(0).position * next_road.length # type: ignore
                 if first_car_pos > float(truck_size + safety_margin): #There is space on the road
                     #Release this truck
                     return float(truck.id_)
@@ -167,8 +173,9 @@ class Depot(Node, Actor):
         return Depot(json["id"], Point.from_json(json["position"]))
 
     def draw(self, screen: pygame.Surface) -> None:
+        DEPOT_RADIUS = 10
 
-        pygame.draw.circle(screen, "blue", self.pos.to_tuple(), 10)
+        pygame.draw.circle(screen, "blue", self.pos.to_tuple(), DEPOT_RADIUS)
 
         text_surface = DEFAULT_FONT.render('D', False, (255, 255, 255))
         text_rect = text_surface.get_rect(center=self.pos.to_tuple())
@@ -231,7 +238,7 @@ class Road(Edge):
 
     @property
     def length(self) -> float:
-        return self.length
+        return self._length
 
     def draw(self, screen: pygame.Surface) -> None:
         pygame.draw.line(screen, "black",

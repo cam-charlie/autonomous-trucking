@@ -1,7 +1,7 @@
 {
     "nodes": [
         {
-            "type" : "junction",
+            "type" : "depot",
             "id": 1,
             "position": {
                 "x": 100,
@@ -41,7 +41,7 @@
             }
         },
         {
-            "type": "junction",
+            "type": "depot",
             "id": 6,
             "position": {
               "x": 400,
@@ -118,14 +118,14 @@
         "current_node": 1,
         "current_position": 0,
         "route": [6],
-        "start_time": 0.0
+        "start_time": 10.0
       },
       {
         "id": 10001,
         "current_node": 1,
         "current_position": 0,
         "route": [2,4,5,6],
-        "start_time": 0.0
+        "start_time": 10.0
       }
     ],
     "globals": {

@@ -4,22 +4,22 @@ from typing import TYPE_CHECKING
 from .truck import Truck
 from .graph import Node, Road, Edge
 from .entity import Actor
+from ..config import Config
 if TYPE_CHECKING:
-    from ..config import Config
     from typing import Dict, List, Tuple
 
 class Realm:
-    def __init__(self, config: Config) -> None:
+    def __init__(self) -> None:
         self.trucks: Dict[int, Truck] = {}
         self.actors: Dict[int, Actor] = {}
         self.nodes: Dict[int, Node] = {}
         self.edges: Dict[int, Edge] = {}
-        self._initialise(config)
+        self.initialise()
 
-    def _initialise(self, config: Config) -> None:
+    def initialise(self) -> None:
         #pylint: disable=protected-access
 
-        data = config.data
+        data = Config.get_instance().data
 
         # graph
         self.nodes = {n["id"]:Node.from_json(n) for n in data['nodes']}
@@ -58,7 +58,7 @@ class Realm:
         # trucks
         self.trucks = {}
         for t in data["trucks"]:
-            truck = Truck.from_json(t, config)
+            truck = Truck.from_json(t)
             self.trucks[truck.id_] = truck
             self.nodes[t['current_node']].entry(truck)
 

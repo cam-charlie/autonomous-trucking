@@ -10,7 +10,7 @@
 
   "nodes": [
     {
-      "type" : "junction",
+      "type" : "depot",
       "id": 3,
       "position": {
         "x": 200,
@@ -18,7 +18,7 @@
       }
     },
     {
-      "type": "junction",
+      "type": "depot",
       "id": 4,
       "position": {
         "x": 400,

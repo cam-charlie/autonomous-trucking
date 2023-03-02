@@ -1,21 +1,21 @@
 from __future__ import annotations
 from .entity import Actor
+from ..config import Config
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from typing import Any, List, Optional
-    from ..config import Config
     from .graph import TruckContainer
 
 class Truck(Actor):
 
-    def __init__(self, id_: int, route: List[int], config: Config) -> None:
+    def __init__(self, id_: int, route: List[int], start_time: float) -> None:
         super().__init__(id_)
         self._velocity: float = 0
         self.position: float = 0
         self.stepped = False
-        self.config = config
         self._route = route
         self._route_index = 0
+        self.start_time = start_time
 
     def act(self, action: Optional[float], dt: float) -> None:
         """Apply actions
@@ -25,10 +25,10 @@ class Truck(Actor):
         acceleration = action
         self.stepped = False
         if acceleration is not None:
-            achieved_acceleration = min(self.config.MAX_ACCELERATION, abs(acceleration))
+            achieved_acceleration = min(Config.get_instance().MAX_ACCELERATION, abs(acceleration))
             if acceleration < 0:
                 achieved_acceleration = achieved_acceleration * -1
-            self._velocity = min(self.config.MAX_VELOCITY,
+            self._velocity = min(Config.get_instance().MAX_VELOCITY,
                                  self._velocity + achieved_acceleration*dt)
             self._velocity = max(self._velocity, 0)
 
@@ -65,8 +65,8 @@ class Truck(Actor):
         return self._route
 
     @staticmethod
-    def from_json(json: Any, config: Config) -> Truck:
-        truck = Truck(int(json["id"]), [int(x) for x in json["route"]], config)
+    def from_json(json: Any) -> Truck:
+        truck = Truck(int(json["id"]), [int(x) for x in json["route"]], float(json["start_time"]))
         truck.position = json['current_position']
         return truck
 

@@ -29,6 +29,7 @@ class Visualiser:
 
     def refresh(self) -> None:
         self.screen.fill("white")
+
         self.draw_graph()
 
         for event in pygame.event.get():
