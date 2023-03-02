@@ -9,7 +9,7 @@ from .entity import Actor, Entity
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from .truck import Truck
-    from typing import List, Dict, Any, Optional
+    from typing import List, Dict, Any, Optional, Deque
 
 class TruckContainer(Entity, Drawable, ABC):
 
@@ -41,6 +41,10 @@ class TruckContainer(Entity, Drawable, ABC):
     @property
     def id_(self) -> int:
         return self._id
+
+    @property
+    def trucks(self) -> Deque[Truck]:
+        return self._trucks
 
 class Edge(TruckContainer, ABC):
 
@@ -161,8 +165,8 @@ class Depot(Node, Actor):
                 continue
             if not truck.done(): #Truck is waiting to be released
                 next_road = self._outgoing[0]
-                if len(next_road._trucks) == 0:
-                    return float(truck._id)
+                if len(next_road.trucks) == 0:
+                    return float(truck.id_)
 
                 first_car_pos = next_road.get(0).position * next_road.length # type: ignore
                 if first_car_pos > float(truck_size + safety_margin): #There is space on the road

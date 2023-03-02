@@ -4,7 +4,6 @@ import os
 import sys
 sys.path.append(os.getcwd())
 from simulation.env import Env
-from simulation.config import Config
 
 env = Env()
 class TestEnv(unittest.TestCase):
