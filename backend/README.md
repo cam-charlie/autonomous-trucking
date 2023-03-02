@@ -19,3 +19,13 @@ To leave the virtual enviroment, run:
 # Using packages
 
 If you install any packages during development, make sure to add them to the requirements.txt
+
+# Running mypy and pylint
+
+mypy:
+
+`mypy .`
+
+pylint:
+
+`pylint --rcfile=pylint.cfg --recursive=y simulation test`
