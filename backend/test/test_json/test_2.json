@@ -45,17 +45,20 @@
         "id": 10000,
         "current_node": 1,
         "current_position": 0,
-        "route": [3]
+        "route": [3],
+        "start_time": 0.0
       },
       {
         "id": 10001,
         "current_node": 2,
         "current_position": 0,
-        "route": [3]
+        "route": [3],
+        "start_time": 0.0
       }
     ],
     "globals": {
           "max_truck_acceleration": 100.0,
-          "max_truck_velocity": 10.0
+          "max_truck_velocity": 10.0,
+          "sim_time": 0.0
     }
   }
