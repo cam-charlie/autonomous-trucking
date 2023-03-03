@@ -125,7 +125,7 @@ class Junction(Node):
         ans = self._green
         if dt > self._timer:
             ans += int((dt - self._timer) / self._interval)
-            ans = ans & len(self._incoming)
+            ans = ans % len(self._incoming)
         return self._incoming[ans]
 
 
@@ -146,12 +146,13 @@ class Junction(Node):
 
 class Depot(Node, Actor):
 
-    def __init__(self, id_: int, pos: Point, size: int = 10, cooldown: float = 5) -> None:
+    def __init__(self, id_: int, pos: Point, size: int = 10, cooldown: float = 5.0, entry_speed : float = 20.0) -> None:
         super().__init__(id_, pos)
         self._storage: Dict[int,Truck] = {}
         self._storage_size = size
         self._max_cooldown = cooldown
         self._current_cooldown = 0.0
+        self._entry_speed = entry_speed
 
     def entry(self, truck: Truck) -> None:
         super().entry(truck)
@@ -259,7 +260,7 @@ class Road(Edge):
 
     @property
     def length(self) -> float:
-        return self.length
+        return self._length
 
     def draw(self, screen: pygame.Surface) -> None:
         pygame.draw.line(screen, "black",
