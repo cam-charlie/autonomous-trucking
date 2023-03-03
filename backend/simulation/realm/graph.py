@@ -262,6 +262,10 @@ class Road(Edge):
     def length(self) -> float:
         return self._length
 
+    @property
+    def end_node(self) -> Node:
+        return self._end
+
     def draw(self, screen: pygame.Surface) -> None:
         pygame.draw.line(screen, "black",
                          self._start.pos.to_tuple(), self._end.pos.to_tuple(),

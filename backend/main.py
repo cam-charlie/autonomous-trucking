@@ -32,33 +32,39 @@ def step(env: Env) -> None:
             for i in range(len(edge._trucks)-1,-1,-1):
                 this_truck = edge._trucks[i]
                 if i == len(edge._trucks)-1: #no truck in front of it: eventually going into a node
-                    if type(env.realm.nodes[this_truck.destination]) is Junction:
-                        next_node = env.realm.nodes[this_truck.destination] 
+                    if type(edge.end_node) is Junction:
+                        next_node = edge.end_node
                         #Work out how long before we hit the junction
                         distance = (1-this_truck.position) * edge.length
                         if this_truck.velocity > 0: 
+                            #Truck is moving
                             time = distance / this_truck.velocity
-                        else:
-                            time = 1000.0 #not moving - using a large time to bypass div by 0 error
-                        if next_node.green_in(time) == edge:
-                            #Currently headed for a green light
-                            if this_truck.velocity < this_truck.config.MAX_VELOCITY:
-                                #Accelerate
-                                actions[this_truck.id_] = float(this_truck.config.MAX_ACCELERATION)
-                        else: #Currently headed for a red light
-                            #Work out safe stopping distance - basically the same as below but with v = 0 as we want a complete stop
-                            u = this_truck.velocity
-                            v = 0.0
-                            a = this_truck.config.MAX_ACCELERATION * (-1)
-                            
-                            relative_stopping_distance = ((v * v) - (u * u)) / (2 * a) + safety_margin #SUVAT
 
-                            if distance < relative_stopping_distance:
-                                #Too close! Deccelerate
-                                actions[this_truck.id_] = float(this_truck.config.MAX_ACCELERATION * (-1))
-                            elif distance > relative_stopping_distance and this_truck.velocity < this_truck.config.MAX_VELOCITY:
-                                #There's space - accelerate
+                            if next_node.green_in(time) == edge:
+                                #Currently headed for a green light
+                                if this_truck.velocity < this_truck.config.MAX_VELOCITY:
+                                    #Accelerate
+                                    actions[this_truck.id_] = float(this_truck.config.MAX_ACCELERATION)
+                            else: #Currently headed for a red light
+                                #Work out safe stopping distance - basically the same as below but with v = 0 as we want a complete stop
+                                u = this_truck.velocity
+                                v = 0.0
+                                a = this_truck.config.MAX_ACCELERATION * (-1)
+                            
+                                relative_stopping_distance = ((v * v) - (u * u)) / (2 * a) + safety_margin #SUVAT
+
+                                if distance < relative_stopping_distance:
+                                    #Too close! Deccelerate
+                                    actions[this_truck.id_] = float(this_truck.config.MAX_ACCELERATION * (-1))
+                                elif distance > relative_stopping_distance and this_truck.velocity < this_truck.config.MAX_VELOCITY:
+                                    #There's space - accelerate
+                                    actions[this_truck.id_] = float(this_truck.config.MAX_ACCELERATION)
+                        else:
+                            #Truck is not moving
+                            if distance > safety_margin or next_node.green_in(0) == edge:
+                                #Over the safety margin or the light is green = start to move towards the junction
                                 actions[this_truck.id_] = float(this_truck.config.MAX_ACCELERATION)
+
                     else:
                         if this_truck.velocity < this_truck.config.MAX_VELOCITY:
                             #Accelerate
