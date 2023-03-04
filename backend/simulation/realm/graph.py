@@ -52,13 +52,14 @@ class TruckContainer(Entity, Drawable, ABC):
 
 class Edge(TruckContainer, ABC):
 
-    def __init__(self, id_: int, start: Node, end: Node) -> None:
+    def __init__(self, id_: int, start: Node, end: Node, length: float) -> None:
         super().__init__(id_)
         start.add_outgoing(self)
         end.add_incoming(self)
         self._start: Node = start
         self._end: Node = end
-        self._cost: float = 1
+        self._length: float = length
+        self._cost: float = length
 
     @property
     def cost(self) -> float:
@@ -146,6 +147,8 @@ class Depot(Node, Actor):
         super().entry(truck)
         if truck.done():
             return
+        truck.set_velocity(0)
+        truck.position = 0
         self._storage[truck.id_] = truck
         # TODO(mark) no space
         if len(self._storage) > self._storage_size:
@@ -160,6 +163,7 @@ class Depot(Node, Actor):
             tid = int(action)
             if tid in self._storage:
                 truck = self._storage.pop(tid)
+                truck.set_velocity(0)
                 # bodge, need to have a discussion about having both a 'storage' and '_trucks'
                 self._trucks = deque(filter(lambda t: t.id_ != tid, self._trucks))
                 self._outgoing[self._routing_table[truck.destination]].entry(truck)
@@ -219,10 +223,7 @@ class Road(Edge):
             start:
             end:
         """
-        super().__init__(id_, start, end)
-
-        self._length = length
-        self._cost = length
+        super().__init__(id_, start, end, length)
 
     def getPosition(self, u: float) -> Point:
         """ Obtains interpolated position
@@ -253,10 +254,12 @@ class Road(Edge):
             if i+1 < len(self._trucks) and self.get(i+1).position > truck.position:
                 truck.collision(self.get(i+1))
                 self.get(i+1).collision(truck)
+                self.get(i+1).position = max(0,truck.position - 3 / self.length)
         while len(self._trucks) > 0:
             if self.get(0).position > 1:
-                truck = self._trucks.pop()
-                truck.position = (truck.position-1) * self._length
+                truck = self._trucks.popleft()
+                # print("Exit {} {}".format(truck.id_,self.id_))
+                truck.position = (truck.position%1) * self._length
                 self._end.entry(truck)
             else:
                 break
@@ -278,4 +281,8 @@ class Road(Edge):
                          self._start.pos.to_tuple(), self._end.pos.to_tuple(),
                          width=5)
         for truck in self._trucks:
+            if truck.position > 1:
+                print(truck.current_truck_container.id_)
+                print(truck.position)
+                raise Exception
             pygame.draw.circle(screen, "green", self.getPosition(truck.position).to_tuple(), 5)
