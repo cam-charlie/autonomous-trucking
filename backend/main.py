@@ -94,10 +94,6 @@ if __name__ == '__main__':
     env = Env()
     env.reset(sys.argv[1])
     visualiser = Visualiser(env.realm)
-
-    #Temporary constants
-    truck_size = 2
-    safety_margin = 5
     
     while True:
         step(env)
