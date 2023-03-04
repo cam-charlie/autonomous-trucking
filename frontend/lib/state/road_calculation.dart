@@ -1,12 +1,12 @@
 import 'dart:math';
 import 'dart:ui';
 
-import 'package:frontend/state/road.dart';
+import 'package:frontend/state/render_road.dart';
 
 double length(RenderRoad road) {
-  if (road is StraightRenderRoad) {
+  if (road is RenderStraightRoad) {
     return (road.start - road.end).distance;
-  } else if (road is ArcRenderRoad) {
+  } else if (road is RenderArcRoad) {
     double arcDif = (road.arcEnd - road.arcStart) * (road.clockwise ? 1 : -1);
     return (arcDif % (2 * pi)) * road.radius;
   }
@@ -19,9 +19,9 @@ Offset positionAt(RenderRoad road, {double? distance, double? fraction}) {
         "Exactly one of distance and fraction must be non-null");
   }
   fraction = distance != null ? distance / length(road) : fraction!;
-  if (road is StraightRenderRoad) {
+  if (road is RenderStraightRoad) {
     return road.start + (road.end - road.start) * fraction;
-  } else if (road is ArcRenderRoad) {
+  } else if (road is RenderArcRoad) {
     double arcDif = (road.arcEnd - road.arcStart) * (road.clockwise ? 1 : -1);
     double angle = road.arcStart + (arcDif * fraction);
 
@@ -37,11 +37,11 @@ double direction(RenderRoad road, {double? distance, double? fraction}) {
         "Exactly one of distance and fraction must be non-null");
   }
   fraction = distance != null ? distance / length(road) : fraction!;
-  if (road is StraightRenderRoad) {
+  if (road is RenderStraightRoad) {
     double rotation = (road.end - road.start).direction;
 
     return ((rotation + (3 * pi / 2)) - (2 * pi)).abs();
-  } else if (road is ArcRenderRoad) {
+  } else if (road is RenderArcRoad) {
     Offset travel =
         road.centre - positionAt(road, distance: distance, fraction: fraction);
     double angle;

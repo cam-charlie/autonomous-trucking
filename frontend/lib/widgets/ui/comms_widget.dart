@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/state/communication/comm_log.dart';
-import 'package:frontend/state/vehicle.dart';
 import 'dart:async';
 
-import 'package:frontend/constants.dart' as constants;
 
 void main(List<String> args) {
   runApp(_TestApp());

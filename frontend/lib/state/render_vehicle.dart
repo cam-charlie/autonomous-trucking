@@ -6,28 +6,28 @@ import 'package:frontend/utilities/colour_tools.dart' as colour_tools;
 import '../utilities/canvas_drawing.dart';
 
 /// Vehicle ID
-class VID extends Equatable {
-  const VID(int id) : _id = id;
-  final int _id;
+class RenderVehicleID extends Equatable {
+  const RenderVehicleID(this.value);
+  final int value;
 
   @override
-  List<Object> get props => [_id];
+  List<Object> get props => [value];
 
   @override
   String toString() {
-    return "VID($_id)";
+    return "VID($value)";
   }
 }
 
-class Vehicle with EquatableMixin {
+class RenderVehicle with EquatableMixin {
   final Offset position;
   final double direction; // radians
-  final VID id;
+  final RenderVehicleID id;
 
   Color get colour =>
       constants.vehicleColours[id.hashCode % constants.vehicleColours.length];
 
-  const Vehicle(
+  const RenderVehicle(
       {required this.id, required this.position, required this.direction});
 
   void draw({required Canvas canvas}) {

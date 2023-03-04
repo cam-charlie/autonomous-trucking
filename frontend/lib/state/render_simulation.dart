@@ -1,13 +1,13 @@
-import 'package:frontend/state/road.dart';
+import 'package:frontend/state/render_road.dart';
 import 'package:collection/collection.dart';
 
-import 'vehicle.dart';
+import 'render_vehicle.dart';
 
-class SimulationState {
-  final List<Vehicle> vehicles;
+class RenderSimulationState {
+  final List<RenderVehicle> vehicles;
   final List<RenderRoad> roads;
 
-  const SimulationState({required this.vehicles, required this.roads});
+  const RenderSimulationState({required this.vehicles, required this.roads});
 
   @override
   int get hashCode =>
@@ -15,7 +15,7 @@ class SimulationState {
 
   @override
   bool operator ==(Object other) {
-    return (other is SimulationState) &&
+    return (other is RenderSimulationState) &&
         const ListEquality().equals(vehicles, other.vehicles) &&
         const ListEquality().equals(roads, other.roads);
   }
