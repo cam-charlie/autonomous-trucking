@@ -128,6 +128,14 @@ class Junction(Node):
             "position": self.pos.to_json()
         }
 
+    def update(self, dt: float) -> None:
+        if len(self._incoming) > 1: #There are multiple incoming roads
+            self._timer -= dt
+            if self._timer < 0:
+                #Switch incoming road
+                self._timer += self._interval
+                self._green = (self._green + 1) % len(self._incoming)
+
     def green_in(self, dt: float) -> Edge:
         #Returns the edge that will be allowed to enter the junction (green) in dt seconds
         ans = self._green

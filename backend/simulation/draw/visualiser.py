@@ -28,7 +28,7 @@ class Visualiser:
 
         pygame.init()
         width, height = 640, 480
-        self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN, pygame.RESIZABLE)
+        self.screen = pygame.display.set_mode((width, height))
 
     def refresh(self) -> None:
         self.screen.fill("white")
