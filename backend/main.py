@@ -4,8 +4,7 @@ sys.path.append(os.getcwd())
 from simulation.env import Env
 from simulation.realm.graph import Depot, Road, Junction
 from simulation.draw.visualiser import Visualiser
-
-import time
+from simulation.config import Config
 
 def setUp() -> Env: 
     print("Usage: main.py \"path-to-config-json\"")
@@ -14,7 +13,7 @@ def setUp() -> Env:
     return env
 
 
-def step(env: Env) -> None: 
+def step(env: Env) -> None:
     #Temporary constants
     truck_size = 2
     safety_margin = 5
@@ -101,7 +100,6 @@ if __name__ == '__main__':
     safety_margin = 5
     
     while True:
-        time.sleep(0.001)
         step(env)
         visualiser.refresh()
-    
+
