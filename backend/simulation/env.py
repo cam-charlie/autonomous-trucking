@@ -1,6 +1,6 @@
 # pylint: disable=dangerous-default-value, attribute-defined-outside-init
-
 from __future__ import annotations
+import json
 from .config import Config
 from .realm.realm import Realm
 
@@ -83,3 +83,23 @@ class Env:
 
         # TODO(mark) this is a placeholder. Wrap into a dictionary of primitives.
         return {}
+
+    def to_json(self) -> str:
+        config = Config.get_instance()
+        result = {
+            "nodes": [
+                node.to_json() for node in self.realm.nodes.values()
+            ],
+            "roads": [
+                edge.to_json() for edge in self.realm.edges.values()
+            ],
+            "trucks": [
+                truck.to_json() for truck in self.realm.trucks.values()
+            ],
+            "globals": {
+                "max_truck_acceleration": config.MAX_ACCELERATION,
+                "max_truck_velocity": config.MAX_VELOCITY,
+                "sim_time": config.SIM_TIME
+            }
+        }
+        return json.dumps(result)

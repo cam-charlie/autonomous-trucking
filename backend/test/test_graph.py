@@ -37,7 +37,9 @@ class TestGraph(unittest.TestCase):
         for _ in range(5):
             t0.act(0, 0)
             road.update(1.0)
-        self.assertAlmostEqual(road._trucks[0].position, 0.5)
+        first_truck = road.get_first_truck()
+        self.assertIsNotNone(first_truck)
+        self.assertAlmostEqual(first_truck.position, 0.5) # type: ignore
         # Collision
         t1 = Truck(101, [junction_next.id_], 0.0)
         t1._velocity = 1
@@ -72,8 +74,11 @@ class TestGraph(unittest.TestCase):
             road_start.update(1)
             road_end.update(1)
 
-        self.assertAlmostEqual(road_end._trucks[0].position, 0.2)
-        self.assertEqual(len(road_start._trucks),0)
+        end_truck = road_end.get_first_truck()
+        self.assertIsNotNone(end_truck)
+        if end_truck is not None:
+            self.assertAlmostEqual(end_truck.position, 0.2)
+        self.assertEqual(road_start.is_empty(),True)
 
     def test_depot(self) -> None:
         depot_start = Depot(0, Point(0,0))

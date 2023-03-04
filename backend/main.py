@@ -15,7 +15,6 @@ def setUp() -> Env:
     env.reset(sys.argv[1])
     return env
 
-
 def step(env: Env) -> None:
     #Temporary constants
     truck_size = 5
@@ -33,10 +32,7 @@ def step(env: Env) -> None:
         if type(edge) is Road:
             for i in range(len(edge._trucks)-1,-1,-1):
                 this_truck = edge._trucks[i]
-                if Config.get_instance().SIM_TIME > 60:
-                    print("Truck " + str(this_truck.id_) + " on Road " + str(edge.id_) + " Pos = " + str(this_truck.position))
                 if i == len(edge._trucks)-1: #no truck in front of it: eventually going into a node
-                    #print("Truck " + str(this_truck.id_) + " is in front")
                     if type(edge.end_node) is Junction:
                         next_node = edge.end_node
                         #Work out how long before we hit the junction
@@ -126,4 +122,3 @@ if __name__ == '__main__':
             input()
         step(env)
         visualiser.refresh()
-
