@@ -2,10 +2,10 @@ from __future__ import annotations
 from abc import ABC
 from simulation.draw.utils import Drawable, DEFAULT_FONT
 import pygame
-from collections import deque
 from ..lib.geometry import Point
 from ..config import InvalidConfiguration, Config
 from .entity import Actor, Entity
+from collections import OrderedDict
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from .truck import Truck
@@ -15,10 +15,13 @@ class TruckContainer(Entity, Drawable, ABC):
 
     def __init__(self, id_: int) -> None:
         super().__init__(id_)
-        self._trucks: deque[Truck] = deque()
+        self._trucks: OrderedDict[int, Truck] = OrderedDict()
 
-    def get(self, i: int) -> Truck:
-        return self._trucks[i]
+    def get_first_truck(self) -> Optional[Truck]:
+        return next(iter(self._trucks.values()), None)
+
+    def is_empty(self) -> bool:
+        return len(self._trucks) == 0
 
     def update(self, dt: float) -> None:
         pass
@@ -30,7 +33,7 @@ class TruckContainer(Entity, Drawable, ABC):
             truck: the new truck.
                 Invariant: truck position is normalized
         """
-        self._trucks.append(truck)
+        self._trucks[truck.id_] = truck
         truck.set_current_truck_container(self)
 
         if truck.destination == self.id_:
@@ -42,9 +45,8 @@ class TruckContainer(Entity, Drawable, ABC):
     def id_(self) -> int:
         return self._id
 
-    @property
-    def trucks(self) -> Deque[Truck]:
-        return self._trucks
+    def trucks(self) -> List[Truck]:
+        return list(self._trucks.values())
 
 class Edge(TruckContainer, ABC):
 
@@ -104,7 +106,7 @@ class Junction(Node):
         super().entry(truck)
         if truck.done():
             raise InvalidConfiguration()
-        self._trucks.pop()
+        self._trucks.pop(truck.id_)
         self._outgoing[self._routing_table[truck.destination]].entry(truck)
 
     @staticmethod
@@ -126,7 +128,6 @@ class Depot(Node, Actor):
 
     def __init__(self, id_: int, pos: Point, size: int = 10, cooldown: float = 5) -> None:
         super().__init__(id_, pos)
-        self._storage: Dict[int,Truck] = {}
         self._storage_size = size
         self._max_cooldown = cooldown
         self._current_cooldown = 0.0
@@ -135,9 +136,8 @@ class Depot(Node, Actor):
         if truck.done():
             return
         super().entry(truck)
-        self._storage[truck.id_] = truck
         # TODO(mark) no space
-        if len(self._storage) > self._storage_size:
+        if len(self._trucks) > self._storage_size:
             pass
 
     def act(self, action: Optional[float], dt: float) -> None:
@@ -147,28 +147,26 @@ class Depot(Node, Actor):
             return
         if dt > self._current_cooldown:
             tid = int(action)
-            if tid in self._storage:
-                truck = self._storage.pop(tid)
-                # bodge, need to have a discussion about having both a 'storage' and '_trucks'
-                self._trucks = deque(filter(lambda t: t.id_ != tid, self._trucks))
+            if tid in self._trucks:
+                truck = self._trucks.pop(tid)
                 self._outgoing[self._routing_table[truck.destination]].entry(truck)
                 self._current_cooldown += self._max_cooldown
 
     def update(self, dt: float) -> None:
         self._current_cooldown = max(0, self._current_cooldown - dt)
-        for truck in self._storage.values():
+        for truck in self._trucks.values():
             truck.set_velocity(0)
 
     def compute_actions(self, truck_size: int = 2, safety_margin: int = 5) -> Optional[float]:
-        for truck in self._storage.values():
+        for truck in self._trucks.values():
             if truck.start_time >= Config.get_instance().SIM_TIME:
                 continue
             if not truck.done(): #Truck is waiting to be released
                 next_road = self._outgoing[0]
-                if len(next_road.trucks) == 0:
+                if next_road.is_empty():
                     return float(truck.id_)
 
-                first_car_pos = next_road.get(0).position * next_road.length # type: ignore
+                first_car_pos = self.get_first_truck().position * next_road.length # type: ignore
                 if first_car_pos > float(truck_size + safety_margin): #There is space on the road
                     #Release this truck
                     return float(truck.id_)
@@ -227,21 +225,22 @@ class Road(Edge):
         truck.position = truck.position / self._length
 
     def update(self, dt: float) -> None:
-        for truck in self._trucks:
+        for truck in self._trucks.values():
             if not truck.stepped:
                 truck.position += truck.velocity * dt / self._length
                 truck.on_movement(dt)
-        for i, truck in enumerate(self._trucks):
-            if i+1 < len(self._trucks) and self.get(i+1).position > truck.position:
-                truck.collision(self.get(i+1))
-                self.get(i+1).collision(truck)
-        while len(self._trucks) > 0:
-            if self.get(0).position > 1:
-                truck = self._trucks.pop()
-                truck.position = (truck.position-1) * self._length
-                self._end.entry(truck)
-            else:
-                break
+
+        truck_list = self.trucks()
+        for i, truck in enumerate(truck_list):
+            if i+1 < len(truck_list) and truck_list[i].position > truck.position:
+                truck.collision(truck_list[i+1])
+                truck_list[i+1].collision(truck)
+
+        #mypy won't correctly type the walrus operator, so ignore
+        while (truck := self.get_first_truck()) is not None and truck.position > 1: # type: ignore
+            self._trucks.pop(truck.id_)
+            truck.position = (truck.position-1) * self._length
+            self._end.entry(truck)
 
     @property
     def length(self) -> float:
@@ -251,5 +250,5 @@ class Road(Edge):
         pygame.draw.line(screen, "black",
                          self._start.pos.to_tuple(), self._end.pos.to_tuple(),
                          width=5)
-        for truck in self._trucks:
+        for truck in self._trucks.values():
             pygame.draw.circle(screen, "green", self.getPosition(truck.position).to_tuple(), 5)
