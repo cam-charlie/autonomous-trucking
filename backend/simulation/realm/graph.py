@@ -90,9 +90,9 @@ class Node(TruckContainer, ABC):
     def add_outgoing(self, e: Edge) -> None:
         self._outgoing.append(e)
 
-    def green_in(self, dt: float) -> Optional[Edge]:
-        #Needed for junction (there's probably a better way of doing this). 
-        return None
+    #def green_in(self, dt: float) -> Optional[Edge]:
+        #Needed for junction (there's probably a better way of doing this).
+     #   return None
 
     @staticmethod
     def from_json(json: Any) -> Node:
