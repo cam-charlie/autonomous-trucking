@@ -6,9 +6,13 @@ import './grpc/trucking.pbgrpc.dart';
 import './Backend.dart';
 import 'dart:io';
 
+import 'dart:convert';
+
 
 void main() async{
-  await startFromConfig(1);
+  var json_string = await File("./example.json").readAsString();
+
+  await startFromConfig(json_string);
   print('hi');
   for (int i = 0; i < 220; ++i){
     sleep(Duration(milliseconds:100));

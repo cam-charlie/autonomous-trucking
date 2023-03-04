@@ -15,11 +15,11 @@ class Config:
 
     _INSTANCE: Optional['Config'] = None
 
-    def __init__(self, path: str) -> None:
+    def __init__(self, json_string: str) -> None:
         if Config._INSTANCE is not None:
             raise ConfigIsSingleton
-        with open(path, 'r',encoding='utf-8') as f:
-            self.data = json.load(f)
+
+        self.data = json.loads(json_string)
         self.SIM_TIME = float(self.data["globals"]["sim_time"])
 
 

@@ -7,9 +7,7 @@ from simulation.draw.visualiser import Visualiser
 from simulation.config import Config
 
 def setUp() -> Env:
-    print("Usage: main.py \"path-to-config-json\"")
     env = Env()
-    env.reset(sys.argv[1])
     return env
 
 
