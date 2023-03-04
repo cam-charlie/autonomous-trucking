@@ -76,14 +76,15 @@ if __name__ == '__main__':
         
         for edge in env.realm.edges.values():
             if type(edge) is Road:
-                for i in range(len(edge._trucks)-1,-1,-1):
-                    this_truck = edge._trucks[i]
-                    if i == len(edge._trucks)-1: #no truck in front of it: eventually going into a node
+                truck_list = edge.trucks()
+                for i in range(len(truck_list)-1,-1,-1):
+                    this_truck = truck_list[i]
+                    if i == len(truck_list)-1: #no truck in front of it: eventually going into a node
                         if this_truck.velocity < Config.get_instance().MAX_VELOCITY:
                             #Accelerate
                             actions[this_truck.id_] = float(Config.get_instance().MAX_ACCELERATION)
                     else:
-                        next_truck = edge._trucks[i+1]
+                        next_truck = truck_list[i+1]
                         #Generate stopping distance
                         u = this_truck.velocity
                         v = next_truck.velocity
