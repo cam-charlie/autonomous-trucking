@@ -1,6 +1,5 @@
 import os
 import sys
-from turtle import position
 sys.path.append(os.getcwd())
 from simulation.env import Env
 from simulation.realm.graph import Depot, Road, Junction
@@ -9,7 +8,7 @@ from simulation.config import Config
 
 import time
 
-def setUp() -> Env: 
+def setUp() -> Env:
     print("Usage: main.py \"path-to-config-json\"")
     env = Env()
     env.reset(sys.argv[1])
@@ -38,7 +37,7 @@ def step(env: Env) -> None:
                         next_node = edge.end_node
                         #Work out how long before we hit the junction
                         distance = (1-this_truck.position) * edge.length
-                        if this_truck.velocity > 0: 
+                        if this_truck.velocity > 0:
                             #Truck is moving
                             time = distance / this_truck.velocity
 
@@ -52,7 +51,7 @@ def step(env: Env) -> None:
                                 u = this_truck.velocity
                                 v = 0.0
                                 a = Config.get_instance().MAX_ACCELERATION * (-1)
-                            
+
                                 relative_stopping_distance = ((v * v) - (u * u)) / (2 * a) + safety_margin #SUVAT
 
                                 if distance < relative_stopping_distance:
@@ -90,16 +89,16 @@ def step(env: Env) -> None:
                         #There's space - accelerate
                         actions[this_truck.id_] = float(Config.get_instance().MAX_ACCELERATION)
                         #print("Truck " + str(this_truck.id_) + ": Accelerate #5")
-    #Actually do the step        
+    #Actually do the step
     env.step(actions)
-    
+
 
 if __name__ == '__main__':
     print("Usage: main.py \"path-to-config-json\"")
     env = Env()
     env.reset(sys.argv[1])
     visualiser = Visualiser(env.realm)
-    
+
     while True:
         time.sleep(0.002)
         step(env)
