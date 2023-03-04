@@ -6,7 +6,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:frontend/generation/file_to_store.dart';
 import 'package:frontend/generation/store_state.dart';
+import 'package:frontend/generation/store_to_json.dart';
 import 'package:frontend/generation/store_to_render.dart';
+import 'package:frontend/state/communication/Backend.dart';
 import 'package:frontend/state/render_road.dart';
 import 'state/interpolator.dart';
 import 'package:frontend/state/render_simulation.dart';
@@ -43,14 +45,17 @@ class AppController extends ChangeNotifier {
     activityNotifier = ValueNotifier(false);
     stateNotifier = ValueNotifier(constants.exampleState); // initial state
 
+    _setupNetwork();
+  }
 
-    rootBundle.loadString('assets/state.yaml').then((String yamlData) {
-      final StoreSimulationState storeState = loadFileIntoStoreState(yamlData);
-      final List<RenderRoad> roads = convertStoreStateToRenderRoads(storeState);
-      _interpolator = Interpolator(roads: roads);
-      bufferingNotifier.value = true;
-      _initialStateLoadedFromFile = true;
-    });
+  void _setupNetwork() async {
+    String yamlData = await rootBundle.loadString('assets/state.yaml');
+    final StoreSimulationState storeState = loadFileIntoStoreState(yamlData);
+    await startFromConfig(convertStoreStateToJson(storeState));
+    final List<RenderRoad> roads = convertStoreStateToRenderRoads(storeState);
+    _interpolator = Interpolator(roads: roads);
+    bufferingNotifier.value = true;
+    _initialStateLoadedFromFile = true;
   }
 
   _tick(Duration elapsed) {

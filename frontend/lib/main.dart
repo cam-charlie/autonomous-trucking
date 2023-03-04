@@ -9,7 +9,6 @@ import 'package:frontend/widgets/ui/comms_widget.dart';
 import 'widgets/ui/buffer_overlay.dart';
 
 void main() async {
-  await startFromConfig(1);
   runApp(TruckingApp());
 }
 
