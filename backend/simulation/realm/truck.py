@@ -3,7 +3,7 @@ from .entity import Actor
 from ..config import Config
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from typing import Any, List, Optional
+    from typing import Any, List, Dict, Optional
     from .graph import TruckContainer
     from .realm import Realm
 
@@ -99,6 +99,15 @@ class Truck(Actor):
     @property
     def route(self) -> List[int]:
         return self._route
+
+    def to_json(self) -> Dict[Any, Any]:
+        return {
+            "id": self.id_,
+            "current_node": self.current_truck_container.id_,
+            "current_position": self.position,
+            "route": self.route[self._route_index:],
+            "start_time": self.start_time
+        }
 
     @staticmethod
     def from_json(json: Any) -> Truck:
