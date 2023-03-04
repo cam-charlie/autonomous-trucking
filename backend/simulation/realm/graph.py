@@ -90,6 +90,10 @@ class Node(TruckContainer, ABC):
     def add_outgoing(self, e: Edge) -> None:
         self._outgoing.append(e)
 
+    def green_in(self, dt: float) -> Optional[Edge]:
+        #Needed for junction (there's probably a better way of doing this). 
+        return None
+
     @staticmethod
     def from_json(json: Any) -> Node:
         if json["type"] == "junction":
@@ -100,12 +104,36 @@ class Node(TruckContainer, ABC):
 
 class Junction(Node):
 
+    def __init__(self, id_: int, pos:Point, traffic_interval : float = 20) -> None:
+        super().__init__(id_, pos)
+        self._interval = traffic_interval
+        self._timer = traffic_interval
+        self._green : int = 0
+
+
     def entry(self, truck: Truck) -> None:
         super().entry(truck)
         if truck.done():
             raise InvalidConfiguration()
         self._trucks.pop()
         self._outgoing[self._routing_table[truck.destination]].entry(truck)
+
+    def update(self, dt: float) -> None:
+        if len(self._incoming) > 1: #There are multiple incoming roads
+            self._timer -= dt
+            if self._timer < 0:
+                #Switch incoming road
+                self._timer += self._interval
+                self._green = (self._green + 1) % len(self._incoming)
+
+    def green_in(self, dt: float) -> Edge:
+        #Returns the edge that will be allowed to enter the junction (green) in dt seconds
+        ans = self._green
+        if dt > self._timer:
+            ans += int((dt - self._timer) / self._interval)
+            ans = ans % len(self._incoming)
+        return self._incoming[ans]
+
 
     @staticmethod
     def from_json(json: Any) -> Junction:
@@ -246,6 +274,10 @@ class Road(Edge):
     @property
     def length(self) -> float:
         return self._length
+
+    @property
+    def end_node(self) -> Node:
+        return self._end
 
     def draw(self, screen: pygame.Surface) -> None:
         pygame.draw.line(screen, "black",
