@@ -238,9 +238,8 @@ class Road(Edge):
             start:
             end:
         """
-        super().__init__(id_, start, end)
+        super().__init__(id_, start, end, length)
 
-        self._length = length
         self._speed_limit = speed_limit
         self._cost = length / speed_limit
 
