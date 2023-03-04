@@ -1,5 +1,6 @@
 import os
 import sys
+from turtle import position
 sys.path.append(os.getcwd())
 from simulation.env import Env
 from simulation.realm.graph import Depot, Road, Junction
@@ -32,6 +33,8 @@ def step(env: Env) -> None:
         if type(edge) is Road:
             for i in range(len(edge._trucks)-1,-1,-1):
                 this_truck = edge._trucks[i]
+                if Config.get_instance().SIM_TIME > 60:
+                    print("Truck " + str(this_truck.id_) + " on Road " + str(edge.id_) + " Pos = " + str(this_truck.position))
                 if i == len(edge._trucks)-1: #no truck in front of it: eventually going into a node
                     #print("Truck " + str(this_truck.id_) + " is in front")
                     if type(edge.end_node) is Junction:
@@ -44,6 +47,8 @@ def step(env: Env) -> None:
 
                             if next_node.green_in(time) == edge:
                                 #Currently headed for a green light
+                                if Config.get_instance().SIM_TIME > 60:
+                                    print("Truck " + str(this_truck.id_) + " headed for GREEN")
                                 if this_truck.velocity < Config.get_instance().MAX_VELOCITY and this_truck.velocity < edge.speed_limit:
                                     #Accelerate
                                     actions[this_truck.id_] = float(Config.get_instance().MAX_ACCELERATION)
@@ -51,6 +56,8 @@ def step(env: Env) -> None:
                                 #else:
                                     #print("Velocity = " + str(this_truck.velocity) + " | Max = " + str(Config.get_instance().MAX_VELOCITY) + " | Speed Limit = " + str(edge.speed_limit))
                             else: #Currently headed for a red light
+                                if Config.get_instance().SIM_TIME > 60:
+                                    print("Truck " + str(this_truck.id_) + " headed for RED")
                                 #Work out safe stopping distance - basically the same as below but with v = 0 as we want a complete stop
                                 u = this_truck.velocity
                                 v = 0.0
@@ -115,6 +122,8 @@ if __name__ == '__main__':
     
     while True:
         time.sleep(0.002)
+        if Config.get_instance().SIM_TIME > 60:
+            input()
         step(env)
         visualiser.refresh()
 
