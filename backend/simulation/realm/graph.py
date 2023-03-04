@@ -183,7 +183,7 @@ class Depot(Node, Actor):
     def compute_actions(self, truck_size: int = 2, safety_margin: int = 5) -> Optional[float]:
         for truck in self._storage.values():
             if not truck.done(): #Truck is waiting to be released
-                next_road = truck.destination
+                next_road = self._outgoing[truck.destination]
                 assert isinstance(next_road, Road)
                 first_car_pos = next_road.get(0).position * next_road.length
                 if first_car_pos > float(truck_size + safety_margin): #There is space on the road
