@@ -9,9 +9,9 @@ String convertStoreStateToJson(StoreSimulationState state) {
         'current_node': v.node?.value,
         'current_road': v.road?.value,
         'current_position': v.fractionAlongRoad,
-        'route': v.route.map((StoreNodeID id) => id.value),
+        'route': v.route.map((StoreNodeID id) => id.value).toList(),
         'start_time': 0,
-      });
+      }).toList();
 
   final roadsJson = state.roadMap.values.map((StoreRoad r) => {
         'id': "2${r.id.value}",
@@ -20,7 +20,7 @@ String convertStoreStateToJson(StoreSimulationState state) {
         'length': (state.nodeMap[r.endNode]!.position -
                 state.nodeMap[r.startNode]!.position)
             .distance,
-      });
+      }).toList();
 
   final nodesJson = state.nodeMap.values.map((StoreNode n) => {
         'type': n.type == StoreNodeType.depot
@@ -33,7 +33,7 @@ String convertStoreStateToJson(StoreSimulationState state) {
           'x': n.position.dx,
           'y': n.position.dy,
         },
-      });
+      }).toList();
   final dataJson = {
     'nodes': nodesJson,
     'roads': roadsJson,
