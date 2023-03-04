@@ -1,133 +1,136 @@
 {
-    "nodes": [
-        {
-            "type" : "junction",
-            "id": 1,
-            "position": {
-                "x": 100,
-                "y": 300
-            }
-        },
-        {
-            "type": "junction",
-            "id": 2,
-            "position": {
-                "x": 200,
-                "y": 400
-            }
-        },
-        {
-            "type": "junction",
-            "id": 3,
-            "position": {
-              "x": 200,
-              "y": 200
-            }
-        },
-        {
-            "type": "junction",
-            "id": 4,
-            "position": {
-              "x": 300,
-              "y": 400
-            }
-        },
-        {
-            "type": "junction",
-            "id": 5,
-            "position": {
-              "x": 300,
-              "y": 200
-            }
-        },
-        {
-            "type": "junction",
-            "id": 6,
-            "position": {
-              "x": 400,
-              "y": 300
-            }
-        }
-    ],
-
-    "roads": [
-      {
-        "id": 101,
-        "start_node_id": 1,
-        "end_node_id": 2,
-        "length": 900.0
-      },
-      {
-        "id": 102,
-        "start_node_id": 1,
-        "end_node_id": 3,
-        "length": 400.0
-      },
-      {
-        "id": 103,
-        "start_node_id": 2,
-        "end_node_id": 3,
-        "length": 200.0
-      },
-      {
-        "id": 104,
-        "start_node_id": 2,
-        "end_node_id": 4,
-        "length": 700.0
-      },
-      {
-        "id": 105,
-        "start_node_id": 2,
-        "end_node_id": 5,
-        "length": 300.0
-      },
-      {
-        "id": 106,
-        "start_node_id": 3,
-        "end_node_id": 4,
-        "length": 100.0
-      },
-      {
-        "id": 107,
-        "start_node_id": 3,
-        "end_node_id": 5,
-        "length": 600.0
-      },
-      {
-        "id": 108,
-        "start_node_id": 4,
-        "end_node_id": 5,
-        "length": 400.0
-      },
-      {
-        "id": 109,
-        "start_node_id": 4,
-        "end_node_id": 6,
-        "length": 800.0
-      },
-      {
-        "id": 110,
-        "start_node_id": 5,
-        "end_node_id": 6,
-        "length": 200.0
+  "nodes": [
+    {
+      "type": "depot",
+      "id": 1,
+      "position": {
+        "x": 100,
+        "y": 300
       }
-    ],
-    "trucks": [
-      {
-        "id": 10000,
-        "current_node": 1,
-        "current_position": 0,
-        "route": [6]
-      },
-      {
-        "id": 10001,
-        "current_node": 1,
-        "current_position": 0,
-        "route": [2,4,5,6]
+    },
+    {
+      "type": "junction",
+      "id": 2,
+      "position": {
+        "x": 200,
+        "y": 400
       }
-    ],
-    "globals": {
-          "max_truck_acceleration": 100.0,
-          "max_truck_velocity": 10.0
+    },
+    {
+      "type": "junction",
+      "id": 3,
+      "position": {
+        "x": 200,
+        "y": 200
+      }
+    },
+    {
+      "type": "junction",
+      "id": 4,
+      "position": {
+        "x": 300,
+        "y": 400
+      }
+    },
+    {
+      "type": "junction",
+      "id": 5,
+      "position": {
+        "x": 300,
+        "y": 200
+      }
+    },
+    {
+      "type": "depot",
+      "id": 6,
+      "position": {
+        "x": 400,
+        "y": 300
+      }
     }
+  ],
+
+  "roads": [
+    {
+      "id": 101,
+      "start_node_id": 1,
+      "end_node_id": 2,
+      "length": 900.0
+    },
+    {
+      "id": 102,
+      "start_node_id": 1,
+      "end_node_id": 3,
+      "length": 400.0
+    },
+    {
+      "id": 103,
+      "start_node_id": 2,
+      "end_node_id": 3,
+      "length": 200.0
+    },
+    {
+      "id": 104,
+      "start_node_id": 2,
+      "end_node_id": 4,
+      "length": 700.0
+    },
+    {
+      "id": 105,
+      "start_node_id": 2,
+      "end_node_id": 5,
+      "length": 300.0
+    },
+    {
+      "id": 106,
+      "start_node_id": 3,
+      "end_node_id": 4,
+      "length": 100.0
+    },
+    {
+      "id": 107,
+      "start_node_id": 3,
+      "end_node_id": 5,
+      "length": 600.0
+    },
+    {
+      "id": 108,
+      "start_node_id": 4,
+      "end_node_id": 5,
+      "length": 400.0
+    },
+    {
+      "id": 109,
+      "start_node_id": 4,
+      "end_node_id": 6,
+      "length": 800.0
+    },
+    {
+      "id": 110,
+      "start_node_id": 5,
+      "end_node_id": 6,
+      "length": 200.0
+    }
+  ],
+  "trucks": [
+    {
+      "id": 10000,
+      "current_node": 1,
+      "current_position": 0,
+      "route": [ 6 ],
+      "start_time": 10.0
+    },
+    {
+      "id": 10001,
+      "current_node": 1,
+      "current_position": 0,
+      "route": [ 2, 4, 5, 6 ],
+      "start_time": 10.0
+    }
+  ],
+  "globals": {
+    "max_truck_acceleration": 100.0,
+    "max_truck_velocity": 10.0,
+    "sim_time": 0.0
   }
+}

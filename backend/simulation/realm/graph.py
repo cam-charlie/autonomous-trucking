@@ -192,7 +192,7 @@ class Depot(Node, Actor):
             if truck.start_time >= Config.get_instance().SIM_TIME:
                 continue
             if not truck.done(): #Truck is waiting to be released
-                next_road = self._outgoing[truck.destination]
+                next_road = self._outgoing[0] #Not sure this should be 0
                 if len(next_road.trucks) == 0:
                     return float(truck.id_)
 
