@@ -8,14 +8,14 @@ from simulation.env import Env
 env = Env()
 class TestMetric(unittest.TestCase):
     def test_movement_metric(self) -> None:
-        env.reset("test/test_json/test_2.json")
+        env.reset_from_path("test/test_json/test_2.json")
         _,reward,_,_ = env.step({})
         self.assertEqual(reward,0)
         _,reward,_,_ = env.step({10000: 1})
         self.assertGreater(reward,0)
 
     def test_completion_metric(self) -> None:
-        env.reset("test/test_json/test_2.json")
+        env.reset_from_path("test/test_json/test_2.json")
         while True:
             _,reward, dones,_ = env.step({10001: 100})
             if dones[10001]:
