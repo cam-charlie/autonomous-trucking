@@ -15,11 +15,16 @@ class Config:
 
     _INSTANCE: Optional['Config'] = None
 
-    def __init__(self, json_string: str) -> None:
+    def __init__(self, json_str: str, from_path: bool = False) -> None:
         if Config._INSTANCE is not None:
             raise ConfigIsSingleton
 
-        self.data = json.loads(json_string)
+        if from_path: # json_str represents path
+            print("its from path")
+            with open(json_str, 'r',encoding='utf-8') as f:
+                self.data = json.load(f)
+        else: 
+            self.data = json.loads(json_str)
         self.SIM_TIME = float(self.data["globals"]["sim_time"])
 
 
@@ -30,8 +35,12 @@ class Config:
         return Config._INSTANCE
 
     @staticmethod
-    def initialise(path: str) -> None:
-        Config._INSTANCE = Config(path)
+    def initialise(json_string: str) -> None:
+        Config._INSTANCE = Config(json_string)
+
+    @staticmethod
+    def initialise_from_path(path: str) -> None:
+        Config._INSTANCE = Config(path, True)
 
     @staticmethod
     def clear() -> None:

@@ -36,6 +36,21 @@ class Env:
 
         return self.step()
 
+    def reset_from_path(self, path: str) -> EnvState:
+        """ Reset realm to map and conditions specified in config
+
+        Returns:
+            observations: As defined in compute observations
+            rewards
+            dones
+            infos
+        """
+        Config.clear()
+        Config.initialise_from_path(path)
+        self.realm = Realm()
+
+        return self.step()
+
     def step(self, actions: Dict[int, float] = {}, dt: float=1/30) -> EnvState:
         """ Simulates one realm tick.
 
