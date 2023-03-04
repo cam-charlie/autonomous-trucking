@@ -41,9 +41,9 @@ def step(env: Env) -> None:
 
                             if next_node.green_in(time) == edge:
                                 #Currently headed for a green light
-                                if this_truck.velocity < this_truck.config.MAX_VELOCITY:
+                                if this_truck.velocity < Config.get_instance().MAX_VELOCITY:
                                     #Accelerate
-                                    actions[this_truck.id_] = float(this_truck.config.MAX_ACCELERATION)
+                                    actions[this_truck.id_] = float(Config.get_instance().MAX_ACCELERATION)
                             else: #Currently headed for a red light
                                 #Work out safe stopping distance - basically the same as below but with v = 0 as we want a complete stop
                                 u = this_truck.velocity
@@ -54,36 +54,36 @@ def step(env: Env) -> None:
 
                                 if distance < relative_stopping_distance:
                                     #Too close! Deccelerate
-                                    actions[this_truck.id_] = float(this_truck.config.MAX_ACCELERATION * (-1))
-                                elif distance > relative_stopping_distance and this_truck.velocity < this_truck.config.MAX_VELOCITY:
+                                    actions[this_truck.id_] = float(Config.get_instance().MAX_ACCELERATION * (-1))
+                                elif distance > relative_stopping_distance and this_truck.velocity < Config.get_instance().MAX_VELOCITY:
                                     #There's space - accelerate
-                                    actions[this_truck.id_] = float(this_truck.config.MAX_ACCELERATION)
+                                    actions[this_truck.id_] = float(Config.get_instance().MAX_ACCELERATION)
                         else:
                             #Truck is not moving
                             if distance > safety_margin or next_node.green_in(0) == edge:
                                 #Over the safety margin or the light is green = start to move towards the junction
-                                actions[this_truck.id_] = float(this_truck.config.MAX_ACCELERATION)
+                                actions[this_truck.id_] = float(Config.get_instance().MAX_ACCELERATION)
 
                     else:
-                        if this_truck.velocity < this_truck.config.MAX_VELOCITY:
+                        if this_truck.velocity < Config.get_instance().MAX_VELOCITY:
                             #Accelerate
-                            actions[this_truck.id_] = float(this_truck.config.MAX_ACCELERATION)
+                            actions[this_truck.id_] = float(Config.get_instance().MAX_ACCELERATION)
                 else:
                     next_truck = edge._trucks[i+1]
                     #Generate stopping distance
                     u = this_truck.velocity
                     v = next_truck.velocity
-                    a = this_truck.config.MAX_ACCELERATION * (-1)
+                    a = Config.get_instance().MAX_ACCELERATION * (-1)
                     relative_stopping_distance = ((v * v) - (u * u)) / (2 * a) + safety_margin #SUVAT
 
                     distance = (next_truck.position - this_truck.position) * edge.length
 
                     if distance < relative_stopping_distance:
                         #Too close! Deccelerate
-                        actions[this_truck.id_] = float(this_truck.config.MAX_ACCELERATION * (-1))
-                    elif distance > relative_stopping_distance and this_truck.velocity < this_truck.config.MAX_VELOCITY:
+                        actions[this_truck.id_] = float(Config.get_instance().MAX_ACCELERATION * (-1))
+                    elif distance > relative_stopping_distance and this_truck.velocity < Config.get_instance().MAX_VELOCITY:
                         #There's space - accelerate
-                        actions[this_truck.id_] = float(this_truck.config.MAX_ACCELERATION)
+                        actions[this_truck.id_] = float(Config.get_instance().MAX_ACCELERATION)
 
     #Actually do the step        
     env.step(actions)
