@@ -20,11 +20,11 @@ class Config:
             raise ConfigIsSingleton
 
         if from_path: # json_str represents path
-            print("its from path")
             with open(json_str, 'r',encoding='utf-8') as f:
                 self.data = json.load(f)
-        else: 
+        else:
             self.data = json.loads(json_str)
+
         self.SIM_TIME = float(self.data["globals"]["sim_time"])
 
 
