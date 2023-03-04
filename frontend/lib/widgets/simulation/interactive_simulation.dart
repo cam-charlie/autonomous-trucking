@@ -3,13 +3,13 @@ import 'package:frontend/utilities/animated_input_range.dart';
 import 'package:frontend/utilities/camera_transform.dart';
 import 'package:frontend/utilities/range.dart';
 import 'package:frontend/constants.dart' as constants;
-import '../../state/simulation.dart';
+import '../../state/render_simulation.dart';
 import 'move_detector/move_detector.dart';
 import 'move_detector/move_detector_controller.dart';
 import 'simulation_visualisation.dart';
 
 class InteractiveSimulation extends StatefulWidget {
-  final ValueNotifier<SimulationState> stateNotifier;
+  final ValueNotifier<RenderSimulationState> stateNotifier;
   const InteractiveSimulation({required this.stateNotifier, super.key});
 
   @override

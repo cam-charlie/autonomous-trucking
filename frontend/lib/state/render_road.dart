@@ -5,16 +5,16 @@ import 'package:frontend/constants.dart' as constants;
 import 'package:frontend/utilities/colour_tools.dart' as colour_tools;
 
 /// Road ID
-class RID extends Equatable {
-  const RID(int id) : _id = id;
-  final int _id;
+class RenderRoadID extends Equatable {
+  const RenderRoadID(this.value);
+  final int value;
 
   @override
-  List<Object> get props => [_id];
+  List<Object> get props => [value];
 
   @override
   String toString() {
-    return "RID($_id)";
+    return "RID($value)";
   }
 }
 
@@ -22,7 +22,7 @@ class RID extends Equatable {
 abstract class RenderRoad {
   const RenderRoad();
 
-  RID get id;
+  RenderRoadID get id;
 
   void draw({required Canvas canvas});
 
@@ -31,13 +31,13 @@ abstract class RenderRoad {
   void drawBody({required Canvas canvas});
 }
 
-class StraightRenderRoad extends RenderRoad with EquatableMixin {
+class RenderStraightRoad extends RenderRoad with EquatableMixin {
   final Offset start;
   final Offset end;
   @override
-  final RID id;
+  final RenderRoadID id;
 
-  const StraightRenderRoad(
+  const RenderStraightRoad(
       {required this.id, required this.start, required this.end});
 
   @override
@@ -70,7 +70,7 @@ class StraightRenderRoad extends RenderRoad with EquatableMixin {
   List<Object> get props => [start, end, id];
 }
 
-class ArcRenderRoad extends RenderRoad with EquatableMixin {
+class RenderArcRoad extends RenderRoad with EquatableMixin {
   final Offset centre;
   final double radius;
   final bool clockwise;
@@ -82,9 +82,9 @@ class ArcRenderRoad extends RenderRoad with EquatableMixin {
   final double arcEnd;
 
   @override
-  final RID id;
+  final RenderRoadID id;
 
-  const ArcRenderRoad(
+  const RenderArcRoad(
       {required this.id,
       required this.centre,
       required this.radius,

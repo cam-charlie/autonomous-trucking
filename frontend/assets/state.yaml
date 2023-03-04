@@ -1,0 +1,45 @@
+# Stores a state of the simulation which can be loaded from
+
+vehicles:
+  0:
+    node: ~
+    road: 0
+    fraction: 0.5
+    velocity: 10.0
+    start time: 0
+    route: [1]
+
+roads:
+  0:
+    type: straight
+    start node: 0
+    end node: 1
+  1:
+    type: arc
+    centre:
+      x: 0
+      y: 0
+    radius: 100
+    start angle: 2.356194490189793 # 135 degrees
+    sweep angle: -3.141592653589793 # 180 degrees anticlockwise
+    start node: 1
+    end node: 0
+
+
+nodes:
+  0:
+    type: junction
+    position:
+      x: -100
+      y: -100
+  1:
+    type: junction
+    position:
+      x: 100
+      y: 10
+  2:
+    type: depot
+    max capacity: 5
+    position:
+      x: -50
+      y: 50

@@ -1,5 +1,5 @@
-import '../vehicle.dart';
-import '../road.dart';
+import '../render_vehicle.dart';
+import '../render_road.dart';
 import 'package:sprintf/sprintf.dart';
 
 class CommunicationLog {
@@ -20,7 +20,7 @@ class CommunicationLog {
 }
 
 class _Action {
-  final VID vehicle;
+  final RenderVehicleID vehicle;
   final double time;
   _Action({required this.vehicle, required this.time});
   @override
@@ -32,9 +32,9 @@ class _Action {
 enum Direction { left, right, straight }
 
 class TurnAction extends _Action {
-  final RID startRoad;
-  final RID endRoad;
-  final VID vehicle;
+  final RenderRoadID startRoad;
+  final RenderRoadID endRoad;
+  final RenderVehicleID vehicle;
   final double time;
   final Direction direction;
   TurnAction(
@@ -64,7 +64,7 @@ class TurnAction extends _Action {
 class ChangeSpeedAction extends _Action {
   final double startSpeed;
   final double endSpeed;
-  final VID vehicle;
+  final RenderVehicleID vehicle;
   final double time;
   ChangeSpeedAction(
       {required this.vehicle,
@@ -81,7 +81,7 @@ class ChangeSpeedAction extends _Action {
 }
 
 class InitAction extends _Action {
-  final VID vehicle;
+  final RenderVehicleID vehicle;
   final double time;
   InitAction({required this.vehicle, required this.time})
       : super(time: time, vehicle: vehicle);
