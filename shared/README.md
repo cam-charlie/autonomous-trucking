@@ -11,7 +11,8 @@ Truck:
     {
         "id": int,
         "destination_id": int,
-        "route": List[int] // list of node ids
+        "route": List[int] // list of node ids,
+        "start_time": float
     }
 
 Road:
@@ -35,5 +36,6 @@ Node:
 Globals:
     {
         "max_truck_acceleration": float,
-        "max_truck_velocity": float
+        "max_truck_velocity": float,
+        "sim_time": float
     }

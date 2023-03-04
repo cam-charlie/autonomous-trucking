@@ -6,7 +6,7 @@ from .realm.realm import Realm
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from typing import Dict, Tuple, Any
+    from typing import Any, Dict, List, Tuple
     EnvState = Tuple[Dict[Any, Any], float, Dict[int, bool], Dict[Any, Any]]
 
 '''
@@ -30,12 +30,13 @@ class Env:
             dones
             infos
         """
-        self.config = Config(config_json_path)
-        self.realm = Realm(self.config)
+        Config.clear()
+        Config.initialise(config_json_path)
+        self.realm = Realm()
 
         return self.step()
 
-    def step(self, actions: Dict[int, float] = {}) -> EnvState:
+    def step(self, actions: Dict[int, float] = {}, dt: float=1/30) -> EnvState:
         """ Simulates one realm tick.
 
         Args:
@@ -60,14 +61,15 @@ class Env:
             infos: A dictionary of agents to debug information.
         """
 
-        dones = self.realm.update(actions)
+        dones = self.realm.update(actions, dt)
+        Config.get_instance().SIM_TIME += dt
         obs = self._compute_observations()
         rewards, infos = self._compute_rewards()
 
         return obs, rewards, dones, infos
 
 
-    def _compute_rewards(self) -> Tuple[float, Dict[Any, Any]]:
+    def _compute_rewards(self) -> Tuple[float, Dict[int, List[str]]]:
         """ Computes the metric to optimize for
 
         By default overall throughput of trucks reaching destination.
@@ -76,7 +78,7 @@ class Env:
         Returns
             Change in metric on most recent step
         """
-        return 0, {}
+        return self.realm.compute_rewards(), self.realm.compute_infos()
 
     def _compute_observations(self) -> Dict[Any, Any]:
         """Autonomous trucking observation API.
@@ -90,8 +92,3 @@ class Env:
 
         # TODO(mark) this is a placeholder. Wrap into a dictionary of primitives.
         return {}
-
-    def render(self) -> float:
-        """ Pass required game state to frontend module
-        """
-        raise NotImplementedError
