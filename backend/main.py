@@ -12,7 +12,6 @@ def setUp() -> Env:
     env.reset(sys.argv[1])
     return env
 
-
 def step(env: Env) -> None:
     #Temporary constants
     truck_size = 2
@@ -67,13 +66,14 @@ if __name__ == '__main__':
 
     while True:
         actions = {}
+        
         #Work out actions
         for actor in env.realm.actors.values():
             if type(actor) is Depot:
                 act = actor.compute_actions(truck_size, safety_margin)
                 if act is not None:
                     actions[actor.id_] = act
-
+        
         for edge in env.realm.edges.values():
             if type(edge) is Road:
                 for i in range(len(edge._trucks)-1,-1,-1):
@@ -102,4 +102,3 @@ if __name__ == '__main__':
         #Actually do the step
         env.step(actions)
         visualiser.refresh()
-

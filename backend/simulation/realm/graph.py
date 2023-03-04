@@ -1,5 +1,5 @@
 from __future__ import annotations
-from abc import ABC
+from abc import ABC, abstractmethod
 from simulation.draw.utils import Drawable, DEFAULT_FONT
 import pygame
 from collections import deque
@@ -46,15 +46,20 @@ class TruckContainer(Entity, Drawable, ABC):
     def trucks(self) -> Deque[Truck]:
         return self._trucks
 
+    @abstractmethod
+    def to_json(self) -> Dict[Any, Any]:
+        raise NotImplementedError
+
 class Edge(TruckContainer, ABC):
 
-    def __init__(self, id_: int, start: Node, end: Node) -> None:
+    def __init__(self, id_: int, start: Node, end: Node, length: float) -> None:
         super().__init__(id_)
         start.add_outgoing(self)
         end.add_incoming(self)
         self._start: Node = start
         self._end: Node = end
-        self._cost: float = 1
+        self._length: float = length
+        self._cost: float = length
 
     @property
     def cost(self) -> float:
@@ -107,6 +112,13 @@ class Junction(Node):
         self._trucks.pop()
         self._outgoing[self._routing_table[truck.destination]].entry(truck)
 
+    def to_json(self) -> Dict[Any, Any]:
+        return {
+            "type": "junction",
+            "id": self.id_,
+            "position": self.pos.to_json()
+        }
+
     @staticmethod
     def from_json(json: Any) -> Junction:
         return Junction(json["id"], Point.from_json(json["position"]))
@@ -132,9 +144,11 @@ class Depot(Node, Actor):
         self._current_cooldown = 0.0
 
     def entry(self, truck: Truck) -> None:
+        super().entry(truck)
         if truck.done():
             return
-        super().entry(truck)
+        truck.set_velocity(0)
+        truck.position = 0
         self._storage[truck.id_] = truck
         # TODO(mark) no space
         if len(self._storage) > self._storage_size:
@@ -149,6 +163,7 @@ class Depot(Node, Actor):
             tid = int(action)
             if tid in self._storage:
                 truck = self._storage.pop(tid)
+                truck.set_velocity(0)
                 # bodge, need to have a discussion about having both a 'storage' and '_trucks'
                 self._trucks = deque(filter(lambda t: t.id_ != tid, self._trucks))
                 self._outgoing[self._routing_table[truck.destination]].entry(truck)
@@ -174,6 +189,13 @@ class Depot(Node, Actor):
                     return float(truck.id_)
         return None
 
+    def to_json(self) -> Dict[Any, Any]:
+        return {
+            "type": "depot",
+            "id": self.id_,
+            "position": self.pos.to_json()
+        }
+
     @staticmethod
     def from_json(json: Any) -> Depot:
         return Depot(json["id"], Point.from_json(json["position"]))
@@ -193,18 +215,6 @@ class Depot(Node, Actor):
 class Road(Edge):
     """One way road.
     """
-
-    def __init__(self, id_: int, start: Node, end: Node, length: float) -> None:
-        """Initializes a road object
-
-        Args:
-            start:
-            end:
-        """
-        super().__init__(id_, start, end)
-
-        self._length = length
-        self._cost = length
 
     def getPosition(self, u: float) -> Point:
         """ Obtains interpolated position
@@ -235,13 +245,22 @@ class Road(Edge):
             if i+1 < len(self._trucks) and self.get(i+1).position > truck.position:
                 truck.collision(self.get(i+1))
                 self.get(i+1).collision(truck)
+                self.get(i+1).position = max(0,truck.position - 3 / self.length)
         while len(self._trucks) > 0:
             if self.get(0).position > 1:
-                truck = self._trucks.pop()
-                truck.position = (truck.position-1) * self._length
+                truck = self._trucks.popleft()
+                truck.position = (truck.position%1) * self._length
                 self._end.entry(truck)
             else:
                 break
+
+    def to_json(self) -> Dict[Any, Any]:
+        return {
+            "id": self.id_,
+            "start_node_id": self._start.id_,
+            "end_node_id": self._end.id_,
+            "length": self.length
+        }
 
     @property
     def length(self) -> float:
