@@ -104,7 +104,7 @@ class Node(TruckContainer, ABC):
 
 class Junction(Node):
 
-    def __init__(self, id_: int, pos:Point, traffic_interval : float = 20) -> None:
+    def __init__(self, id_: int, pos:Point, traffic_interval : float = 10) -> None:
         super().__init__(id_, pos)
         self._interval = traffic_interval
         self._timer = traffic_interval
@@ -222,7 +222,8 @@ class Road(Edge):
     """One way road.
     """
 
-    def __init__(self, id_: int, start: Node, end: Node, length: float) -> None:
+    def __init__(self, id_: int, start: Node, end: Node, length: float,
+                  speed_limit: float = 31.3) -> None:
         """Initializes a road object
 
         Args:
@@ -232,7 +233,8 @@ class Road(Edge):
         super().__init__(id_, start, end)
 
         self._length = length
-        self._cost = length
+        self._speed_limit = speed_limit
+        self._cost = length / speed_limit
 
     def getPosition(self, u: float) -> Point:
         """ Obtains interpolated position
@@ -278,6 +280,10 @@ class Road(Edge):
     @property
     def end_node(self) -> Node:
         return self._end
+
+    @property
+    def speed_limit(self) -> float:
+        return self._speed_limit
 
     def draw(self, screen: pygame.Surface) -> None:
         pygame.draw.line(screen, "black",

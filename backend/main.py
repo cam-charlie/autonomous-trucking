@@ -6,6 +6,8 @@ from simulation.realm.graph import Depot, Road, Junction
 from simulation.draw.visualiser import Visualiser
 from simulation.config import Config
 
+import time
+
 def setUp() -> Env: 
     print("Usage: main.py \"path-to-config-json\"")
     env = Env()
@@ -31,6 +33,7 @@ def step(env: Env) -> None:
             for i in range(len(edge._trucks)-1,-1,-1):
                 this_truck = edge._trucks[i]
                 if i == len(edge._trucks)-1: #no truck in front of it: eventually going into a node
+                    #print("Truck " + str(this_truck.id_) + " is in front")
                     if type(edge.end_node) is Junction:
                         next_node = edge.end_node
                         #Work out how long before we hit the junction
@@ -41,9 +44,12 @@ def step(env: Env) -> None:
 
                             if next_node.green_in(time) == edge:
                                 #Currently headed for a green light
-                                if this_truck.velocity < Config.get_instance().MAX_VELOCITY:
+                                if this_truck.velocity < Config.get_instance().MAX_VELOCITY and this_truck.velocity < edge.speed_limit:
                                     #Accelerate
                                     actions[this_truck.id_] = float(Config.get_instance().MAX_ACCELERATION)
+                                    #print("Truck " + str(this_truck.id_) + ": Accelerate #1")
+                                #else:
+                                    #print("Velocity = " + str(this_truck.velocity) + " | Max = " + str(Config.get_instance().MAX_VELOCITY) + " | Speed Limit = " + str(edge.speed_limit))
                             else: #Currently headed for a red light
                                 #Work out safe stopping distance - basically the same as below but with v = 0 as we want a complete stop
                                 u = this_truck.velocity
@@ -55,21 +61,32 @@ def step(env: Env) -> None:
                                 if distance < relative_stopping_distance:
                                     #Too close! Deccelerate
                                     actions[this_truck.id_] = float(Config.get_instance().MAX_ACCELERATION * (-1))
-                                elif distance > relative_stopping_distance and this_truck.velocity < Config.get_instance().MAX_VELOCITY:
+                                    #print("Truck " + str(this_truck.id_) + ": Decelerate #2")
+                                elif distance > relative_stopping_distance and this_truck.velocity < Config.get_instance().MAX_VELOCITY and this_truck.velocity < edge.speed_limit:
                                     #There's space - accelerate
                                     actions[this_truck.id_] = float(Config.get_instance().MAX_ACCELERATION)
+                                    #print("Truck " + str(this_truck.id_) + ": Accelerate #2")
+                                #else:
+                                    #print("Distance = " + str(distance) + " | Velocity = " + str(this_truck.velocity) + " | Max = " + str(Config.get_instance().MAX_VELOCITY) + " | Speed Limit = " + str(edge.speed_limit))
                         else:
                             #Truck is not moving
                             if distance > safety_margin or next_node.green_in(0) == edge:
                                 #Over the safety margin or the light is green = start to move towards the junction
                                 actions[this_truck.id_] = float(Config.get_instance().MAX_ACCELERATION)
+                                #print("Truck " + str(this_truck.id_) + ": Accelerate #3")
+                            #else:
+                                #print("Truck " + str(this_truck.id_) + ": None #3")
 
                     else:
-                        if this_truck.velocity < Config.get_instance().MAX_VELOCITY:
+                        if this_truck.velocity < Config.get_instance().MAX_VELOCITY and this_truck.velocity < edge.speed_limit:
                             #Accelerate
                             actions[this_truck.id_] = float(Config.get_instance().MAX_ACCELERATION)
-                else:
+                            #print("Truck " + str(this_truck.id_) + ": Accelerate #4")
+                        #else:
+                            #print("Truck " + str(this_truck.id_) + ": None #4")
+                else: #Truck in front of this time
                     next_truck = edge._trucks[i+1]
+                    #print("Truck " + str(this_truck.id_) + " is behind Truck " + str(next_truck.id_))
                     #Generate stopping distance
                     u = this_truck.velocity
                     v = next_truck.velocity
@@ -81,10 +98,11 @@ def step(env: Env) -> None:
                     if distance < relative_stopping_distance:
                         #Too close! Deccelerate
                         actions[this_truck.id_] = float(Config.get_instance().MAX_ACCELERATION * (-1))
-                    elif distance > relative_stopping_distance and this_truck.velocity < Config.get_instance().MAX_VELOCITY:
+                        #print("Truck " + str(this_truck.id_) + ": Decelerate #5")
+                    elif distance > relative_stopping_distance and this_truck.velocity < Config.get_instance().MAX_VELOCITY and this_truck.velocity < edge.speed_limit:
                         #There's space - accelerate
                         actions[this_truck.id_] = float(Config.get_instance().MAX_ACCELERATION)
-
+                        #print("Truck " + str(this_truck.id_) + ": Accelerate #5")
     #Actually do the step        
     env.step(actions)
     
@@ -96,6 +114,7 @@ if __name__ == '__main__':
     visualiser = Visualiser(env.realm)
     
     while True:
+        time.sleep(0.001)
         step(env)
         visualiser.refresh()
 
