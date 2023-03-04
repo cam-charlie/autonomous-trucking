@@ -1,22 +1,22 @@
 from __future__ import annotations
 from .entity import Actor
+from ..config import Config
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from typing import Any, List, Optional
-    from ..config import Config
     from .graph import TruckContainer
     from .realm import Realm
 
 class Truck(Actor):
 
-    def __init__(self, id_: int, route: List[int], config: Config) -> None:
+    def __init__(self, id_: int, route: List[int], start_time: float) -> None:
         super().__init__(id_)
         self._velocity: float = 0
         self.position: float = 0
-        self.config = config
         self._stepped = False
         self._route = route
         self._route_index = 0
+        self.start_time = start_time
 
     def act(self, action: Optional[float], dt: float) -> None:
         """Apply actions
@@ -26,10 +26,10 @@ class Truck(Actor):
         acceleration = action
         self._stepped = False
         if acceleration is not None:
-            achieved_acceleration = min(self.config.MAX_ACCELERATION, abs(acceleration))
+            achieved_acceleration = min(Config.get_instance().MAX_ACCELERATION, abs(acceleration))
             if acceleration < 0:
                 achieved_acceleration = achieved_acceleration * -1
-            self._velocity = min(self.config.MAX_VELOCITY,
+            self._velocity = min(Config.get_instance().MAX_VELOCITY,
                                  self._velocity + achieved_acceleration*dt)
             self._velocity = max(self._velocity, 0)
 
@@ -40,7 +40,7 @@ class Truck(Actor):
         self._route_index += 1
         assert self._route_index <= len(self._route)
         if self.done():
-            self._accumulated_reward += self.config.COMPLETION_REWARD
+            self._accumulated_reward += Config.get_instance().COMPLETION_REWARD
             self._accumulated_info.append("Completed Journey")
 
     def done(self) -> bool:
@@ -65,16 +65,16 @@ class Truck(Actor):
         self._route_index = 1
 
     def collision(self, o: Truck) -> None:
-        self._accumulated_reward += self.config.COLLISION_REWARD
+        self._accumulated_reward += Config.get_instance().COLLISION_REWARD
         self._accumulated_info.append(f"Collision {o.id_}")
 
     def tailgating(self, o: Truck) -> None:
-        self._accumulated_reward += self.config.TAILGATE_REWARD
+        self._accumulated_reward += Config.get_instance().TAILGATE_REWARD
         self._accumulated_info.append(f"Tailgating {o.id_}")
 
     def on_movement(self, dt: float) -> None:
         self._stepped = True
-        self._accumulated_reward += self._velocity * self.config.MOVEMENT_REWARD * dt
+        self._accumulated_reward += self._velocity * Config.get_instance().MOVEMENT_REWARD * dt
 
     @property
     def stepped(self) -> bool:
@@ -101,7 +101,7 @@ class Truck(Actor):
         return self._route
 
     @staticmethod
-    def from_json(json: Any, config: Config) -> Truck:
-        truck = Truck(int(json["id"]), [int(x) for x in json["route"]], config)
+    def from_json(json: Any) -> Truck:
+        truck = Truck(int(json["id"]), [int(x) for x in json["route"]], float(json["start_time"]))
         truck.position = json['current_position']
         return truck

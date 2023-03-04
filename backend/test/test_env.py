@@ -10,6 +10,7 @@ class TestEnv(unittest.TestCase):
     def test_setup(self) -> None:
         env.reset("../shared/example.json")
 
+
     def test_rollout_basic(self) -> None:
         env.reset("test/test_json/test_1.json")
         for _ in range(128):
