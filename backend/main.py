@@ -12,7 +12,6 @@ def setUp() -> Env:
     env.reset(sys.argv[1])
     return env
 
-
 def step(env: Env) -> None:
     #Temporary constants
     truck_size = 2
@@ -102,4 +101,3 @@ if __name__ == '__main__':
         #Actually do the step
         env.step(actions)
         visualiser.refresh()
-

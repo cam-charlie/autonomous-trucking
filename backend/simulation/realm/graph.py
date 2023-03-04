@@ -1,5 +1,5 @@
 from __future__ import annotations
-from abc import ABC
+from abc import ABC, abstractmethod
 from simulation.draw.utils import Drawable, DEFAULT_FONT
 import pygame
 from collections import deque
@@ -45,6 +45,10 @@ class TruckContainer(Entity, Drawable, ABC):
     @property
     def trucks(self) -> Deque[Truck]:
         return self._trucks
+
+    @abstractmethod
+    def to_json(self) -> Dict[Any, Any]:
+        raise NotImplementedError
 
 class Edge(TruckContainer, ABC):
 
@@ -107,6 +111,13 @@ class Junction(Node):
         self._trucks.pop()
         self._outgoing[self._routing_table[truck.destination]].entry(truck)
 
+    def to_json(self) -> Dict[Any, Any]:
+        return {
+            "type": "junction",
+            "id": self.id_,
+            "position": self.pos.to_json()
+        }
+
     @staticmethod
     def from_json(json: Any) -> Junction:
         return Junction(json["id"], Point.from_json(json["position"]))
@@ -132,9 +143,9 @@ class Depot(Node, Actor):
         self._current_cooldown = 0.0
 
     def entry(self, truck: Truck) -> None:
+        super().entry(truck)
         if truck.done():
             return
-        super().entry(truck)
         self._storage[truck.id_] = truck
         # TODO(mark) no space
         if len(self._storage) > self._storage_size:
@@ -173,6 +184,13 @@ class Depot(Node, Actor):
                     #Release this truck
                     return float(truck.id_)
         return None
+
+    def to_json(self) -> Dict[Any, Any]:
+        return {
+            "type": "depot",
+            "id": self.id_,
+            "position": self.pos.to_json()
+        }
 
     @staticmethod
     def from_json(json: Any) -> Depot:
@@ -242,6 +260,14 @@ class Road(Edge):
                 self._end.entry(truck)
             else:
                 break
+
+    def to_json(self) -> Dict[Any, Any]:
+        return {
+            "id": self.id_,
+            "start_node_id": self._start.id_,
+            "end_node_id": self._end.id_,
+            "length": self.length
+        }
 
     @property
     def length(self) -> float:

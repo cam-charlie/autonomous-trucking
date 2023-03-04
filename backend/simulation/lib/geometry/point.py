@@ -2,7 +2,7 @@
 2D vector representation. Use immutably.
 '''
 from math import sqrt
-from typing import Any, Tuple
+from typing import Any, Dict, Tuple
 
 class Point:
 
@@ -30,8 +30,14 @@ class Point:
     def magnitude(self) -> float:
         return sqrt(self.x**2 + self.y**2)
 
+    def imag(self) -> complex:
+        return self.x + self._y*1j
+
     def __str__(self) -> str:
         return "({self.x} {self.y})"
+
+    def to_json(self) -> Dict[Any, Any]:
+        return {"x": self.x, "y": self.y}
 
     @staticmethod
     def from_json(json: Any) -> 'Point':
