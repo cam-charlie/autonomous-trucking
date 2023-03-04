@@ -1,0 +1,120 @@
+{
+  "nodes": [
+    {
+      "type": "depot",
+      "id": 1,
+      "position": {
+        "x": 100,
+        "y": 200
+      }
+    },
+    {
+      "type": "depot",
+      "id": 2,
+      "position": {
+        "x": 200,
+        "y": 300
+      }
+    },
+    {
+      "type": "depot",
+      "id": 3,
+      "position": {
+        "x": 200,
+        "y": 100
+      }
+    },
+    {
+      "type": "junction",
+      "id": 4,
+      "position": {
+        "x": 200,
+        "y": 200
+      }
+    },
+    {
+      "type": "depot",
+      "id": 5,
+      "position": {
+        "x": 400,
+        "y": 200
+      }
+    }
+  ],
+
+  "roads": [
+    {
+      "id": 101,
+      "start_node_id": 1,
+      "end_node_id": 4,
+      "length": 1000.0
+    },
+    {
+      "id": 102,
+      "start_node_id": 2,
+      "end_node_id": 4,
+      "length": 1000.0
+    },
+    {
+      "id": 103,
+      "start_node_id": 3,
+      "end_node_id": 4,
+      "length": 1000.0
+    },
+    {
+      "id": 104,
+      "start_node_id": 4,
+      "end_node_id": 5,
+      "length": 2000.0
+    }
+  ],
+  "trucks": [
+    {
+      "id": 10000,
+      "current_node": 1,
+      "current_position": 0,
+      "route": [ 5 ],
+      "start_time": 1.0
+    },
+    {
+      "id": 10001,
+      "current_node": 1,
+      "current_position": 0,
+      "route": [ 5 ],
+      "start_time": 1.0
+    },
+    {
+      "id": 10002,
+      "current_node": 2,
+      "current_position": 0,
+      "route": [ 5 ],
+      "start_time": 1.0
+    },
+    {
+      "id": 10003,
+      "current_node": 2,
+      "current_position": 0,
+      "route": [ 5 ],
+      "start_time": 1.0
+    },
+    {
+      "id": 10004,
+      "current_node": 3,
+      "current_position": 0,
+      "route": [ 5 ],
+      "start_time": 1.0
+    },
+    {
+      "id": 10005,
+      "current_node": 3,
+      "current_position": 0,
+      "route": [ 5 ],
+      "start_time": 1.0
+    }
+  ],
+  "globals": {
+    "max_truck_acceleration": 1.0,
+    "max_truck_velocity": 40.0,
+    "sim_time": 0.0
+  }
+}

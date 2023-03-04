@@ -104,7 +104,7 @@ class Node(TruckContainer, ABC):
 
 class Junction(Node):
 
-    def __init__(self, id_: int, pos:Point, traffic_interval : float = 10) -> None:
+    def __init__(self, id_: int, pos:Point, traffic_interval : float = 15) -> None:
         super().__init__(id_, pos)
         self._interval = traffic_interval
         self._timer = traffic_interval

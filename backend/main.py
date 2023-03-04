@@ -17,8 +17,8 @@ def setUp() -> Env:
 
 def step(env: Env) -> None:
     #Temporary constants
-    truck_size = 2
-    safety_margin = 5
+    truck_size = 5
+    safety_margin = 15
 
     actions = {}
     #Work out actions
@@ -114,7 +114,7 @@ if __name__ == '__main__':
     visualiser = Visualiser(env.realm)
     
     while True:
-        time.sleep(0.001)
+        time.sleep(0.002)
         step(env)
         visualiser.refresh()
 
