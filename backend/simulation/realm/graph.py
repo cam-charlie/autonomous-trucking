@@ -216,15 +216,6 @@ class Road(Edge):
     """One way road.
     """
 
-    def __init__(self, id_: int, start: Node, end: Node, length: float) -> None:
-        """Initializes a road object
-
-        Args:
-            start:
-            end:
-        """
-        super().__init__(id_, start, end, length)
-
     def getPosition(self, u: float) -> Point:
         """ Obtains interpolated position
 
@@ -258,7 +249,6 @@ class Road(Edge):
         while len(self._trucks) > 0:
             if self.get(0).position > 1:
                 truck = self._trucks.popleft()
-                # print("Exit {} {}".format(truck.id_,self.id_))
                 truck.position = (truck.position%1) * self._length
                 self._end.entry(truck)
             else:
@@ -281,8 +271,4 @@ class Road(Edge):
                          self._start.pos.to_tuple(), self._end.pos.to_tuple(),
                          width=5)
         for truck in self._trucks:
-            if truck.position > 1:
-                print(truck.current_truck_container.id_)
-                print(truck.position)
-                raise Exception
             pygame.draw.circle(screen, "green", self.getPosition(truck.position).to_tuple(), 5)
