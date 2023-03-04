@@ -16,6 +16,7 @@ final _channel = ClientChannel(
 );
 
 final _PositionDataStreamerStub = PositionDataStreamerClient(_channel);
+final _ConfigurationStreamerStub = ConfigurationStreamerClient(_channel);
 
 bool _isBuffering = false;
 
@@ -80,7 +81,9 @@ Future<List<TruckPositionsAtTime>> getPositionData(double timeStamp) async{
 
 
 Future<void> startFromConfig(var config) async {
-  // for now ignore config, just start
+  var jsonString = ConfigAsString(json: config);
+
+  await _ConfigurationStreamerStub.startFromConfig(jsonString);
   await _fillFirstBuffer();
 }
 

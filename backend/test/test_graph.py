@@ -6,15 +6,13 @@ import sys
 sys.path.append(os.getcwd())
 from simulation.lib.geometry import Point
 from simulation.realm.graph import Depot, Road, Junction
-from simulation.realm.truck import Collision, Truck
+from simulation.realm.truck import Truck
 from simulation.config import Config
 
-class TestConfig(Config):
-    def __init__(self) -> None:
-        pass
-    MAX_ACCELERATION = 100
-    MAX_VELOCITY = 100
-test_config = TestConfig()
+
+Config.initialise_from_path("test/test_json/test_graph.json")
+test_config = Config.get_instance()
+
 class TestGraph(unittest.TestCase):
     def test_road_definition(self) -> None:
         junction_start = Junction(0, Point(1,1))
@@ -32,7 +30,7 @@ class TestGraph(unittest.TestCase):
         junction_start = Junction(0, Point(0,0))
         junction_next = Junction(1, Point(10,0))
         road = Road(2, junction_start,junction_next, 10)
-        t0 = Truck(100,[junction_next.id_], test_config)
+        t0 = Truck(100,[junction_next.id_], 0.0)
         t0._velocity = 1
         # Step for 5 seconds at constant velocity
         road.entry(t0)
@@ -41,9 +39,9 @@ class TestGraph(unittest.TestCase):
             road.update(1.0)
         self.assertAlmostEqual(road._trucks[0].position, 0.5)
         # Collision
-        t1 = Truck(101, [junction_next.id_], test_config)
+        t1 = Truck(101, [junction_next.id_], 0.0)
         t1._velocity = 1
-        t2 = Truck(102, [junction_next.id_], test_config)
+        t2 = Truck(102, [junction_next.id_], 0.0)
         t2._velocity = 3
         road.entry(t1)
         t1.act(0,0)
@@ -54,7 +52,8 @@ class TestGraph(unittest.TestCase):
         road.update(0.01)
         t1.act(0,0)
         t2.act(0,0)
-        self.assertRaises(Collision, road.update, 1.0)
+        road.update(1.0)
+        self.assertLess(t1.get_accumulated_reward(),0)
 
 
     def test_junction_continuation(self) -> None:
@@ -64,7 +63,7 @@ class TestGraph(unittest.TestCase):
         road_start = Road(3, junction_start, junction_test, 5)
         road_end = Road(4, junction_test, junction_end, 5)
         junction_test._routing_table[junction_end.id_] = 0
-        t = Truck(100, [junction_end.id_], test_config)
+        t = Truck(100, [junction_end.id_], 0.0)
         t._velocity = 2
 
         road_start.entry(t)
@@ -82,7 +81,7 @@ class TestGraph(unittest.TestCase):
         depot_end = Depot(1, Point(10,0))
 
         road = Road(2, depot_start, depot_end, 10)
-        t = Truck(100, [depot_end.id_], test_config)
+        t = Truck(100, [depot_end.id_], 0.0)
         t._velocity = 1
 
         depot_start.entry(t)

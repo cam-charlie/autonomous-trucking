@@ -10,7 +10,7 @@
 
   "nodes": [
     {
-      "type" : "junction",
+      "type" : "depot",
       "id": 3,
       "position": {
         "x": 200,
@@ -18,7 +18,7 @@
       }
     },
     {
-      "type": "junction",
+      "type": "depot",
       "id": 4,
       "position": {
         "x": 400,
@@ -32,12 +32,14 @@
       "id": 100,
       "current_node": 3,
       "current_position": 0,
-      "route": [4]
+      "route": [4],
+      "start_time": 0.0
     }
   ],
 
   "globals": {
         "max_truck_acceleration": 1.0,
-        "max_truck_velocity": 1.0
+        "max_truck_velocity": 1.0,
+        "sim_time": 0.0
   }
 }

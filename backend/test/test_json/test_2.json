@@ -1,0 +1,64 @@
+{
+    "nodes": [
+        {
+            "type" : "junction",
+            "id": 1,
+            "position": {
+                "x": 100,
+                "y": 100
+            }
+        },
+        {
+            "type": "junction",
+            "id": 2,
+            "position": {
+                "x": 200,
+                "y": 100
+            }
+        },
+        {
+            "type": "depot",
+            "id": 3,
+            "position": {
+                "x": 300,
+                "y": 100
+            }
+        }
+    ],
+
+    "roads": [
+      {
+        "id": 101,
+        "start_node_id": 1,
+        "end_node_id": 2,
+        "length": 100.0
+      },
+      {
+        "id": 102,
+        "start_node_id": 2,
+        "end_node_id": 3,
+        "length": 100.0
+      }
+    ],
+    "trucks": [
+      {
+        "id": 10000,
+        "current_node": 1,
+        "current_position": 0,
+        "route": [3],
+        "start_time": 0.0
+      },
+      {
+        "id": 10001,
+        "current_node": 2,
+        "current_position": 0,
+        "route": [3],
+        "start_time": 0.0
+      }
+    ],
+    "globals": {
+          "max_truck_acceleration": 100.0,
+          "max_truck_velocity": 10.0,
+          "sim_time": 0.0
+    }
+  }

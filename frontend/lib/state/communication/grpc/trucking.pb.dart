@@ -9,6 +9,53 @@ import 'dart:core' as $core;
 
 import 'package:protobuf/protobuf.dart' as $pb;
 
+class ConfigAsString extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'ConfigAsString', createEmptyInstance: create)
+    ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'json')
+    ..hasRequiredFields = false
+  ;
+
+  ConfigAsString._() : super();
+  factory ConfigAsString({
+    $core.String? json,
+  }) {
+    final _result = create();
+    if (json != null) {
+      _result.json = json;
+    }
+    return _result;
+  }
+  factory ConfigAsString.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory ConfigAsString.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  ConfigAsString clone() => ConfigAsString()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  ConfigAsString copyWith(void Function(ConfigAsString) updates) => super.copyWith((message) => updates(message as ConfigAsString)) as ConfigAsString; // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static ConfigAsString create() => ConfigAsString._();
+  ConfigAsString createEmptyInstance() => create();
+  static $pb.PbList<ConfigAsString> createRepeated() => $pb.PbList<ConfigAsString>();
+  @$core.pragma('dart2js:noInline')
+  static ConfigAsString getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<ConfigAsString>(create);
+  static ConfigAsString? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get json => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set json($core.String v) { $_setString(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasJson() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearJson() => clearField(1);
+}
+
 class TimeDelta extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'TimeDelta', createEmptyInstance: create)
     ..a<$core.double>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'seconds', $pb.PbFieldType.OD)
@@ -351,5 +398,34 @@ class PathElement extends $pb.GeneratedMessage {
   $core.bool hasRoadId() => $_has(1);
   @$pb.TagNumber(2)
   void clearRoadId() => clearField(2);
+}
+
+class Void extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'Void', createEmptyInstance: create)
+    ..hasRequiredFields = false
+  ;
+
+  Void._() : super();
+  factory Void() => create();
+  factory Void.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory Void.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  Void clone() => Void()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  Void copyWith(void Function(Void) updates) => super.copyWith((message) => updates(message as Void)) as Void; // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static Void create() => Void._();
+  Void createEmptyInstance() => create();
+  static $pb.PbList<Void> createRepeated() => $pb.PbList<Void>();
+  @$core.pragma('dart2js:noInline')
+  static Void getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<Void>(create);
+  static Void? _defaultInstance;
 }
 

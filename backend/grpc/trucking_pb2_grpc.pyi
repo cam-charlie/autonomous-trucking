@@ -26,3 +26,20 @@ class PositionDataStreamerServicer(metaclass=abc.ABCMeta):
     ) -> trucking_pb2.PositionDataStream: ...
 
 def add_PositionDataStreamerServicer_to_server(servicer: PositionDataStreamerServicer, server: grpc.Server) -> None: ...
+
+class ConfigurationStreamerStub:
+    def __init__(self, channel: grpc.Channel) -> None: ...
+    startFromConfig: grpc.UnaryUnaryMultiCallable[
+        trucking_pb2.ConfigAsString,
+        trucking_pb2.Void,
+    ]
+
+class ConfigurationStreamerServicer(metaclass=abc.ABCMeta):
+    @abc.abstractmethod
+    def startFromConfig(
+        self,
+        request: trucking_pb2.ConfigAsString,
+        context: grpc.ServicerContext,
+    ) -> trucking_pb2.Void: ...
+
+def add_ConfigurationStreamerServicer_to_server(servicer: ConfigurationStreamerServicer, server: grpc.Server) -> None: ...

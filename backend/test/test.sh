@@ -4,4 +4,6 @@ cd ..
 source env/bin/activate
 python3 test/test_graph.py
 python3 test/test_env.py
+python3 test/test_metric.py
 mypy ./
+pylint --rcfile=pylint.cfg --recursive=y simulation test
