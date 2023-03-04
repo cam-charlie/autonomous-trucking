@@ -41,6 +41,12 @@ class PositionDataStreamerServicer(trucking_pb2_grpc.PositionDataStreamerService
         return trucking_pb2.PositionDataStream(trucks=stream)
 
 
+class ConfigurationStreamerServicer(trucking_pb2_grpc.PositionDataStreamerServicer):
+    def startFromConfig(self, request: trucking_pb2.ConfigAsString, context: Any) -> trucking_pb2.Void:
+        pass
+
+
+
 def serve(env: Env) -> None:
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     trucking_pb2_grpc.add_PositionDataStreamerServicer_to_server(
