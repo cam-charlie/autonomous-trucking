@@ -48,7 +48,7 @@ def step(env: Env) -> None:
                                 #Work out safe stopping distance - basically the same as below but with v = 0 as we want a complete stop
                                 u = this_truck.velocity
                                 v = 0.0
-                                a = this_truck.config.MAX_ACCELERATION * (-1)
+                                a = Config.get_instance().MAX_ACCELERATION * (-1)
                             
                                 relative_stopping_distance = ((v * v) - (u * u)) / (2 * a) + safety_margin #SUVAT
 

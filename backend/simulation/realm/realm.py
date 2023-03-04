@@ -58,7 +58,7 @@ class Realm:
         # trucks
         self.trucks = {}
         for t in data["trucks"]:
-            truck = Truck.from_json(t, config)
+            truck = Truck.from_json(t)
             self.trucks[truck.id_] = truck
             self.nodes[t['current_node']].entry(truck)
 
