@@ -232,7 +232,7 @@ class Road(Edge):
 
         truck_list = self.trucks()
         for i, truck in enumerate(truck_list):
-            if i+1 < len(truck_list) and truck_list[i].position > truck.position:
+            if i+1 < len(truck_list) and truck_list[i+1].position > truck.position:
                 truck.collision(truck_list[i+1])
                 truck_list[i+1].collision(truck)
 
