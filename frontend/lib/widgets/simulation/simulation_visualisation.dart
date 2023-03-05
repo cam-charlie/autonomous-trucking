@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/constants.dart' as constants;
+import 'package:frontend/state/render_depot.dart';
 import 'package:frontend/utilities/camera_transform.dart';
 
 import '../../state/render_road.dart';
@@ -67,6 +68,9 @@ class SimulationPainter extends CustomPainter {
     }
     for (RenderVehicle v in state.vehicles) {
       v.drawBody(canvas: canvas);
+    }
+    for (RenderDepot d in state.depots) {
+      d.draw(canvas: canvas);
     }
   }
 

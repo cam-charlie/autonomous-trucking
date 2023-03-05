@@ -9,6 +9,7 @@ import 'package:frontend/generation/store_state.dart';
 import 'package:frontend/generation/store_to_json.dart';
 import 'package:frontend/generation/store_to_render.dart';
 import 'package:frontend/state/communication/Backend.dart';
+import 'package:frontend/state/render_depot.dart';
 import 'package:frontend/state/render_road.dart';
 import 'state/interpolator.dart';
 import 'package:frontend/state/render_simulation.dart';
@@ -53,6 +54,8 @@ class AppController extends ChangeNotifier {
     final StoreSimulationState storeState = loadFileIntoStoreState(yamlData);
     await startFromConfig(convertStoreStateToJson(storeState));
     final List<RenderRoad> roads = convertStoreStateToRenderRoads(storeState);
+    // TODO: pass to will's function on init
+    final List<RenderDepot> depots = convertStoreStateToRenderDepots(storeState);
     _interpolator = Interpolator(roads: roads);
     bufferingNotifier.value = true;
     _initialStateLoadedFromFile = true;

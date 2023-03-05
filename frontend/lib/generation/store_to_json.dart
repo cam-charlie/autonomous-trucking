@@ -37,9 +37,11 @@ String convertStoreStateToJson(StoreSimulationState state) {
             'id': idToServerID(r.id),
             'start_node_id': idToServerID(r.startNode),
             'end_node_id': idToServerID(r.endNode),
-            'length': (state.nodeMap[r.endNode]!.position -
-                    state.nodeMap[r.startNode]!.position)
-                .distance,
+            'length': (r is StoreStraightRoad)
+                ? (state.nodeMap[r.endNode]!.position -
+                        state.nodeMap[r.startNode]!.position)
+                    .distance
+                : (r as StoreArcRoad).sweepAngle * r.radius,
           })
       .toList();
 
