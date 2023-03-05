@@ -50,6 +50,7 @@ class _Interpolator {
   // Generate logs while computing interpolated results
   _Result _calculateAndLog(Truck start, Truck end, double t0, double ti,
       double t1, Map<RenderRoadID, RenderRoad> map) {
+        
     double fracDist = _truckFracDistCovered(start, end, t0, ti, t1, map);
 
     if (!_turn.containsKey(RenderVehicleID(start.truckId))) {
@@ -138,12 +139,12 @@ class _Interpolator {
     if (positions.length == 1) {
       List<RenderVehicle> vehicles = positions[0]
           .trucks
-          .map((e) => RenderVehicle(
+          .map((e) => e.progress!=-1?RenderVehicle(
               id: RenderVehicleID(e.truckId),
               position: road_calc.positionAt(_roadMap[RenderRoadID(e.roadId)]!,
                   fraction: e.progress),
               direction: road_calc.direction(_roadMap[RenderRoadID(e.roadId)]!,
-                  fraction: e.progress)))
+                  fraction: e.progress)):Null).whereType<RenderVehicle>()
           .toList();
       return RenderSimulationState(vehicles: vehicles, roads: _roads);
     }
