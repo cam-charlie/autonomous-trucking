@@ -1,10 +1,19 @@
 from __future__ import annotations
 from abc import ABC
 from ..lib import id as ID
-
+from dataclasses import dataclass
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from typing import Optional, List
+    from typing import Optional, List, Dict
+
+
+@dataclass
+class Actions:
+    # map from depot_id : truck_id
+    trucks_to_release: Dict[int, int]
+    # map from truck_id : acceleration
+    truck_accelerations: Dict[int, float]
+
 
 class Entity(ABC):
 
@@ -29,7 +38,7 @@ class Actor(Entity, ABC):
         self._accumulated_reward: float = 0
         self._accumulated_info: List[str] = []
 
-    def act(self, action: Optional[float], dt: float) -> None:
+    def act(self, actions: Actions, dt: float) -> None:
         raise NotImplementedError
 
     def get_accumulated_reward(self) -> float:

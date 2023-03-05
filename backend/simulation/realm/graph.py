@@ -4,7 +4,7 @@ from simulation.draw.utils import Drawable, DEFAULT_FONT
 import pygame
 from ..lib.geometry import Point
 from ..config import InvalidConfiguration, Config
-from .entity import Actor, Entity
+from .entity import Actor, Entity, Actions
 from collections import OrderedDict
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
@@ -178,37 +178,39 @@ class Depot(Node, Actor):
         if len(self._trucks) > self._storage_size:
             pass
 
-    def act(self, action: Optional[float], dt: float) -> None:
+    def act(self, actions: Actions, dt: float) -> None:
         """ Release the truck with id: action
         """
-        if action is None:
+        if self.id_ not in actions.trucks_to_release:
             return
-        if dt > self._current_cooldown:
-            tid = int(action)
-            if tid in self._trucks:
-                truck = self._trucks.pop(tid)
-                truck.set_velocity(0)
-                self._outgoing[self._routing_table[truck.destination]].entry(truck)
-                self._current_cooldown += self._max_cooldown
+        if dt <= self._current_cooldown:
+            return
+        tid_to_release = actions.trucks_to_release[self.id_]
+        if tid_to_release in self._trucks:
+            truck = self._trucks.pop(tid_to_release)
+            truck.set_velocity(0)
+            self._outgoing[self._routing_table[truck.destination]].entry(truck)
+            self._current_cooldown += self._max_cooldown
+
 
     def update(self, dt: float) -> None:
         self._current_cooldown = max(0, self._current_cooldown - dt)
         for truck in self._trucks.values():
             truck.set_velocity(0)
 
-    def compute_actions(self, truck_size: int = 2, safety_margin: int = 5) -> Optional[float]:
+    def compute_actions(self, truck_size: int = 2, safety_margin: int = 5) -> Optional[int]:
         for truck in self._trucks.values():
             if truck.start_time >= Config.get_instance().SIM_TIME:
                 continue
             if not truck.done(): #Truck is waiting to be released
                 next_road = self._outgoing[0]
                 if next_road.is_empty():
-                    return float(truck.id_)
+                    return truck.id_
 
                 first_car_pos = self.get_first_truck().position * next_road.length # type: ignore
                 if first_car_pos > float(truck_size + safety_margin): #There is space on the road
                     #Release this truck
-                    return float(truck.id_)
+                    return truck.id_
         return None
 
     def to_json(self) -> Dict[Any, Any]:

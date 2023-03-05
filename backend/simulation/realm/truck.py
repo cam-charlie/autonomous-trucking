@@ -1,5 +1,5 @@
 from __future__ import annotations
-from .entity import Actor
+from .entity import Actor, Actions
 from ..config import Config
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
@@ -18,20 +18,22 @@ class Truck(Actor):
         self._route_index = 0
         self.start_time = start_time
 
-    def act(self, action: Optional[float], dt: float) -> None:
+    def act(self, actions: Actions, dt: float) -> None:
         """Apply actions
 
         Called once each turn, before step()
         """
-        acceleration = action
         self._stepped = False
-        if acceleration is not None:
-            achieved_acceleration = min(Config.get_instance().MAX_ACCELERATION, abs(acceleration))
-            if acceleration < 0:
-                achieved_acceleration = achieved_acceleration * -1
-            self._velocity = min(Config.get_instance().MAX_VELOCITY,
-                                 self._velocity + achieved_acceleration*dt)
-            self._velocity = max(self._velocity, 0)
+        if self.id_ not in actions.truck_accelerations:
+            return
+        acceleration = actions.truck_accelerations[self.id_]
+
+        achieved_acceleration = min(Config.get_instance().MAX_ACCELERATION, abs(acceleration))
+        if acceleration < 0:
+            achieved_acceleration = achieved_acceleration * -1
+        self._velocity = min(Config.get_instance().MAX_VELOCITY,
+                                self._velocity + achieved_acceleration*dt)
+        self._velocity = max(self._velocity, 0)
 
     def set_velocity(self, velocity: float) -> None:
         self._velocity = velocity
