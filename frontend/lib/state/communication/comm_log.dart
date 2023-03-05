@@ -39,10 +39,10 @@ class TurnAction extends _Action {
   final Direction direction;
   TurnAction(
       {required this.vehicle,
-      required this.time,
-      required this.startRoad,
-      required this.endRoad,
-      required this.direction})
+        required this.time,
+        required this.startRoad,
+        required this.endRoad,
+        required this.direction})
       : super(time: time, vehicle: vehicle);
   @override
   String toString() {
@@ -52,8 +52,8 @@ class TurnAction extends _Action {
           direction == Direction.left
               ? "turned left"
               : direction == Direction.right
-                  ? "turned right"
-                  : "continued",
+              ? "turned right"
+              : "continued",
           endRoad.toString(),
           startRoad.toString(),
           endRoad.toString()
@@ -68,9 +68,9 @@ class ChangeSpeedAction extends _Action {
   final double time;
   ChangeSpeedAction(
       {required this.vehicle,
-      required this.time,
-      required this.startSpeed,
-      required this.endSpeed})
+        required this.time,
+        required this.startSpeed,
+        required this.endSpeed})
       : super(time: time, vehicle: vehicle);
   @override
   String toString() {

@@ -35,9 +35,9 @@ Future<void> _fillFirstBuffer() async{
 
 _getBufferData() async{
   var delta = TimeDelta(seconds: 3.0);
-  // will (as it should) throw error if server gets shut down 
+  // will (as it should) throw error if server gets shut down
   final response = await _PositionDataStreamerStub.getPositionData(
-    delta);
+      delta);
   return response;
 
 }
@@ -53,7 +53,7 @@ Future<List<TruckPositionsAtTime>> getPositionData(double timeStamp) async{
 
     _lastBufferPtr = 0;
 
-    _isBuffering = true; 
+    _isBuffering = true;
     _nextBufferFiller = Isolate.run(_getBufferData);
     _nextBufferFiller.then((x) => _isBuffering = false);
   }
@@ -81,12 +81,12 @@ Future<List<TruckPositionsAtTime>> getPositionData(double timeStamp) async{
 
 
 Future<void> startFromConfig(var config) async {
-  try { 
-      await _start(config);
+  try {
+    await _start(config);
   } catch(err){
-      print("Unable to connect, attempting to reconnect in 3 seconds.");
-      sleep(Duration(seconds:3));
-      await startFromConfig(config); 
+    print("Unable to connect, attempting to reconnect in 3 seconds.");
+    sleep(Duration(seconds:3));
+    await startFromConfig(config);
   }
 }
 
@@ -94,11 +94,11 @@ _start(var config) async{
   var jsonString = ConfigAsString(json: config);
   await _ConfigurationStreamerStub.startFromConfig(jsonString);
   await _fillFirstBuffer();
-} 
+}
 
 
 bool isBufferingOnTimestamp(double timeStamp){
-    return (timeStamp > _buffer.trucks.last.time && _isBuffering);
+  return (timeStamp > _buffer.trucks.last.time && _isBuffering);
 }
 
 /* TODO: after MVP is finished, add start from config (includes adding/removing vehicles)

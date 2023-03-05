@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:frontend/state/communication/comm_log.dart';
+import 'package:frontend/state/render_depot.dart';
 import 'package:vector_math/vector_math.dart';
 
 import 'package:flutter/material.dart';
@@ -18,12 +19,14 @@ import 'communication/grpc/trucking.pbgrpc.dart';
 class _Result {
   final bool roadChange;
   final double fracDist;
+
   const _Result({required this.fracDist}) : roadChange = fracDist > 1;
 }
 
 class Buffering {
   bool buffering;
   Future<RenderSimulationState> state;
+
   Buffering({required double time, required _Interpolator interpolator})
       : buffering = isBufferingOnTimestamp(time),
         state = interpolator.getState(time);
@@ -31,6 +34,7 @@ class Buffering {
 
 class _Interpolator {
   final List<RenderRoad> _roads;
+  final List<RenderDepot> _depots;
   final Map<RenderRoadID, RenderRoad> _roadMap;
   final Map<RenderVehicleID, bool> _turn;
   final Map<RenderVehicleID, double> _speed;
@@ -39,8 +43,10 @@ class _Interpolator {
 
   _Interpolator(
       {required List<RenderRoad> roads,
+      required List<RenderDepot> depots,
       required dynamic Function(double) getData})
       : _roads = roads,
+        _depots = depots,
         _getData = getData,
         _roadMap = {for (var road in roads) road.id: road},
         _turn = {},
@@ -50,7 +56,6 @@ class _Interpolator {
   // Generate logs while computing interpolated results
   _Result _calculateAndLog(Truck start, Truck end, double t0, double ti,
       double t1, Map<RenderRoadID, RenderRoad> map) {
-        
     double fracDist = _truckFracDistCovered(start, end, t0, ti, t1, map);
 
     if (!_turn.containsKey(RenderVehicleID(start.truckId))) {
@@ -62,8 +67,8 @@ class _Interpolator {
 
       double startDir = road_calc.direction(map[RenderRoadID(start.roadId)]!,
           fraction: start.progress);
-      double endDir =
-          road_calc.direction(map[RenderRoadID(end.roadId)]!, fraction: fracDist % 1.0);
+      double endDir = road_calc.direction(map[RenderRoadID(end.roadId)]!,
+          fraction: fracDist % 1.0);
 
       Vector3 calcVec = Vector3(sin(startDir), cos(startDir), 0)
           .cross(Vector3(sin(endDir), cos(endDir), 0));
@@ -106,15 +111,19 @@ class _Interpolator {
       double t1, Map<RenderRoadID, RenderRoad> map) {
     double juncDist = start.roadId == end.roadId
         ? double.infinity
-        : (1 - start.progress) * road_calc.length(map[RenderRoadID(start.roadId)]!);
+        : (1 - start.progress) *
+            road_calc.length(map[RenderRoadID(start.roadId)]!);
     // Assumes jerk is constant between two points
     double interDist = start.currSpeed * (ti - t0) +
         0.5 * start.currAccel * pow((ti - t0), 2) +
         (((end.currAccel - start.currAccel) / (t1 - t0)) * pow((ti - t0), 3)) /
             6;
     double fracDist = interDist < juncDist
-        ? start.progress + interDist / road_calc.length(map[RenderRoadID(start.roadId)]!)
-        : 1 + (interDist - juncDist) / road_calc.length(map[RenderRoadID(end.roadId)]!);
+        ? start.progress +
+            interDist / road_calc.length(map[RenderRoadID(start.roadId)]!)
+        : 1 +
+            (interDist - juncDist) /
+                road_calc.length(map[RenderRoadID(end.roadId)]!);
 
     return fracDist;
   }
@@ -129,6 +138,7 @@ class _Interpolator {
   Buffering getBufferingState(double time) {
     return Buffering(time: time, interpolator: this);
   }
+
   // Generates new SimulationState for rendering
 
   Future<RenderSimulationState> getState(double time) async {
@@ -139,14 +149,19 @@ class _Interpolator {
     if (positions.length == 1) {
       List<RenderVehicle> vehicles = positions[0]
           .trucks
-          .map((e) => e.progress!=-1?RenderVehicle(
-              id: RenderVehicleID(e.truckId),
-              position: road_calc.positionAt(_roadMap[RenderRoadID(e.roadId)]!,
-                  fraction: e.progress),
-              direction: road_calc.direction(_roadMap[RenderRoadID(e.roadId)]!,
-                  fraction: e.progress)):Null).whereType<RenderVehicle>()
+          .map((e) => e.progress != -1
+              ? RenderVehicle(
+                  id: RenderVehicleID(e.truckId),
+                  position: road_calc.positionAt(
+                      _roadMap[RenderRoadID(e.roadId)]!,
+                      fraction: e.progress),
+                  direction: road_calc.direction(
+                      _roadMap[RenderRoadID(e.roadId)]!,
+                      fraction: e.progress))
+              : Null)
+          .whereType<RenderVehicle>()
           .toList();
-      return RenderSimulationState(vehicles: vehicles, roads: _roads);
+      return RenderSimulationState(vehicles: vehicles, roads: _roads, depots: _depots);
     }
 
     // time != generated time t0, tomfoolery ensues
@@ -174,16 +189,21 @@ class _Interpolator {
                               : (e[2] as _Result).fracDist)) %
                       (2 * pi)))
           .toList();
-      return RenderSimulationState(vehicles: vehicles, roads: _roads);
+      return RenderSimulationState(
+        vehicles: vehicles,
+        roads: _roads,
+        depots: _depots
+      );
     }
   }
 }
 
 class Interpolator extends _Interpolator {
-  Interpolator({roads}) : super(roads: roads, getData: getPositionData);
+  Interpolator({roads, depots})
+      : super(roads: roads, depots: depots, getData: getPositionData);
 }
 
 @visibleForTesting
 class TestInterpolator extends _Interpolator {
-  TestInterpolator({roads, getData}) : super(roads: roads, getData: getData);
+  TestInterpolator({roads, depots, getData}) : super(roads: roads, depots: depots, getData: getData);
 }

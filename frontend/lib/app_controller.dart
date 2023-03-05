@@ -56,7 +56,7 @@ class AppController extends ChangeNotifier {
     final List<RenderRoad> roads = convertStoreStateToRenderRoads(storeState);
     // TODO: pass to will's function on init
     final List<RenderDepot> depots = convertStoreStateToRenderDepots(storeState);
-    _interpolator = Interpolator(roads: roads);
+    _interpolator = Interpolator(roads: roads, depots: depots);
     bufferingNotifier.value = true;
     _initialStateLoadedFromFile = true;
   }
