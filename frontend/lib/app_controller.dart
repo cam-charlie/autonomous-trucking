@@ -51,6 +51,7 @@ class AppController extends ChangeNotifier {
   void _setupNetwork() async {
     String yamlData = await rootBundle.loadString('assets/state.yaml');
     final StoreSimulationState storeState = loadFileIntoStoreState(yamlData);
+    print(convertStoreStateToJson(storeState));
     await startFromConfig(convertStoreStateToJson(storeState));
     final List<RenderRoad> roads = convertStoreStateToRenderRoads(storeState);
     _interpolator = Interpolator(roads: roads);
