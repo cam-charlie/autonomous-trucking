@@ -3,6 +3,7 @@ import 'dart:isolate';
 import 'package:grpc/grpc.dart';
 import './grpc/trucking.pbgrpc.dart';
 
+import 'dart:io';
 // so far no error checking
 
 final _channel = ClientChannel(
@@ -34,10 +35,9 @@ Future<void> _fillFirstBuffer() async{
 
 _getBufferData() async{
   var delta = TimeDelta(seconds: 3.0);
-  // will throw error if server not yet started/up
-    final response = await _PositionDataStreamerStub.getPositionData(
-        delta);
-
+  // will (as it should) throw error if server gets shut down 
+  final response = await _PositionDataStreamerStub.getPositionData(
+    delta);
   return response;
 
 }
@@ -81,16 +81,24 @@ Future<List<TruckPositionsAtTime>> getPositionData(double timeStamp) async{
 
 
 Future<void> startFromConfig(var config) async {
-  var jsonString = ConfigAsString(json: config);
+  try { 
+      await _start(config);
+  } catch(err){
+      print("Unable to connect, attempting to reconnect in 3 seconds.");
+      sleep(Duration(seconds:3));
+      await startFromConfig(config); 
+  }
+}
 
+_start(var config) async{
+  var jsonString = ConfigAsString(json: config);
   await _ConfigurationStreamerStub.startFromConfig(jsonString);
   await _fillFirstBuffer();
-}
+} 
 
 
 bool isBufferingOnTimestamp(double timeStamp){
     return (timeStamp > _buffer.trucks.last.time && _isBuffering);
-    // return (_buffer != null && timeStamp > _buffer.trucks.last.time && _isBuffering);
 }
 
 /* TODO: after MVP is finished, add start from config (includes adding/removing vehicles)

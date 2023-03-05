@@ -91,3 +91,17 @@ class InitAction extends _Action {
         sprintf("Vehicle %s has started moving ()", [vehicle.toString()]);
   }
 }
+
+class DepotAction extends _Action {
+  final bool enter;
+  final RenderVehicleID vehicle;
+  final double time;
+  DepotAction({required this.vehicle, required this.time, required this.enter})
+      : super(time: time, vehicle: vehicle);
+  @override
+  String toString() {
+    return super.toString() +
+        sprintf("%s has %s a depot",
+            [vehicle.toString(), enter ? "entered" : "left"]);
+  }
+}
