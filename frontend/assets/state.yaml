@@ -2,9 +2,9 @@
 
 vehicles:
   0:
-    node: ~
-    road: 0
-    fraction: 0.5
+    node: 0
+    road: ~
+    fraction: 0.0
     velocity: 10.0
     start time: 0
     route: [1]
@@ -36,7 +36,7 @@ nodes:
     type: junction
     position:
       x: 100
-      y: 10
+      y: 100
   2:
     type: depot
     max capacity: 5
