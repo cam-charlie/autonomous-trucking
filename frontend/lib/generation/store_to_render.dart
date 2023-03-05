@@ -10,7 +10,7 @@ List<RenderRoad> convertStoreStateToRenderRoads(StoreSimulationState state) {
       return RenderStraightRoad(
         id: RenderRoadID(r.id.value),
         start: state.nodeMap[r.startNode]!.position,
-        end: state.nodeMap[r.startNode]!.position,
+        end: state.nodeMap[r.endNode]!.position,
       );
     } else if (r is StoreArcRoad) {
       return RenderArcRoad(
