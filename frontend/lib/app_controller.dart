@@ -39,12 +39,14 @@ class AppController extends ChangeNotifier {
   late final Ticker _ticker;
   late final Interpolator _interpolator;
   bool _initialStateLoadedFromFile = false;
+  int _lastElapsed = 0;
 
   AppController(TickerProvider tickerProvider) {
     _ticker = tickerProvider.createTicker(_tick)..start();
     bufferingNotifier = ValueNotifier(true);
     activityNotifier = ValueNotifier(false);
-    stateNotifier = ValueNotifier(constants.exampleState); // initial state
+    stateNotifier = ValueNotifier(constants.exampleState);
+    // initial state
 
     _setupNetwork();
   }
@@ -55,7 +57,8 @@ class AppController extends ChangeNotifier {
     await startFromConfig(convertStoreStateToJson(storeState));
     final List<RenderRoad> roads = convertStoreStateToRenderRoads(storeState);
     // TODO: pass to will's function on init
-    final List<RenderDepot> depots = convertStoreStateToRenderDepots(storeState);
+    final List<RenderDepot> depots =
+        convertStoreStateToRenderDepots(storeState);
     _interpolator = Interpolator(roads: roads, depots: depots);
     bufferingNotifier.value = true;
     _initialStateLoadedFromFile = true;
@@ -63,7 +66,9 @@ class AppController extends ChangeNotifier {
 
   _tick(Duration elapsed) {
     if (!_initialStateLoadedFromFile) return;
-    _currentTime += _playbackSpeed * elapsed.inMicroseconds / (1000 * 1000);
+    int changeInTime = elapsed.inMicroseconds - _lastElapsed;
+    _lastElapsed = elapsed.inMicroseconds;
+    _currentTime += _playbackSpeed * changeInTime / (1000 * 1000);
     Buffering b = _interpolator.getBufferingState(_currentTime);
     bufferingNotifier.value = b.buffering;
     b.state.then((RenderSimulationState s) => stateNotifier.value = s);
