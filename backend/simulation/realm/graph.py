@@ -22,6 +22,9 @@ class TruckContainer(Entity, Drawable, ABC):
     def get_first_truck(self) -> Optional[Truck]:
         return next(iter(self._trucks.values()), None)
 
+    def get_last_truck(self) -> Optional[Truck]:
+        return next(reversed(self._trucks.values()), None)
+
     def is_empty(self) -> bool:
         return len(self._trucks) == 0
 
@@ -283,7 +286,17 @@ class Road(Edge):
         super().entry(truck)
         if truck.done():
             return
-        truck.position = truck.position / self._length
+        '''
+        A potential source of collisions:
+            when we transfer a truck onto a new road, we risk
+            updating the .position field to be ahead of the last
+            truck on the road - this removes that risk.
+        '''
+        if last_truck := self.get_last_truck():
+            # - 3/self.length is a bit of a fudge factor
+            truck.position = min(truck.position / self._length, max(last_truck.position - 3/self.length, 0))
+        else:
+            truck.position = truck.position / self._length
 
     def update(self, dt: float) -> None:
         for truck in self._trucks.values():
