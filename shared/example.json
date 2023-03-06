@@ -54,7 +54,7 @@
 
   "globals": {
         "max_truck_acceleration": 1.0,
-        "max_truck_velocity": 1.0,
+        "max_truck_velocity": 16.0,
         "sim_time": 0.0
   }
 }

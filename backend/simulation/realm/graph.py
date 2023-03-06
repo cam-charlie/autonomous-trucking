@@ -212,7 +212,8 @@ class Depot(Node, Actor):
         for truck in self._trucks.values():
             truck.set_velocity(0)
 
-    def compute_actions(self, truck_size: int = 2, safety_margin: int = 5) -> Optional[int]:
+    def compute_actions(self) -> Optional[int]:
+        config = Config.get_instance()
         for truck in self._trucks.values():
             if truck.start_time >= Config.get_instance().SIM_TIME:
                 continue
@@ -221,8 +222,10 @@ class Depot(Node, Actor):
                 if next_road.is_empty():
                     return truck.id_
 
-                first_car_pos = next_road.get_first_truck().position * next_road.length # type: ignore
-                if first_car_pos > float(truck_size + safety_margin): #There is space on the road
+
+                first_car_pos = next_road.get_first_truck().position * next_road.length#type:ignore
+                # If there is space on the road
+                if first_car_pos > float(config.TRUCK_LENGTH + config.SAFETY_MARGIN_TO_LIGHT):
                     #Release this truck
                     return truck.id_
         return None
@@ -294,7 +297,10 @@ class Road(Edge):
         '''
         if last_truck := self.get_last_truck():
             # - 3/self.length is a bit of a fudge factor
-            truck.position = min(truck.position / self._length, max(last_truck.position - 3/self.length, 0))
+            truck.position = min(
+                                truck.position / self._length,
+                                max(last_truck.position - 3/self.length, 0)
+                            )
         else:
             truck.position = truck.position / self._length
 
@@ -354,13 +360,14 @@ class Road(Edge):
         for truck in self._trucks.values():
             pygame.draw.circle(screen, "green", self.getPosition(truck.position).to_tuple(), 5)
 
-    def compute_actions(self, safety_margin: int, truck_accelerations: Dict[int, float]) -> None:
+    def compute_actions(self, truck_accelerations: Dict[int, float]) -> None:
         """
         Computes the actions for each truck (the acceleration for the next timestep).
         Implements the Intelligent Driver Model Specified here:
         - https://journals.aps.org/pre/abstract/10.1103/PhysRevE.62.1805
         - https://towardsdatascience.com/simulating-traffic-flow-in-python-ee1eab4dd20f
         """
+        config = Config.get_instance()
         # reversed so truck_list[-1] = furthest ahead truck
         truck_list = list(reversed(self.trucks()))
         #print(f"road {self.id_} has trucks: {[t.id_ for t in truck_list]}")
@@ -372,28 +379,37 @@ class Road(Edge):
             # Work out safe stopping distance with constant acceleration
             u = cur_truck.velocity
             v = 0.0
-            a = -Config.get_instance().COMFORTABLE_DECELERATION
+            a = -config.COMFORTABLE_DECELERATION
 
-            relative_stopping_distance = ((v * v) - (u * u)) / (2 * a) + safety_margin #SUVAT
+            #SUVAT
+            relative_stopping_distance = ((v * v) - (u * u)) / (2 * a) + \
+                                        config.SAFETY_MARGIN_TO_LIGHT
 
-             # If going into junction, that has a red light, and truck can't stop in time, and truck is the furthest truck on the road
-            if isinstance(next_node, Junction) and distance_to_next < relative_stopping_distance and next_node.green_in(0) != self and i == len(truck_list) - 1:
-                truck_accelerations[cur_truck.id_] = -Config.get_instance().COMFORTABLE_DECELERATION
+             # If going into junction, that has a red light, and truck can't stop in time,
+             # and truck is the furthest truck along the road.
+            if isinstance(next_node, Junction) and distance_to_next < relative_stopping_distance \
+                and next_node.green_in(0) != self and i == len(truck_list) - 1:
+                truck_accelerations[cur_truck.id_] = -config.COMFORTABLE_DECELERATION
                 continue
             alpha = 0.0
             if i != len(truck_list)-1:
                 next_truck = truck_list[i+1]
-                delta_x = self.length * (next_truck.position - cur_truck.position) - 4 # subtract 4 (truck length)
+                delta_x = self.length * (next_truck.position - cur_truck.position) - \
+                            config.TRUCK_LENGTH
                 delta_v = cur_truck.velocity - next_truck.velocity
                 #print(f"Distances between {cur_truck.id_} and {next_truck.id_} = {delta_x}")
-                sqrt_ab = 2 * math.sqrt(Config.get_instance().MAX_ACCELERATION * Config.get_instance().COMFORTABLE_DECELERATION)
-                alpha = (Config.get_instance().MIN_DESIRED_DIST + max(0, delta_v*cur_truck.velocity/sqrt_ab)) / delta_x
+                sqrt_ab = 2 * math.sqrt(config.MAX_ACCELERATION * \
+                                        config.COMFORTABLE_DECELERATION)
+                alpha = (config.MIN_DESIRED_DIST + \
+                         max(0, delta_v*cur_truck.velocity/sqrt_ab)) / delta_x
 
-            truck_accelerations[cur_truck.id_] = Config.get_instance().MAX_ACCELERATION * \
-                                                (1 - (cur_truck.velocity / Config.get_instance().MAX_VELOCITY)**Config.get_instance().ACCELERATION_SMOOTHNESS \
-                                                    - alpha**2
-                                                    )
-
+            overall_accel = config.MAX_ACCELERATION * \
+                            (1 \
+                             - (cur_truck.velocity / config.MAX_VELOCITY)** \
+                                config.ACCELERATION_SMOOTHNESS \
+                             - alpha**2
+                            )
+            truck_accelerations[cur_truck.id_] = overall_accel
 
 
 

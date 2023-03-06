@@ -17,22 +17,18 @@ def setUp() -> Env:
     return env
 
 def step(env: Env) -> None:
-    #Temporary constants
-    truck_size = 5
-    safety_margin = 20
-
     trucks_to_release = {}
     #Work out actions
     for actor in env.realm.actors.values():
         if type(actor) is Depot:
-            truck = actor.compute_actions(truck_size, safety_margin)
+            truck = actor.compute_actions()
             if truck is not None:
                 trucks_to_release[actor.id_] = truck
 
     truck_accelerations: Dict[int, float] = {}
     for edge in env.realm.edges.values():
         if type(edge) is Road:
-            edge.compute_actions(safety_margin, truck_accelerations)
+            edge.compute_actions(truck_accelerations)
     #Actually do the step
     actions = Actions(trucks_to_release, truck_accelerations)
     #print(actions)

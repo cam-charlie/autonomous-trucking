@@ -31,7 +31,8 @@ class Truck(Actor):
 
 
     def update_position(self, dt: float, road_length: float) -> None:
-        # Taylor series approximation may make the velocity negative, which breaks the intelligent driver model
+        # Taylor series approximation may make the velocity negative,
+        # which breaks the intelligent driver model
         # So do not permit velocity < 0
         if self.velocity + self.acceleration * dt < 0:
             self.position -= (1/2 * self.velocity * self.velocity / self.acceleration) / road_length
