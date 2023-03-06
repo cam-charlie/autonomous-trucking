@@ -65,7 +65,7 @@ class _Interpolator {
 
     double fracDist = _truckFracDistCovered(start, end, t0, ti, t1, map);
 
-    if (_depoted.containsKey([RenderVehicleID(start.truckId)])) {
+    if (!_depoted.containsKey([RenderVehicleID(start.truckId)])) {
       if (fracDist == -1) {
         _depoted[RenderVehicleID(start.truckId)] = true;
       } else {
