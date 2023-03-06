@@ -1,7 +1,6 @@
 import json
 from typing import Optional
 
-
 class InvalidConfiguration(Exception):
     pass
 

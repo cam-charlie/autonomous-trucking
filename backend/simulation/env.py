@@ -1,6 +1,6 @@
 # pylint: disable=dangerous-default-value, attribute-defined-outside-init
-
 from __future__ import annotations
+import json
 from .config import Config
 from .realm.realm import Realm
 
@@ -17,13 +17,11 @@ Wrapper for interfacing with algorithm
 class Env:
     """Environment wrapper for autonomous-trucking simulator following format commonly used
     in reinforcement learning settings.
-
     Also applicable for rule based solutions
     """
 
     def reset(self, json_string: str) -> EnvState:
         """ Reset realm to map and conditions specified in config
-
         Returns:
             observations: As defined in compute observations
             rewards
@@ -53,10 +51,8 @@ class Env:
 
     def step(self, actions: Dict[int, float] = {}, dt: float=1/30) -> EnvState:
         """ Simulates one realm tick.
-
         Args:
             actions: A dictionary of agent decisions of format:
-
                 {
                     agent1: {
                         action1: [*args],
@@ -64,10 +60,8 @@ class Env:
                     },
                     agent2 ...
                 }
-
                 Where depending on the heterogenous agent type, such as trucks, road, various nodes
                 actions can include accelerate, lane switch, release truck etc.
-
         Returns:
             observations: As defined in _compute observations
             rewards: As defined in _compute_rewards
@@ -86,10 +80,8 @@ class Env:
 
     def _compute_rewards(self) -> Tuple[float, Dict[int, List[str]]]:
         """ Computes the metric to optimize for
-
         By default overall throughput of trucks reaching destination.
         Override to consider different metrics
-
         Returns
             Change in metric on most recent step
         """
@@ -97,7 +89,6 @@ class Env:
 
     def _compute_observations(self) -> Dict[Any, Any]:
         """Autonomous trucking observation API.
-
         Returns:
             obs: a representation of the realm suitable for general algorithm optimization.
         """
@@ -107,3 +98,23 @@ class Env:
 
         # TODO(mark) this is a placeholder. Wrap into a dictionary of primitives.
         return {}
+
+    def to_json(self) -> str:
+        config = Config.get_instance()
+        result = {
+            "nodes": [
+                node.to_json() for node in self.realm.nodes.values()
+            ],
+            "roads": [
+                edge.to_json() for edge in self.realm.edges.values()
+            ],
+            "trucks": [
+                truck.to_json() for truck in self.realm.trucks.values()
+            ],
+            "globals": {
+                "max_truck_acceleration": config.MAX_ACCELERATION,
+                "max_truck_velocity": config.MAX_VELOCITY,
+                "sim_time": config.SIM_TIME
+            }
+        }
+        return json.dumps(result)

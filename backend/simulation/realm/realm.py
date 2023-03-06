@@ -74,10 +74,8 @@ class Realm:
 
     def update(self, actions: Dict[int, float], dt: float=1/30) -> Dict[int, bool]:
         """ Runs logic.
-
         Args:
             actions: list of agent actions
-
         Returns:
             dead: list of destroyed trucks
         """

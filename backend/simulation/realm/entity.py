@@ -18,7 +18,6 @@ class Entity(ABC):
     @property
     def id_(self) -> int:
         """Unique identifier
-
         Can be either defined or generated
         """
         return self._id

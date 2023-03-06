@@ -55,19 +55,22 @@
         "id": 101,
         "start_node_id": 1,
         "end_node_id": 2,
-        "length": 900.0
+        "length": 900.0,
+        "speed_limit": 70.0
       },
       {
         "id": 102,
         "start_node_id": 1,
         "end_node_id": 3,
-        "length": 400.0
+        "length": 400.0,
+        "speed_limit": 30.0
       },
       {
         "id": 103,
         "start_node_id": 2,
         "end_node_id": 3,
-        "length": 200.0
+        "length": 200.0,
+        "speed_limit": 20.0
       },
       {
         "id": 104,
@@ -129,8 +132,8 @@
       }
     ],
     "globals": {
-          "max_truck_acceleration": 100.0,
-          "max_truck_velocity": 10.0,
+          "max_truck_acceleration": 1.0,
+          "max_truck_velocity": 40.0,
           "sim_time": 0.0
     }
   }
