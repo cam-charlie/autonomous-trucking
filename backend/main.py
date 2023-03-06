@@ -19,7 +19,7 @@ def setUp() -> Env:
 def step(env: Env) -> None:
     #Temporary constants
     truck_size = 5
-    safety_margin = 15
+    safety_margin = 20
 
     trucks_to_release = {}
     #Work out actions

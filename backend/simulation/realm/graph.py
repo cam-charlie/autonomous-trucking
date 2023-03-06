@@ -7,7 +7,6 @@ from ..config import InvalidConfiguration, Config
 from .entity import Actor, Entity, Actions
 from collections import OrderedDict
 from typing import TYPE_CHECKING
-import sys
 import math
 
 if TYPE_CHECKING:
@@ -167,6 +166,11 @@ class Junction(Node):
         for _ in self._trucks:
             pygame.draw.circle(screen, "green", self.pos.to_tuple(), 2)
 
+        # draw the green light road
+        ready_road = self.green_in(0)
+        light_pos = ready_road.start.pos + (ready_road.end.pos - ready_road.start.pos) * 0.9
+        pygame.draw.circle(screen, "pink", light_pos.to_tuple(), 8)
+
 class Depot(Node, Actor):
 
     def __init__(self, id_: int, pos: Point, size: int = 10, cooldown: float = 5) -> None:
@@ -288,18 +292,19 @@ class Road(Edge):
                 truck.on_movement(dt)
 
         # THIS IS PURELY TO DEMONSTRATE THE RUBBER/ELASTIC-BANDING EFFECT
+        '''
         if round(Config.get_instance().SIM_TIME,5) == 35.0 and not self.did_a_reset:
             print("resetting one")
             for t in self._trucks.values():
                 if t.id_ == 10000:
                    t._velocity = 0
             self.did_a_reset = True
+        '''
 
         truck_list = self.trucks()
         for i, truck in enumerate(truck_list):
             if i+1 < len(truck_list) and truck_list[i+1].position > truck.position:
                 print(f"collision between {truck_list[i].id_,} and {truck_list[i+1].id_} :(")
-                sys.exit()
                 truck.collision(truck_list[i+1])
                 truck_list[i+1].collision(truck)
                 truck_list[i+1].position = max(0, truck.position - 3 / self.length)
@@ -307,7 +312,6 @@ class Road(Edge):
 
         #mypy won't correctly type the walrus operator, so ignore
         while (truck := self.get_first_truck()) is not None and truck.position > 1: # type: ignore
-            print("moving onto new road!")
             self._trucks.pop(truck.id_)
             truck.position = (truck.position-1) * self._length
             self._end.entry(truck)
@@ -349,6 +353,20 @@ class Road(Edge):
         #print(f"road {self.id_} has trucks: {[t.id_ for t in truck_list]}")
         for i in range(len(truck_list)-1,-1,-1):
             cur_truck = truck_list[i]
+            next_node = self.end_node
+            distance_to_next = (1 - cur_truck.position) * self.length
+
+            # Work out safe stopping distance with constant acceleration
+            u = cur_truck.velocity
+            v = 0.0
+            a = -Config.get_instance().COMFORTABLE_DECELERATION
+
+            relative_stopping_distance = ((v * v) - (u * u)) / (2 * a) + safety_margin #SUVAT
+
+             # If going into junction, that has a red light, and truck can't stop in time, and truck is the furthest truck on the road
+            if isinstance(next_node, Junction) and distance_to_next < relative_stopping_distance and next_node.green_in(0) != self and i == len(truck_list) - 1:
+                truck_accelerations[cur_truck.id_] = -Config.get_instance().COMFORTABLE_DECELERATION
+                continue
             alpha = 0.0
             if i != len(truck_list)-1:
                 next_truck = truck_list[i+1]
@@ -361,7 +379,11 @@ class Road(Edge):
             truck_accelerations[cur_truck.id_] = Config.get_instance().MAX_ACCELERATION * \
                                                 (1 - (cur_truck.velocity / Config.get_instance().MAX_VELOCITY)**Config.get_instance().ACCELERATION_SMOOTHNESS \
                                                     - alpha**2
-                                                )
+                                                    )
+
+
+
+
 
 
 
