@@ -1,5 +1,6 @@
 import '../render_vehicle.dart';
 import '../render_road.dart';
+import '../render_depot.dart';
 import 'package:sprintf/sprintf.dart';
 
 class CommunicationLog {
@@ -39,10 +40,10 @@ class TurnAction extends _Action {
   final Direction direction;
   TurnAction(
       {required this.vehicle,
-        required this.time,
-        required this.startRoad,
-        required this.endRoad,
-        required this.direction})
+      required this.time,
+      required this.startRoad,
+      required this.endRoad,
+      required this.direction})
       : super(time: time, vehicle: vehicle);
   @override
   String toString() {
@@ -52,8 +53,8 @@ class TurnAction extends _Action {
           direction == Direction.left
               ? "turned left"
               : direction == Direction.right
-              ? "turned right"
-              : "continued",
+                  ? "turned right"
+                  : "continued",
           endRoad.toString(),
           startRoad.toString(),
           endRoad.toString()
@@ -68,9 +69,9 @@ class ChangeSpeedAction extends _Action {
   final double time;
   ChangeSpeedAction(
       {required this.vehicle,
-        required this.time,
-        required this.startSpeed,
-        required this.endSpeed})
+      required this.time,
+      required this.startSpeed,
+      required this.endSpeed})
       : super(time: time, vehicle: vehicle);
   @override
   String toString() {
@@ -96,12 +97,17 @@ class DepotAction extends _Action {
   final bool enter;
   final RenderVehicleID vehicle;
   final double time;
-  DepotAction({required this.vehicle, required this.time, required this.enter})
+  final RenderDepotID depot;
+  DepotAction(
+      {required this.vehicle,
+      required this.time,
+      required this.depot,
+      required this.enter})
       : super(time: time, vehicle: vehicle);
   @override
   String toString() {
     return super.toString() +
-        sprintf("%s has %s a depot",
-            [vehicle.toString(), enter ? "entered" : "left"]);
+        sprintf("%s has %s %s",
+            [vehicle.toString(), enter ? "entered" : "left", depot.toString()]);
   }
 }
