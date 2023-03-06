@@ -7,6 +7,9 @@ from ..config import InvalidConfiguration, Config
 from .entity import Actor, Entity, Actions
 from collections import OrderedDict
 from typing import TYPE_CHECKING
+import sys
+import math
+
 if TYPE_CHECKING:
     from .truck import Truck
     from typing import List, Dict, Any, Optional, Deque
@@ -74,6 +77,10 @@ class Edge(TruckContainer, ABC):
     @property
     def end(self) -> Node:
         return self._end
+
+    @property
+    def length(self) -> float:
+        return self._length
 
 class Node(TruckContainer, ABC):
 
@@ -207,7 +214,7 @@ class Depot(Node, Actor):
                 if next_road.is_empty():
                     return truck.id_
 
-                first_car_pos = self.get_first_truck().position * next_road.length # type: ignore
+                first_car_pos = next_road.get_first_truck().position * next_road.length # type: ignore
                 if first_car_pos > float(truck_size + safety_margin): #There is space on the road
                     #Release this truck
                     return truck.id_
@@ -252,6 +259,7 @@ class Road(Edge):
 
         self._speed_limit = speed_limit
         self._cost = length / speed_limit
+        self.did_a_reset = False
 
     def getPosition(self, u: float) -> Point:
         """ Obtains interpolated position
@@ -276,12 +284,22 @@ class Road(Edge):
     def update(self, dt: float) -> None:
         for truck in self._trucks.values():
             if not truck.stepped:
-                truck.position += truck.velocity * dt / self._length
+                truck.update_position(dt, self.length)
                 truck.on_movement(dt)
+
+        # THIS IS PURELY TO DEMONSTRATE THE RUBBER/ELASTIC-BANDING EFFECT
+        if round(Config.get_instance().SIM_TIME,5) == 35.0 and not self.did_a_reset:
+            print("resetting one")
+            for t in self._trucks.values():
+                if t.id_ == 10000:
+                   t._velocity = 0
+            self.did_a_reset = True
 
         truck_list = self.trucks()
         for i, truck in enumerate(truck_list):
             if i+1 < len(truck_list) and truck_list[i+1].position > truck.position:
+                print(f"collision between {truck_list[i].id_,} and {truck_list[i+1].id_} :(")
+                sys.exit()
                 truck.collision(truck_list[i+1])
                 truck_list[i+1].collision(truck)
                 truck_list[i+1].position = max(0, truck.position - 3 / self.length)
@@ -289,6 +307,7 @@ class Road(Edge):
 
         #mypy won't correctly type the walrus operator, so ignore
         while (truck := self.get_first_truck()) is not None and truck.position > 1: # type: ignore
+            print("moving onto new road!")
             self._trucks.pop(truck.id_)
             truck.position = (truck.position-1) * self._length
             self._end.entry(truck)
@@ -302,9 +321,6 @@ class Road(Edge):
             "length": self.length
         }
 
-    @property
-    def length(self) -> float:
-        return self._length
 
     @property
     def end_node(self) -> Node:
@@ -322,6 +338,34 @@ class Road(Edge):
             pygame.draw.circle(screen, "green", self.getPosition(truck.position).to_tuple(), 5)
 
     def compute_actions(self, safety_margin: int, truck_accelerations: Dict[int, float]) -> None:
+        """
+        Computes the actions for each truck (the acceleration for the next timestep).
+        Implements the Intelligent Driver Model Specified here:
+        - https://journals.aps.org/pre/abstract/10.1103/PhysRevE.62.1805
+        - https://towardsdatascience.com/simulating-traffic-flow-in-python-ee1eab4dd20f
+        """
+        # reversed so truck_list[-1] = furthest ahead truck
+        truck_list = list(reversed(self.trucks()))
+        #print(f"road {self.id_} has trucks: {[t.id_ for t in truck_list]}")
+        for i in range(len(truck_list)-1,-1,-1):
+            cur_truck = truck_list[i]
+            alpha = 0.0
+            if i != len(truck_list)-1:
+                next_truck = truck_list[i+1]
+                delta_x = self.length * (next_truck.position - cur_truck.position) - 4 # subtract 4 (truck length)
+                delta_v = cur_truck.velocity - next_truck.velocity
+                #print(f"Distances between {cur_truck.id_} and {next_truck.id_} = {delta_x}")
+                sqrt_ab = 2 * math.sqrt(Config.get_instance().MAX_ACCELERATION * Config.get_instance().COMFORTABLE_DECELERATION)
+                alpha = (Config.get_instance().MIN_DESIRED_DIST + max(0, delta_v*cur_truck.velocity/sqrt_ab)) / delta_x
+
+            truck_accelerations[cur_truck.id_] = Config.get_instance().MAX_ACCELERATION * \
+                                                (1 - (cur_truck.velocity / Config.get_instance().MAX_VELOCITY)**Config.get_instance().ACCELERATION_SMOOTHNESS \
+                                                    - alpha**2
+                                                )
+
+
+
+        '''
         truck_list = self.trucks()
         for i in range(len(truck_list)-1,-1,-1):
             this_truck = truck_list[i]
@@ -335,6 +379,7 @@ class Road(Edge):
                         time = distance / this_truck.velocity
 
                         if next_node.green_in(time) == self:
+                            #print(this_truck.id_)
                             #Currently headed for a green light
                             if this_truck.velocity < Config.get_instance().MAX_VELOCITY and this_truck.velocity < self.speed_limit:
                                 #Accelerate
@@ -382,3 +427,5 @@ class Road(Edge):
                     #There's space - accelerate
                     truck_accelerations[this_truck.id_] = float(Config.get_instance().MAX_ACCELERATION)
                     #print("Truck " + str(this_truck.id_) + ": Accelerate #5")
+        #print(truck_accelerations)
+        '''

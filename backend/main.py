@@ -35,6 +35,7 @@ def step(env: Env) -> None:
             edge.compute_actions(safety_margin, truck_accelerations)
     #Actually do the step
     actions = Actions(trucks_to_release, truck_accelerations)
+    #print(actions)
     env.step(actions)
 
 

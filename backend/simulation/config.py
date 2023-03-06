@@ -36,6 +36,13 @@ class Config:
     def clear() -> None:
         Config._INSTANCE = None
 
+    MIN_DESIRED_DIST = 10
+    ACCELERATION_SMOOTHNESS = 4
+
+    @property
+    def COMFORTABLE_DECELERATION(self) -> float:
+        return 3*float(self.data["globals"]["max_truck_acceleration"])
+
     @property
     def MAX_ACCELERATION(self) -> float:
         return float(self.data["globals"]["max_truck_acceleration"])
