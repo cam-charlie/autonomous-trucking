@@ -2,12 +2,20 @@
 
 vehicles:
   0:
-    node: 0
+    node: 4
     road: ~
     fraction: 0.0
     velocity: 10.0
     start time: 0
-    route: [1]
+    route: [0, 1, 2]
+
+  1:
+    node: 5
+    road: ~
+    fraction: 0.0
+    velocity: 10.0
+    start time: 2
+    route: [0, 1, 3]
 
 roads:
   0:
@@ -15,31 +23,56 @@ roads:
     start node: 0
     end node: 1
   1:
-    type: arc
-    centre:
-      x: 0
-      y: 0
-    radius: 100
-    start angle: 2.356194490189793 # 135 degrees
-    sweep angle: -3.141592653589793 # 180 degrees anticlockwise
+    type: straight
     start node: 1
+    end node: 2
+  2: 
+    type: straight 
+    start node: 1 
+    end node: 3
+  3: 
+    type: straight 
+    start node: 4 
     end node: 0
-
+  4: 
+    type: straight 
+    start node: 5 
+    end node: 0
 
 nodes:
   0:
     type: junction
     position:
-      x: -100
-      y: -100
+      x: 0
+      y: 0
   1:
     type: junction
     position:
-      x: 100
+      x: 50
       y: 100
   2:
     type: depot
     max capacity: 5
     position:
-      x: -50
+      x: 80
       y: 50
+  3: 
+    type: depot 
+    max capacity: 5 
+    position: 
+      x: 80 
+      y: 120  
+
+  4: 
+    type: junction 
+    position: 
+      x: -100 
+      y: -100
+  5: 
+    type: junction 
+    position: 
+      x: 100 
+      y: 100 
+  
+  
+
