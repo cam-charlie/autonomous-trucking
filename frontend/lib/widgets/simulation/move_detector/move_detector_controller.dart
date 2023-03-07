@@ -15,8 +15,10 @@ TODO:
   - [] make zoom and rotate about cursor
   - [] make parameters nicer
   - [] the rotate and zoom only gesture callbacks sometimes result in scuffed behaviour?
-
+  - [] support onTap translated to world x-y
  */
+
+typedef OffsetCallback = void Function(Offset);
 
 class MoveDetectorAnimationOptions {
   final AnimatedInputRangeBoundOptions boundOptions;
@@ -41,6 +43,8 @@ class MoveDetectorController extends ChangeNotifier {
   late final AnimatedInputRange _zController;
   late final AnimatedInputRange _rController;
 
+  final OffsetCallback? onTap;
+
   MoveDetectorController({
     required TickerProvider tickerProvider,
     required CameraTransform initialTransform,
@@ -51,6 +55,7 @@ class MoveDetectorController extends ChangeNotifier {
     MoveDetectorAnimationOptions? panAnimations,
     MoveDetectorAnimationOptions? zoomAnimations,
     MoveDetectorAnimationOptions? rotateAnimations,
+    this.onTap,
   }) {
     _xController = AnimatedInputRange(
       initialValue: initialTransform.position.dx,
@@ -92,7 +97,7 @@ class MoveDetectorController extends ChangeNotifier {
   }
 
   Offset transformPanWithRotationAndZoom(Offset pan) {
-    final s = sin(rotation), c = cos(-rotation);
+    final s = sin(rotation), c = cos(rotation); // TODO: need the "-"?
     return Offset(
       -(c * pan.dx + s * pan.dy) / zoom,
       -(-s * pan.dx + c * pan.dy) / zoom,
@@ -184,5 +189,35 @@ class MoveDetectorController extends ChangeNotifier {
     _rController.onEnd();
 
     // TODO: prevent back swing animation
+  }
+
+  Offset _canvasToWorld(Offset canvasPosition, Size size) {
+    /* TODO:
+        - first unzoom and unrotate. those two are independent because
+          they happen about the same point, and so can be done in either order
+        - then subtract the x-y offset
+
+      TODO
+        - if the user taps in the middle of the screen, they tapped on the current
+          x-y coordinates. so you need to find the offset from the centre of the screen
+        1. first calculate the difference between the local tap coords and the screen centre
+        2. then scale and rotate that difference based on the room and rotation
+        3.
+     */
+
+    final Offset centre = Offset(size.width/2, size.height/2);
+    final double s = sin(-rotation), c = cos(-rotation);
+    Offset diff = centre - canvasPosition;
+    diff = Offset(
+      c*diff.dx + s*diff.dy,
+      -s*diff.dx + c*diff.dy,
+    );
+    diff /= zoom;
+    return pan - diff;
+  }
+
+  tap(TapUpDetails details, Size size) {
+    final worldCoords = _canvasToWorld(details.localPosition, size);
+    onTap?.call(worldCoords);
   }
 }

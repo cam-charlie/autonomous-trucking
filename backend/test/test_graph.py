@@ -10,7 +10,7 @@ from simulation.realm.truck import Truck
 from simulation.config import Config
 
 
-Config.initialise("test/test_json/test_graph.json")
+Config.initialise_from_path("test/test_json/test_graph.json")
 test_config = Config.get_instance()
 
 class TestGraph(unittest.TestCase):

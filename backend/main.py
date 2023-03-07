@@ -9,9 +9,7 @@ from simulation.config import Config
 import time
 
 def setUp() -> Env:
-    print("Usage: main.py \"path-to-config-json\"")
     env = Env()
-    env.reset(sys.argv[1])
     return env
 
 def step(env: Env) -> None:
@@ -96,7 +94,7 @@ def step(env: Env) -> None:
 if __name__ == '__main__':
     print("Usage: main.py \"path-to-config-json\"")
     env = Env()
-    env.reset(sys.argv[1])
+    env.reset_from_path(sys.argv[1])
     visualiser = Visualiser(env.realm)
 
     while True:

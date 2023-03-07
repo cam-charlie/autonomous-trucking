@@ -3,6 +3,7 @@ import 'dart:isolate';
 import 'package:grpc/grpc.dart';
 import './grpc/trucking.pbgrpc.dart';
 
+import 'dart:io';
 // so far no error checking
 
 final _channel = ClientChannel(
@@ -16,6 +17,9 @@ final _channel = ClientChannel(
 );
 
 final _PositionDataStreamerStub = PositionDataStreamerClient(_channel);
+final _ConfigurationStreamerStub = ConfigurationStreamerClient(_channel);
+
+bool _isBuffering = false;
 
 var _buffer = null;
 int _lastBufferPtr = 0;
@@ -23,15 +27,17 @@ var _nextBufferFiller;
 
 Future<void> _fillFirstBuffer() async{
   _buffer = await _getBufferData();
+
+  _isBuffering = true;
   _nextBufferFiller = Isolate.run(_getBufferData);
+  _nextBufferFiller.then((x) => _isBuffering = false);
 }
 
 _getBufferData() async{
   var delta = TimeDelta(seconds: 3.0);
-  // will throw error if server not yet started/up
-    final response = await _PositionDataStreamerStub.getPositionData(
-        delta);
-
+  // will (as it should) throw error if server gets shut down
+  final response = await _PositionDataStreamerStub.getPositionData(
+      delta);
   return response;
 
 }
@@ -46,7 +52,10 @@ Future<List<TruckPositionsAtTime>> getPositionData(double timeStamp) async{
     _buffer.trucks.insert(0, tmp.trucks.last);
 
     _lastBufferPtr = 0;
+
+    _isBuffering = true;
     _nextBufferFiller = Isolate.run(_getBufferData);
+    _nextBufferFiller.then((x) => _isBuffering = false);
   }
 
   while (_buffer.trucks[_lastBufferPtr].time < timeStamp){
@@ -72,8 +81,24 @@ Future<List<TruckPositionsAtTime>> getPositionData(double timeStamp) async{
 
 
 Future<void> startFromConfig(var config) async {
-  // for now ignore config, just start
+  try {
+    await _start(config);
+  } catch(err){
+    print("Unable to connect, attempting to reconnect in 3 seconds.");
+    sleep(Duration(seconds:3));
+    await startFromConfig(config);
+  }
+}
+
+_start(var config) async{
+  var jsonString = ConfigAsString(json: config);
+  await _ConfigurationStreamerStub.startFromConfig(jsonString);
   await _fillFirstBuffer();
+}
+
+
+bool isBufferingOnTimestamp(double timeStamp){
+  return (timeStamp > _buffer.trucks.last.time && _isBuffering);
 }
 
 /* TODO: after MVP is finished, add start from config (includes adding/removing vehicles)

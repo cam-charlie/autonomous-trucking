@@ -8,6 +8,16 @@
 import 'dart:core' as $core;
 import 'dart:convert' as $convert;
 import 'dart:typed_data' as $typed_data;
+@$core.Deprecated('Use configAsStringDescriptor instead')
+const ConfigAsString$json = const {
+  '1': 'ConfigAsString',
+  '2': const [
+    const {'1': 'json', '3': 1, '4': 1, '5': 9, '10': 'json'},
+  ],
+};
+
+/// Descriptor for `ConfigAsString`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List configAsStringDescriptor = $convert.base64Decode('Cg5Db25maWdBc1N0cmluZxISCgRqc29uGAEgASgJUgRqc29u');
 @$core.Deprecated('Use timeDeltaDescriptor instead')
 const TimeDelta$json = const {
   '1': 'TimeDelta',
@@ -69,3 +79,10 @@ const PathElement$json = const {
 
 /// Descriptor for `PathElement`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List pathElementDescriptor = $convert.base64Decode('CgtQYXRoRWxlbWVudBIZCgdub2RlX2lkGAEgASgFSABSBm5vZGVJZBIZCgdyb2FkX2lkGAIgASgFSABSBnJvYWRJZEIMCgpOb2RlT3JSb2Fk');
+@$core.Deprecated('Use voidDescriptor instead')
+const Void$json = const {
+  '1': 'Void',
+};
+
+/// Descriptor for `Void`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List voidDescriptor = $convert.base64Decode('CgRWb2lk');

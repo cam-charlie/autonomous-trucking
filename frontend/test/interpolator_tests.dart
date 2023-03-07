@@ -1,18 +1,18 @@
 import 'dart:ui';
-import 'package:frontend/state/rendering/interpolator.dart';
-import 'package:frontend/state/rendering/road.dart';
+import 'package:frontend/state/interpolator.dart';
+import 'package:frontend/state/render_road.dart';
 import 'package:frontend/state/communication/grpc/trucking.pbgrpc.dart';
 import 'dart:math';
 
-import 'package:frontend/state/rendering/simulation.dart';
+import 'package:frontend/state/render_simulation.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 List<RenderRoad> roads = [
-  const StraightRenderRoad(id: RID(1), start: Offset(0, 0), end: Offset(0, 1)),
-  const StraightRenderRoad(id: RID(2), start: Offset(0, 1), end: Offset(0, 2)),
-  const StraightRenderRoad(id: RID(3), start: Offset(0, 2), end: Offset(2, 2)),
+  const RenderStraightRoad(id: RenderRoadID(1), start: Offset(0, 0), end: Offset(0, 1)),
+  const RenderStraightRoad(id: RenderRoadID(2), start: Offset(0, 1), end: Offset(0, 2)),
+  const RenderStraightRoad(id: RenderRoadID(3), start: Offset(0, 2), end: Offset(2, 2)),
   const RenderArcRoad(
-      id: RID(4),
+      id: RenderRoadID(4),
       centre: Offset(2, 1),
       radius: 1,
       arcStart: 0,
@@ -156,7 +156,7 @@ void main() async {
   // t1 -> Final frame
 
   test("Test that frames match when t0 = ti", () async {
-    SimulationState temp = await inter.getState(0.0);
+    RenderSimulationState temp = await inter.getState(0.0);
     expect((temp.vehicles[0].position - const Offset(0, 0)).distance < 0.001,
         true);
     expect(temp.roads, roads);
@@ -165,12 +165,12 @@ void main() async {
   // Tests regarding movement calculation
   // s = s0 + v0(t) + (1/2)a0(t^2) + (1/6)j(t^3)
   test("Vehicle constant speed between two points", () async {
-    SimulationState ti0 = await inter.getState(0.0);
-    SimulationState ti1 = await inter.getState(0.1);
-    SimulationState ti2 = await inter.getState(0.2);
-    SimulationState ti3 = await inter.getState(0.3);
-    SimulationState ti4 = await inter.getState(0.4);
-    SimulationState ti5 = await inter.getState(0.5);
+    RenderSimulationState ti0 = await inter.getState(0.0);
+    RenderSimulationState ti1 = await inter.getState(0.1);
+    RenderSimulationState ti2 = await inter.getState(0.2);
+    RenderSimulationState ti3 = await inter.getState(0.3);
+    RenderSimulationState ti4 = await inter.getState(0.4);
+    RenderSimulationState ti5 = await inter.getState(0.5);
     expect((ti0.vehicles[0].position - const Offset(0, 0.0)).distance < 0.001,
         true);
     expect((ti1.vehicles[0].position - const Offset(0, 0.1)).distance < 0.001,
@@ -186,12 +186,12 @@ void main() async {
   });
 
   test("Vehicle linear speed between two points", () async {
-    SimulationState ti0 = await inter.getState(1.0);
-    SimulationState ti1 = await inter.getState(1.1);
-    SimulationState ti2 = await inter.getState(1.2);
-    SimulationState ti3 = await inter.getState(1.3);
-    SimulationState ti4 = await inter.getState(1.4);
-    SimulationState ti5 = await inter.getState(1.5);
+    RenderSimulationState ti0 = await inter.getState(1.0);
+    RenderSimulationState ti1 = await inter.getState(1.1);
+    RenderSimulationState ti2 = await inter.getState(1.2);
+    RenderSimulationState ti3 = await inter.getState(1.3);
+    RenderSimulationState ti4 = await inter.getState(1.4);
+    RenderSimulationState ti5 = await inter.getState(1.5);
     expect((ti0.vehicles[0].position - const Offset(0, 0.0)).distance < 0.001,
         true);
     expect((ti1.vehicles[0].position - const Offset(0, 0.01)).distance < 0.001,
@@ -207,12 +207,12 @@ void main() async {
   });
 
   test("Vehicle quadratic speed between two points", () async {
-    SimulationState ti0 = await inter.getState(2.0);
-    SimulationState ti1 = await inter.getState(2.1);
-    SimulationState ti2 = await inter.getState(2.2);
-    SimulationState ti3 = await inter.getState(2.3);
-    SimulationState ti4 = await inter.getState(2.4);
-    SimulationState ti5 = await inter.getState(2.5);
+    RenderSimulationState ti0 = await inter.getState(2.0);
+    RenderSimulationState ti1 = await inter.getState(2.1);
+    RenderSimulationState ti2 = await inter.getState(2.2);
+    RenderSimulationState ti3 = await inter.getState(2.3);
+    RenderSimulationState ti4 = await inter.getState(2.4);
+    RenderSimulationState ti5 = await inter.getState(2.5);
     expect((ti0.vehicles[0].position - const Offset(0, 0.0)).distance < 0.001,
         true);
     expect((ti1.vehicles[0].position - const Offset(0, 0.001)).distance < 0.001,
@@ -229,12 +229,12 @@ void main() async {
 
   // Tests regarding road interaction
   test("Vehicle road change with similar roads", () async {
-    SimulationState ti0 = await inter.getState(3.0);
-    SimulationState ti1 = await inter.getState(3.1);
-    SimulationState ti2 = await inter.getState(3.2);
-    SimulationState ti3 = await inter.getState(3.3);
-    SimulationState ti4 = await inter.getState(3.4);
-    SimulationState ti5 = await inter.getState(3.5);
+    RenderSimulationState ti0 = await inter.getState(3.0);
+    RenderSimulationState ti1 = await inter.getState(3.1);
+    RenderSimulationState ti2 = await inter.getState(3.2);
+    RenderSimulationState ti3 = await inter.getState(3.3);
+    RenderSimulationState ti4 = await inter.getState(3.4);
+    RenderSimulationState ti5 = await inter.getState(3.5);
 
     expect((ti0.vehicles[0].position - const Offset(0, 0.75)).distance < 0.01,
         true);
@@ -255,12 +255,12 @@ void main() async {
 
   test("Vehicle road change with roads of different length and orientation",
       () async {
-    SimulationState ti0 = await inter.getState(4.0);
-    SimulationState ti1 = await inter.getState(4.1);
-    SimulationState ti2 = await inter.getState(4.2);
-    SimulationState ti3 = await inter.getState(4.3);
-    SimulationState ti4 = await inter.getState(4.4);
-    SimulationState ti5 = await inter.getState(4.5);
+    RenderSimulationState ti0 = await inter.getState(4.0);
+    RenderSimulationState ti1 = await inter.getState(4.1);
+    RenderSimulationState ti2 = await inter.getState(4.2);
+    RenderSimulationState ti3 = await inter.getState(4.3);
+    RenderSimulationState ti4 = await inter.getState(4.4);
+    RenderSimulationState ti5 = await inter.getState(4.5);
 
     expect((ti0.vehicles[0].position - const Offset(0, 1.75)).distance < 0.01,
         true);
@@ -285,12 +285,9 @@ void main() async {
   });
 
   test("Vehicle positions along a curved road", () async {
-    SimulationState ti0 = await inter.getState(5.0);
-    print(ti0.vehicles[0].position);
-    SimulationState ti1 = await inter.getState(5.25);
-    print(ti1.vehicles[0].position);
-    SimulationState ti2 = await inter.getState(5.5);
-    print(ti2.vehicles[0].position);
+    RenderSimulationState ti0 = await inter.getState(5.0);
+    RenderSimulationState ti1 = await inter.getState(5.25);
+    RenderSimulationState ti2 = await inter.getState(5.5);
 
     expect(
         (ti0.vehicles[0].position - const Offset(2, 2)).distance < 0.01, true);
@@ -302,5 +299,6 @@ void main() async {
     expect(ti0.vehicles[0].direction, pi / 2);
     expect(ti1.vehicles[0].direction, pi);
     expect(ti2.vehicles[0].direction, 3 * pi / 2);
+    print(inter.comms);
   });
 }

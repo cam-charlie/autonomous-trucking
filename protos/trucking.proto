@@ -6,6 +6,14 @@ service PositionDataStreamer{
     rpc getPositionData(TimeDelta) returns (PositionDataStream);
 } 
 
+service ConfigurationStreamer{
+    rpc startFromConfig(ConfigAsString) returns (Void);
+} 
+
+message ConfigAsString{ 
+    string json = 1;
+} 
+
 message TimeDelta{
     double seconds = 1;
 }
@@ -36,6 +44,9 @@ message PathElement{
         int32 node_id = 1;
         int32 road_id = 2;
     } 
+}
+
+message Void{
 }
 
 
