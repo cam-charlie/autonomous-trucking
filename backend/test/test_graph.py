@@ -7,6 +7,7 @@ sys.path.append(os.getcwd())
 from simulation.lib.geometry import Point
 from simulation.realm.graph import Depot, Road, Junction
 from simulation.realm.truck import Truck
+from simulation.realm.entity import Actions
 from simulation.config import Config
 
 
@@ -33,9 +34,10 @@ class TestGraph(unittest.TestCase):
         t0 = Truck(100,[junction_next.id_], 0.0)
         t0._velocity = 1
         # Step for 5 seconds at constant velocity
+        actions = Actions({}, {100:0.0, 101:0.0, 102:0.0})
         road.entry(t0)
         for _ in range(5):
-            t0.act(0, 0)
+            t0.act(actions, 0)
             road.update(1.0)
         first_truck = road.get_first_truck()
         self.assertIsNotNone(first_truck)
@@ -46,14 +48,14 @@ class TestGraph(unittest.TestCase):
         t2 = Truck(102, [junction_next.id_], 0.0)
         t2._velocity = 3
         road.entry(t1)
-        t1.act(0,0)
+        t1.act(actions,0)
         road.update(1.0)
         road.entry(t2)
-        t1.act(0,0)
-        t2.act(0,0)
+        t1.act(actions,0)
+        t2.act(actions,0)
         road.update(0.01)
-        t1.act(0,0)
-        t2.act(0,0)
+        t1.act(actions,0)
+        t2.act(actions,0)
         road.update(1.0)
         self.assertLess(t1.get_accumulated_reward(),0)
 
@@ -69,8 +71,9 @@ class TestGraph(unittest.TestCase):
         t._velocity = 2
 
         road_start.entry(t)
+        actions = Actions({}, {100:0.0})
         for _ in range(3):
-            t.act(0,0)
+            t.act(actions,0)
             road_start.update(1)
             road_end.update(1)
 
@@ -92,18 +95,20 @@ class TestGraph(unittest.TestCase):
         depot_start.entry(t)
         dt = 1
         # Does nothing
+        actions = Actions({}, {100:1.0})
         for _ in range(5):
-            t.act(1,dt)
-            depot_start.act(None, dt)
+            t.act(actions,dt)
+            depot_start.act(actions, dt)
             depot_start.update(dt)
             depot_end.update(dt)
             road.update(dt)
         # Release
-        depot_start.act(t.id_, dt)
+        actions.trucks_to_release[depot_start.id_] = t.id_
         for _ in range(100):
             if t.done():
                 break
-            t.act(1,dt)
+            t.act(actions,dt)
+            depot_start.act(actions, dt)
             depot_start.update(dt)
             depot_end.update(dt)
             road.update(dt)
