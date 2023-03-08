@@ -21,7 +21,7 @@ class Env:
     Also applicable for rule based solutions
     """
 
-    def reset(self, config_json_path: str) -> EnvState:
+    def reset(self, json_string: str) -> EnvState:
         """ Reset realm to map and conditions specified in config
         Returns:
             observations: As defined in compute observations
@@ -30,7 +30,22 @@ class Env:
             infos
         """
         Config.clear()
-        Config.initialise(config_json_path)
+        Config.initialise(json_string)
+        self.realm = Realm()
+
+        return self.step()
+
+    def reset_from_path(self, path: str) -> EnvState:
+        """ Reset realm to map and conditions specified in config
+
+        Returns:
+            observations: As defined in compute observations
+            rewards
+            dones
+            infos
+        """
+        Config.clear()
+        Config.initialise_from_path(path)
         self.realm = Realm()
 
         return self.step()

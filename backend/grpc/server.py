@@ -32,7 +32,15 @@ class PositionDataStreamerServicer(trucking_pb2_grpc.PositionDataStreamerService
             trucks_at_time = []
 
             for (tid, t) in env.realm.trucks.items():
-                trucks_at_time.append(trucking_pb2.Truck(truck_id=tid, destination_id=t.destination, road_id=1, progress=t.position))
+
+                road_id = str(t._current_truck_container.id_)
+                prog = t.position
+
+                if road_id[0] != "2": 
+                    prog = -1
+                road_id = int(road_id[1:])
+
+                trucks_at_time.append(trucking_pb2.Truck(truck_id=int(str(tid)[1:]), destination_id=int(str(t.destination)[1:]), road_id=road_id, progress=prog))
 
             trucksPosAtTime = trucking_pb2.TruckPositionsAtTime(trucks=trucks_at_time, time=(self.currTime + curr_time)/30)
             stream.append(trucksPosAtTime)
@@ -41,10 +49,28 @@ class PositionDataStreamerServicer(trucking_pb2_grpc.PositionDataStreamerService
         return trucking_pb2.PositionDataStream(trucks=stream)
 
 
+class ConfigurationStreamerServicer(trucking_pb2_grpc.PositionDataStreamerServicer):
+    def __init__(self, pds: trucking_pb2_grpc.PositionDataStreamerServicer) -> None:
+        self.pds = pds
+
+    def startFromConfig(self, request: trucking_pb2.ConfigAsString, context: Any) -> trucking_pb2.Void:
+        self.pds.currTime = 0 # restart! 
+        print(request.json)
+        env.reset(request.json)
+        return trucking_pb2.Void() 
+
+
 def serve(env: Env) -> None:
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+
+    pds = PositionDataStreamerServicer(env) 
+
     trucking_pb2_grpc.add_PositionDataStreamerServicer_to_server(
-        PositionDataStreamerServicer(env), server)
+        pds, server)
+
+    trucking_pb2_grpc.add_ConfigurationStreamerServicer_to_server(
+        ConfigurationStreamerServicer(pds), server)
+
     server.add_insecure_port('[::]:50051')
     server.start()
     server.wait_for_termination()

@@ -17,6 +17,21 @@ else:
 DESCRIPTOR: google.protobuf.descriptor.FileDescriptor
 
 @typing_extensions.final
+class ConfigAsString(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    JSON_FIELD_NUMBER: builtins.int
+    json: builtins.str
+    def __init__(
+        self,
+        *,
+        json: builtins.str = ...,
+    ) -> None: ...
+    def ClearField(self, field_name: typing_extensions.Literal["json", b"json"]) -> None: ...
+
+global___ConfigAsString = ConfigAsString
+
+@typing_extensions.final
 class TimeDelta(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
@@ -119,3 +134,13 @@ class PathElement(google.protobuf.message.Message):
     def WhichOneof(self, oneof_group: typing_extensions.Literal["NodeOrRoad", b"NodeOrRoad"]) -> typing_extensions.Literal["node_id", "road_id"] | None: ...
 
 global___PathElement = PathElement
+
+@typing_extensions.final
+class Void(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    def __init__(
+        self,
+    ) -> None: ...
+
+global___Void = Void
