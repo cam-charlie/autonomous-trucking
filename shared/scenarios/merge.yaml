@@ -1,0 +1,191 @@
+vehicles:
+  10000:
+    node: 0
+    road: ~
+    fraction: 0.0
+    velocity: 10.0
+    start time: 0
+    route: [1]
+  10001:
+    node: 0
+    road: ~
+    fraction: 0.0
+    velocity: 10.0
+    start time: 0
+    route: [1]
+  10002:
+    node: 0
+    road: ~
+    fraction: 0.0
+    velocity: 10.0
+    start time: 0
+    route: [1]
+  10003:
+    node: 0
+    road: ~
+    fraction: 0.0
+    velocity: 10.0
+    start time: 0
+    route: [1]
+  10004:
+    node: 0
+    road: ~
+    fraction: 0.0
+    velocity: 10.0
+    start time: 0
+    route: [1]
+  10005:
+    node: 0
+    road: ~
+    fraction: 0.0
+    velocity: 10.0
+    start time: 0
+    route: [1]
+  10006:
+    node: 0
+    road: ~
+    fraction: 0.0
+    velocity: 10.0
+    start time: 0
+    route: [1]
+  10007:
+    node: 0
+    road: ~
+    fraction: 0.0
+    velocity: 10.0
+    start time: 0
+    route: [1]
+  10008:
+    node: 0
+    road: ~
+    fraction: 0.0
+    velocity: 10.0
+    start time: 0
+    route: [1]
+  10009:
+    node: 0
+    road: ~
+    fraction: 0.0
+    velocity: 10.0
+    start time: 0
+    route: [1]
+  10010:
+    node: 2
+    road: ~
+    fraction: 0.0
+    velocity: 10.0
+    start time: 0
+    route: [1]
+  10011:
+    node: 2
+    road: ~
+    fraction: 0.0
+    velocity: 10.0
+    start time: 0
+    route: [1]
+  10012:
+    node: 2
+    road: ~
+    fraction: 0.0
+    velocity: 10.0
+    start time: 0
+    route: [1]
+  10013:
+    node: 2
+    road: ~
+    fraction: 0.0
+    velocity: 10.0
+    start time: 0
+    route: [1]
+  10014:
+    node: 2
+    road: ~
+    fraction: 0.0
+    velocity: 10.0
+    start time: 0
+    route: [1]
+  10015:
+    node: 2
+    road: ~
+    fraction: 0.0
+    velocity: 10.0
+    start time: 0
+    route: [1]
+  10016:
+    node: 2
+    road: ~
+    fraction: 0.0
+    velocity: 10.0
+    start time: 0
+    route: [1]
+  10017:
+    node: 2
+    road: ~
+    fraction: 0.0
+    velocity: 10.0
+    start time: 0
+    route: [1]
+  10018:
+    node: 2
+    road: ~
+    fraction: 0.0
+    velocity: 10.0
+    start time: 0
+    route: [1]
+  10019:
+    node: 2
+    road: ~
+    fraction: 0.0
+    velocity: 10.0
+    start time: 0
+    route: [1]
+
+roads:
+  100:
+    type: straight
+    start node: 0
+    end node: 3
+  101:
+    type: straight
+    start node: 3
+    end node: 1
+  102:
+    type: arc
+    centre:
+      x: 100
+      y: 50
+    radius: 50
+    start angle: -1.57079633
+    sweep angle: 1.57079633
+    start node: 2
+    end node: 3
+
+nodes:
+  0:
+    type: depot
+    max capacity: 5
+    position:
+      x: -100
+      y: 100
+  1:
+    type: depot
+    max capacity: 5
+    position:
+      x: 100
+      y: 100
+  2:
+    type: depot
+    max capacity: 5
+    position:
+      x: -50
+      y: 50
+  3:
+    type: junction
+    position:
+      x: 0
+      y: 100
+
+globals:
+  max vehicle acceleration: 0.68
+  max vehicle velocity: 30.0
+  simulation time: 0.0
