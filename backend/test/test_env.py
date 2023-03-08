@@ -13,7 +13,7 @@ class TestEnv(unittest.TestCase):
 
 
     def test_rollout_basic(self) -> None:
-        env.reset("test/test_json/test_1.json")
+        env.reset_from_path("test/test_json/test_1.json")
         actions = Actions({}, {10001: 10.0})
         for _ in range(128):
             env.step(actions)
