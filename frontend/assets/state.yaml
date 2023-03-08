@@ -19,13 +19,13 @@ roads:
     centre:
       x: 0
       y: 0
-    radius: 100
+    radius: 141
     start angle: 2.356194490189793 # 135 degrees
     sweep angle: -3.141592653589793 # 180 degrees anticlockwise
     start node: 1
     end node: 0
 
-
+# `roundabout junction` nodes must only be connected to one straight road
 nodes:
   0:
     type: junction
@@ -43,3 +43,24 @@ nodes:
     position:
       x: -50
       y: 50
+
+globals:
+  max vehicle acceleration: 0.68
+  max vehicle velocity: 30.0
+  simulation time: 0.0
+
+text:
+  - text: "queens' college"
+    position: [1, 2]
+  - text: "kings college"
+    position: [5, 6]
+
+outlines:
+  - - [1,2] # first outline
+    - [10,5]
+    - [1, 11]
+    - [-7, 5]
+  - - [1,1] # second outline
+    - [3,4]
+    - [5,7]
+    - [6,9]

@@ -54,7 +54,6 @@ class SimulationPainter extends CustomPainter {
     canvas.scale(zoom);
     canvas.translate(-position.dx, -position.dy);
 
-
     // for (RenderRoad r in state.roads) {
     //   r.drawOutline(canvas: canvas);
     // }
@@ -70,7 +69,10 @@ class SimulationPainter extends CustomPainter {
       v.drawBody(canvas: canvas);
     }
     for (RenderDepot d in state.depots) {
-      d.draw(canvas: canvas);
+      d.drawShadow(canvas: canvas);
+    }
+    for (RenderDepot d in state.depots) {
+      d.drawBody(canvas: canvas);
     }
   }
 

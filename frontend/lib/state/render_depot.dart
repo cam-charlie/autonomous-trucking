@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:equatable/equatable.dart';
@@ -29,25 +30,38 @@ class RenderDepot with EquatableMixin {
   const RenderDepot({required this.id, required this.position});
 
   void draw({required Canvas canvas}) {
+    drawShadow(canvas: canvas);
+    drawBody(canvas: canvas);
+  }
+
+  void drawBody({required Canvas canvas}) {
     final depotFillPaint = Paint()
       ..color = colour
       ..style = PaintingStyle.fill;
     final depotStrokePaint = Paint()
       ..color = colour_tools.darken(colour)
-      ..strokeWidth = 2
+      ..strokeWidth = 4
       ..style = PaintingStyle.stroke;
 
-    if (position == double.nan) print(id);
-    canvas.drawRRect(
-        RRect.fromRectAndRadius(
-            Rect.fromCenter(center: position, width: 30, height: 30),
-            const Radius.circular(5)),
-        depotFillPaint);
-    canvas.drawRRect(
-        RRect.fromRectAndRadius(
-            Rect.fromCenter(center: position, width: 30, height: 30),
-            const Radius.circular(5)),
-        depotStrokePaint);
+    canvas.drawCircle(position, 15, depotFillPaint);
+    canvas.drawCircle(position, 15, depotStrokePaint);
+  }
+
+  void drawShadow({required Canvas canvas}) {
+    final r = 17;
+    final offset = Offset(8,8);
+    final rectPoints = [
+      position + Offset(-sqrt1_2*r, sqrt1_2*r),
+      position + Offset(sqrt1_2*r, -sqrt1_2*r),
+      position + Offset(sqrt1_2*r, -sqrt1_2*r) + offset,
+      position + Offset(-sqrt1_2*r, sqrt1_2*r) + offset,
+    ];
+    Path path = Path()
+      ..addPolygon(rectPoints, true)
+      ..addOval(Rect.fromCenter(
+          center: position + offset, width: r*2, height: r*2));
+
+    canvas.drawShadow(path, Color(0xff000000), 0, false);
   }
 
   @override

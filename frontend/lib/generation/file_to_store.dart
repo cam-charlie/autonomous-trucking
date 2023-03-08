@@ -1,4 +1,5 @@
 import 'dart:ui';
+
 import 'package:frontend/generation/store_state.dart';
 import 'package:yaml/yaml.dart';
 
@@ -18,6 +19,7 @@ StoreSimulationState loadFileIntoStoreState(String yamlData) {
   final vehicles = data['vehicles'];
   final roads = data['roads'];
   final nodes = data['nodes'];
+  final globals = data['globals'];
 
   final Map<StoreRoadID, StoreRoad> roadMap = {};
   final Map<StoreVehicleID, StoreVehicle> vehicleMap = {};
@@ -31,7 +33,9 @@ StoreSimulationState loadFileIntoStoreState(String yamlData) {
       node: map['node'] != null ? StoreNodeID(map['node']) : null,
       road: map['road'] != null ? StoreRoadID(map['road']) : null,
       fractionAlongRoad: numToDouble(map['fraction']),
-      route: (map['route'] as List).map<StoreNodeID>((id) => StoreNodeID(id as int)).toList(),
+      route: (map['route'] as List)
+          .map<StoreNodeID>((id) => StoreNodeID(id as int))
+          .toList(),
     ));
   }
 
@@ -78,9 +82,16 @@ StoreSimulationState loadFileIntoStoreState(String yamlData) {
     ));
   }
 
+  final globalsMap = StoreSimulationStateGlobals(
+    maxAcceleration: globals['max vehicle acceleration'],
+    maxVelocity: globals['max vehicle velocity'],
+    simulationTime: globals['simulation time'],
+  );
+
   return StoreSimulationState(
     roadMap: roadMap,
     vehicleMap: vehicleMap,
     nodeMap: nodeMap,
+    globals: globalsMap,
   );
 }

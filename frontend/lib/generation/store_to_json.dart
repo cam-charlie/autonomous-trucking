@@ -59,15 +59,16 @@ String convertStoreStateToJson(StoreSimulationState state) {
             },
           })
       .toList();
+  final globalsJson = {
+    'max_truck_acceleration': 0.68,
+    "max_truck_velocity": 30.0,
+    'sim_time': 0.0,
+  };
   final dataJson = {
     'nodes': nodesJson,
     'roads': roadsJson,
     'trucks': vehiclesJson,
-    'globals': {
-      'max_truck_acceleration': 0.68,
-      "max_truck_velocity": 10.0,
-      'sim_time': 0.0,
-    }
+    'globals': globalsJson,
   };
   return jsonEncode(dataJson);
 }

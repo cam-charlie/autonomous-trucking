@@ -1,9 +1,9 @@
 import 'dart:math';
-import 'dart:ui';
-import 'package:flutter/services.dart' show rootBundle;
-import 'package:flutter/animation.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter/services.dart' show rootBundle;
+import 'package:frontend/constants.dart' as constants;
 import 'package:frontend/generation/file_to_store.dart';
 import 'package:frontend/generation/store_state.dart';
 import 'package:frontend/generation/store_to_json.dart';
@@ -11,10 +11,10 @@ import 'package:frontend/generation/store_to_render.dart';
 import 'package:frontend/state/communication/Backend.dart';
 import 'package:frontend/state/render_depot.dart';
 import 'package:frontend/state/render_road.dart';
-import 'state/interpolator.dart';
 import 'package:frontend/state/render_simulation.dart';
+
+import 'state/interpolator.dart';
 import 'state/render_vehicle.dart';
-import 'package:frontend/constants.dart' as constants;
 
 /// the camera translation is handled by the MoveDetector.
 /// this class stores the current timestamp, playback speed, and any selected cars
@@ -39,7 +39,6 @@ class AppController extends ChangeNotifier {
   late final Ticker _ticker;
   late final Interpolator _interpolator;
   bool _initialStateLoadedFromFile = false;
-  int _lastElapsed = 0;
 
   AppController(TickerProvider tickerProvider) {
     _ticker = tickerProvider.createTicker(_tick)..start();
@@ -60,14 +59,16 @@ class AppController extends ChangeNotifier {
     final List<RenderDepot> depots =
         convertStoreStateToRenderDepots(storeState);
     _interpolator = Interpolator(roads: roads, depots: depots);
-    bufferingNotifier.value = true;
+    bufferingNotifier.value = false;
     _initialStateLoadedFromFile = true;
   }
 
+  int _lastElapsed = 0;
+
   _tick(Duration elapsed) {
-    if (!_initialStateLoadedFromFile) return;
     int changeInTime = elapsed.inMicroseconds - _lastElapsed;
     _lastElapsed = elapsed.inMicroseconds;
+    if (!_playing || !_initialStateLoadedFromFile) return;
     _currentTime += _playbackSpeed * changeInTime / (1000 * 1000);
     Buffering b = _interpolator.getBufferingState(_currentTime);
     bufferingNotifier.value = b.buffering;

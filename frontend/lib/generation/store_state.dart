@@ -6,15 +6,25 @@ import 'package:equatable/equatable.dart';
 /// the cartesian RenderRoad code and the graph data structure,
 /// and the mapping between the two
 
+class StoreSimulationStateGlobals {
+  final double maxAcceleration;
+  final double maxVelocity;
+  final double simulationTime;
+
+  const StoreSimulationStateGlobals({required this.maxAcceleration, required this.maxVelocity, required this.simulationTime});
+}
+
 class StoreSimulationState {
   final Map<StoreRoadID, StoreRoad> roadMap;
   final Map<StoreVehicleID, StoreVehicle> vehicleMap;
   final Map<StoreNodeID, StoreNode> nodeMap;
+  final StoreSimulationStateGlobals globals;
 
   StoreSimulationState({
     required this.roadMap,
     required this.vehicleMap,
     required this.nodeMap,
+    required this.globals,
   });
 }
 
