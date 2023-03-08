@@ -405,7 +405,7 @@ class Road(Edge):
 
             overall_accel = config.MAX_ACCELERATION * \
                             (1 \
-                             - (cur_truck.velocity / config.MAX_VELOCITY)** \
+                             - (cur_truck.velocity / min(self.speed_limit, config.MAX_VELOCITY))** \
                                 config.ACCELERATION_SMOOTHNESS \
                              - alpha**2
                             )

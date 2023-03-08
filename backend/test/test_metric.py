@@ -20,7 +20,6 @@ class TestMetric(unittest.TestCase):
     def test_completion_metric(self) -> None:
         env.reset_from_path("test/test_json/test_2.json")
         actions = Actions({}, {10001: 100})
-
         while True:
             _,reward, dones,_ = env.step(actions)
             if dones[10001]:
