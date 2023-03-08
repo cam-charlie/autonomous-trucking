@@ -3,10 +3,11 @@ from __future__ import annotations
 import json
 from .config import Config
 from .realm.realm import Realm
+from .realm.entity import Actions
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from typing import Any, Dict, List, Tuple
+    from typing import Any, Dict, List, Tuple, Optional
     EnvState = Tuple[Dict[Any, Any], float, Dict[int, bool], Dict[Any, Any]]
 
 '''
@@ -49,7 +50,7 @@ class Env:
 
         return self.step()
 
-    def step(self, actions: Dict[int, float] = {}, dt: float=1/30) -> EnvState:
+    def step(self, actions: Optional[Actions] = None, dt: float=1/30) -> EnvState:
         """ Simulates one realm tick.
         Args:
             actions: A dictionary of agent decisions of format:
@@ -69,7 +70,8 @@ class Env:
                 entire route.
             infos: A dictionary of agents to debug information.
         """
-
+        if actions is None:
+            actions = Actions({}, {})
         dones = self.realm.update(actions, dt)
         Config.get_instance().SIM_TIME += dt
         obs = self._compute_observations()
