@@ -120,7 +120,7 @@ class _CommsWidgetState extends State<CommsWidget> {
                       child: Text(
                         logs,
                         style:
-                            const TextStyle(color: Colors.white, fontSize: 6),
+                            const TextStyle(color: Colors.white, fontSize: 10),
                       ),
                     ),
                   )

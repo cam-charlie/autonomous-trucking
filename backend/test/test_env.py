@@ -11,7 +11,6 @@ class TestEnv(unittest.TestCase):
     def test_setup(self) -> None:
         env.reset_from_path("../shared/example.json")
 
-
     def test_rollout_basic(self) -> None:
         env.reset_from_path("test/test_json/test_1.json")
         actions = Actions({}, {10001: 10.0})
