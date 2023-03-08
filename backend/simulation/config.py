@@ -25,6 +25,10 @@ class Config:
             self.data = json.loads(json_str)
 
         self.SIM_TIME = float(self.data["globals"]["sim_time"])
+        self.MAX_ACCELERATION = float(self.data["globals"]["max_truck_acceleration"])
+        self.COMFORTABLE_DECELERATION = 3 * self.MAX_ACCELERATION
+        self.MAX_VELOCITY = float(self.data["globals"]["max_truck_velocity"])
+
 
 
     @staticmethod
@@ -45,13 +49,10 @@ class Config:
     def clear() -> None:
         Config._INSTANCE = None
 
-    @property
-    def MAX_ACCELERATION(self) -> float:
-        return float(self.data["globals"]["max_truck_acceleration"])
-
-    @property
-    def MAX_VELOCITY(self) -> float:
-        return float(self.data["globals"]["max_truck_velocity"])
+    MIN_DESIRED_DIST = 10
+    ACCELERATION_SMOOTHNESS = 4
+    TRUCK_LENGTH = 4
+    SAFETY_MARGIN_TO_LIGHT = 15
 
     @property
     def COLLISION_REWARD(self) -> float:
