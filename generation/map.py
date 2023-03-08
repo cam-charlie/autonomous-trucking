@@ -372,7 +372,7 @@ depots = [
 
 output = {}
 
-ROUND = False
+ROUND = True
 
 def getAngle(start, end):
 	change_x = end[0] - start[0]
@@ -416,6 +416,7 @@ def main():
 	already_node = []
 	
 	round_node = []
+	
 	junc_node = []
 	
 	for index, coord in enumerate(coords):
@@ -487,7 +488,7 @@ def main():
 		unique_node_id += 1
 		start = 1000000 + unique_node_id
 		unique_node_id += 1
-		d_name = 1000000 + unique_node_id
+		d_name = 2000000 + unique_node_id
 		unique_node_id += 1
 		ids.append(d_name)
 		if ROUND:
@@ -510,6 +511,12 @@ def main():
 			roads[unique_road_id] = {"type": "straight", "start node": d_name, "end node": target}
 			unique_road_id+=1
 		
+	for name1, road1 in roads.items():
+		for name2, road2 in roads.items():
+			if name1 != name2:
+				if road2["start node"] not in roundabout.keys():
+					if road1["end node"] == road2["start node"]:
+						curves.append({"roads":[name1, name2], "node":road1["end node"], "radius" : 2.5})
 				
 			
 			
