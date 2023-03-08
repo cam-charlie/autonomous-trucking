@@ -341,7 +341,8 @@ class Road(Edge):
             "id": self.id_,
             "start_node_id": self._start.id_,
             "end_node_id": self._end.id_,
-            "length": self.length
+            "length": self.length,
+            "speed_limit": self._speed_limit
         }
 
 
