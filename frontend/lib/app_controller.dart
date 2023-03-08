@@ -33,7 +33,7 @@ class AppController extends ChangeNotifier {
   late final ValueNotifier<RenderSimulationState> stateNotifier;
   RenderVehicleID? _selectedVehicle = null;
   double _currentTime = 0;
-  double _playbackSpeed = 1;
+  double _playbackSpeed = 5;
   bool _playing = true;
 
   late final Ticker _ticker;
