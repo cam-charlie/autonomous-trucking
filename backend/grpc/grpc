@@ -5,6 +5,12 @@ from typing import ClassVar as _ClassVar, Iterable as _Iterable, Mapping as _Map
 
 DESCRIPTOR: _descriptor.FileDescriptor
 
+class ConfigAsString(_message.Message):
+    __slots__ = ["json"]
+    JSON_FIELD_NUMBER: _ClassVar[int]
+    json: str
+    def __init__(self, json: _Optional[str] = ...) -> None: ...
+
 class PathElement(_message.Message):
     __slots__ = ["node_id", "road_id"]
     NODE_ID_FIELD_NUMBER: _ClassVar[int]
@@ -50,3 +56,7 @@ class TruckPositionsAtTime(_message.Message):
     time: float
     trucks: _containers.RepeatedCompositeFieldContainer[Truck]
     def __init__(self, trucks: _Optional[_Iterable[_Union[Truck, _Mapping]]] = ..., time: _Optional[float] = ...) -> None: ...
+
+class Void(_message.Message):
+    __slots__ = []
+    def __init__(self) -> None: ...

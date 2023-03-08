@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:frontend/utilities/animated_input_range.dart';
 import 'package:frontend/utilities/camera_transform.dart';
 import 'package:frontend/utilities/range.dart';
-import 'package:frontend/widgets/move_detector.dart';
-import 'package:frontend/widgets/move_detector_controller.dart';
-import 'package:frontend/widgets/simulation_visualisation.dart';
 import 'package:frontend/constants.dart' as constants;
+import '../../state/render_simulation.dart';
+import 'move_detector/move_detector.dart';
+import 'move_detector/move_detector_controller.dart';
+import 'simulation_visualisation.dart';
 
 class InteractiveSimulation extends StatefulWidget {
-  const InteractiveSimulation({super.key});
+  final ValueNotifier<RenderSimulationState> stateNotifier;
+  const InteractiveSimulation({required this.stateNotifier, super.key});
 
   @override
   State<InteractiveSimulation> createState() => _InteractiveSimulationState();
@@ -46,15 +48,22 @@ class _InteractiveSimulationState extends State<InteractiveSimulation>
 
   @override
   Widget build(BuildContext context) {
-    return MoveDetector(
-      controller: _controller,
-      child: AnimatedBuilder(
-        animation: _controller,
-        builder: (BuildContext context, _) => SimulationVisualisation(
-          state: constants.exampleState,
-          transform: _controller.transform,
-        ),
-      ),
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        return MoveDetector(
+          size: constraints.biggest,
+          controller: _controller,
+          // onTap:
+          child: AnimatedBuilder(
+            animation: Listenable.merge([_controller, widget.stateNotifier]),
+            builder: (BuildContext context, _) =>
+                SimulationVisualisation(
+                  state: widget.stateNotifier.value,
+                  transform: _controller.transform,
+                ),
+          ),
+        );
+      }
     );
   }
 }

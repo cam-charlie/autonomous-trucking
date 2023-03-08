@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/constants.dart' as constants;
+import 'package:frontend/state/render_depot.dart';
 import 'package:frontend/utilities/camera_transform.dart';
 
-import '../state/rendering/road.dart';
-import '../state/rendering/simulation.dart';
-import '../state/rendering/vehicle.dart';
+import '../../state/render_road.dart';
+import '../../state/render_simulation.dart';
+import '../../state/render_vehicle.dart';
 
 class SimulationVisualisation extends StatelessWidget {
-  final SimulationState state;
+  final RenderSimulationState state;
   final CameraTransform transform;
 
   const SimulationVisualisation(
@@ -25,7 +26,7 @@ class SimulationVisualisation extends StatelessWidget {
 }
 
 class SimulationPainter extends CustomPainter {
-  final SimulationState state;
+  final RenderSimulationState state;
   final CameraTransform transform;
 
   Offset get position => transform.position;
@@ -54,19 +55,22 @@ class SimulationPainter extends CustomPainter {
     canvas.translate(-position.dx, -position.dy);
 
 
-    for (RenderRoad r in state.roads) {
-      r.drawOutline(canvas: canvas);
-    }
+    // for (RenderRoad r in state.roads) {
+    //   r.drawOutline(canvas: canvas);
+    // }
 
     for (RenderRoad r in state.roads) {
       r.drawBody(canvas: canvas);
     }
 
-    for (Vehicle v in state.vehicles) {
+    for (RenderVehicle v in state.vehicles) {
       v.drawShadow(canvas: canvas);
     }
-    for (Vehicle v in state.vehicles) {
+    for (RenderVehicle v in state.vehicles) {
       v.drawBody(canvas: canvas);
+    }
+    for (RenderDepot d in state.depots) {
+      d.draw(canvas: canvas);
     }
   }
 
