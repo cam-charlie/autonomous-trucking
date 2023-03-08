@@ -25,11 +25,15 @@ class Realm:
         self.nodes = {n["id"]:Node.from_json(n) for n in data['nodes']}
 
         for r in data['roads']:
+            speed_limit: float = 31.3
+            if "speed_limit" in r:
+                speed_limit = r["speed_limit"]
             self.edges[r["id"]] = Road(
                     r["id"],
                     self.nodes[int(r["start_node_id"])],
                     self.nodes[int(r["end_node_id"])],
-                    r["length"]
+                    r["length"],
+                    speed_limit=speed_limit
                 )
 
         # Run Floyd-Warshall

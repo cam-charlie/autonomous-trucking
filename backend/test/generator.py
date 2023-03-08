@@ -1,4 +1,4 @@
-#pylint: disable=protected-access, wrong-import-position
+#pylint: disable=protected-access, wrong-import-position, unused-import
 import os
 import sys
 import math
@@ -20,8 +20,8 @@ def angle(u: complex, v: complex) -> float:
 
 def add_road(start: Node,
              end: Node,
-             control: Optional[Point] = None
-             ) -> Road:
+             control: Optional[Point] = None,
+             speed_limit: float =31.3) -> Road:
     length = (end.pos - start.pos).magnitude()
     if control is not None:
         # Circle from 3 points
@@ -36,7 +36,7 @@ def add_road(start: Node,
         cz1, cz2, cz3 = c-z1, c-z2, c-z3
         theta = angle(cz1,cz3) + angle(cz2,cz3)
         length = r * theta
-    road = Road(id_=generateID(), start =start, end=end, length=length)
+    road = Road(id_=generateID(), start =start, end=end, length=length, speed_limit=speed_limit)
     env.realm.edges[road._id] = road
     return road
 
@@ -52,6 +52,7 @@ def add_depot(x: int, y: int, size: int = 100) -> Depot:
 
 if __name__ == "__main__":
     SCALE = 1
+    '''
     d1 = add_depot(100,500)
     d2 = add_depot(500,100)
     d3 = add_depot(500,900)
@@ -77,10 +78,22 @@ if __name__ == "__main__":
     add_road(j2,j4)
     add_road(j4,j3)
     add_road(j3,j1)
+    '''
+
+    d1 = add_depot(100,200)
+    d2 = add_depot(1000,200)
+    d3 = add_depot(500,100)
+
+    j1 = add_junction(500,200)
+
+    add_road(d1,j1, speed_limit=50)
+    add_road(j1,d2, speed_limit=50)
+    add_road(d3,j1, speed_limit=10)
 
     # Trucks
     for i in range(1000):
         id_ = generateID()
+        '''
         route: List[int] = []
         for j in range(random.randint(2,4)):
             choice = random.choice(depots)
@@ -88,9 +101,10 @@ if __name__ == "__main__":
                 route.append(choice.id_)
         if len(route) <= 1:
             continue
-        truck = Truck(id_,route[1:],random.randint(0,100))
-        truck.set_current_truck_container(env.realm.nodes[route[0]])
+        '''
+        truck = Truck(id_,[1],random.randint(0,100))
+        truck.set_current_truck_container(env.realm.nodes[random.choice([0,2])])
         env.realm.trucks[id_] = truck
 
-    with open("roundabout.json", "w", encoding='utf-8') as f:
+    with open("merge.json", "w", encoding='utf-8') as f:
         f.write(env.to_json())
