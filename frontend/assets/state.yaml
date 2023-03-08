@@ -1,45 +1,1541 @@
-# Stores a state of the simulation which can be loaded from
-
 vehicles:
-  0:
-    node: 0
-    road: ~
+  10000:
     fraction: 0.0
-    velocity: 10.0
-    start time: 0
-    route: [1]
+    node: 1000096
+    route:
+    - 1000108
+    - 1000105
+    - 1000078
+    start time: 36
+    velocity: 0.0
+  10001:
+    fraction: 0.0
+    node: 1000099
+    route:
+    - 1000087
+    start time: 30
+    velocity: 0.0
+  10002:
+    fraction: 0.0
+    node: 1000084
+    route:
+    - 1000090
+    - 1000093
+    - 1000105
+    start time: 13
+    velocity: 0.0
+  10003:
+    fraction: 0.0
+    node: 1000099
+    route:
+    - 1000087
+    start time: 30
+    velocity: 0.0
+  10004:
+    fraction: 0.0
+    node: 1000099
+    route:
+    - 1000078
+    - 1000081
+    start time: 20
+    velocity: 0.0
+  10005:
+    fraction: 0.0
+    node: 1000096
+    route:
+    - 1000108
+    - 1000105
+    - 1000078
+    start time: 36
+    velocity: 0.0
+  10006:
+    fraction: 0.0
+    node: 1000099
+    route:
+    - 1000114
+    - 1000102
+    - 1000105
+    - 1000096
+    start time: 37
+    velocity: 0.0
+  10007:
+    fraction: 0.0
+    node: 1000114
+    route:
+    - 1000099
+    - 1000093
+    - 1000078
+    start time: 5
+    velocity: 0.0
+  10008:
+    fraction: 0.0
+    node: 1000090
+    route:
+    - 1000093
+    - 1000114
+    - 1000087
+    start time: 13
+    velocity: 0.0
+  10009:
+    fraction: 0.0
+    node: 1000099
+    route:
+    - 1000087
+    start time: 30
+    velocity: 0.0
+  10010:
+    fraction: 0.0
+    node: 1000114
+    route:
+    - 1000099
+    - 1000093
+    - 1000078
+    start time: 5
+    velocity: 0.0
+  10011:
+    fraction: 0.0
+    node: 1000099
+    route:
+    - 1000114
+    - 1000102
+    - 1000105
+    - 1000096
+    start time: 37
+    velocity: 0.0
+  10012:
+    fraction: 0.0
+    node: 1000099
+    route:
+    - 1000114
+    - 1000102
+    - 1000105
+    - 1000096
+    start time: 37
+    velocity: 0.0
+  10013:
+    fraction: 0.0
+    node: 1000102
+    route:
+    - 1000084
+    start time: 25
+    velocity: 0.0
+  10014:
+    fraction: 0.0
+    node: 1000099
+    route:
+    - 1000078
+    - 1000081
+    start time: 20
+    velocity: 0.0
+  10015:
+    fraction: 0.0
+    node: 1000084
+    route:
+    - 1000090
+    - 1000093
+    - 1000105
+    start time: 13
+    velocity: 0.0
+  10016:
+    fraction: 0.0
+    node: 1000102
+    route:
+    - 1000111
+    - 1000096
+    start time: 54
+    velocity: 0.0
+  10017:
+    fraction: 0.0
+    node: 1000084
+    route:
+    - 1000090
+    - 1000093
+    - 1000105
+    start time: 13
+    velocity: 0.0
+  10018:
+    fraction: 0.0
+    node: 1000084
+    route:
+    - 1000090
+    - 1000093
+    - 1000105
+    start time: 13
+    velocity: 0.0
+  10019:
+    fraction: 0.0
+    node: 1000099
+    route:
+    - 1000114
+    - 1000102
+    - 1000105
+    - 1000096
+    start time: 37
+    velocity: 0.0
+  10020:
+    fraction: 0.0
+    node: 1000114
+    route:
+    - 1000099
+    - 1000093
+    - 1000078
+    start time: 5
+    velocity: 0.0
+  10021:
+    fraction: 0.0
+    node: 1000084
+    route:
+    - 1000090
+    - 1000093
+    - 1000105
+    start time: 13
+    velocity: 0.0
+  10022:
+    fraction: 0.0
+    node: 1000099
+    route:
+    - 1000087
+    start time: 30
+    velocity: 0.0
+  10023:
+    fraction: 0.0
+    node: 1000084
+    route:
+    - 1000090
+    - 1000093
+    - 1000105
+    start time: 13
+    velocity: 0.0
+  10024:
+    fraction: 0.0
+    node: 1000099
+    route:
+    - 1000087
+    start time: 30
+    velocity: 0.0
+  10025:
+    fraction: 0.0
+    node: 1000114
+    route:
+    - 1000099
+    - 1000093
+    - 1000078
+    start time: 5
+    velocity: 0.0
+  10026:
+    fraction: 0.0
+    node: 1000084
+    route:
+    - 1000090
+    - 1000093
+    - 1000105
+    start time: 13
+    velocity: 0.0
+  10027:
+    fraction: 0.0
+    node: 1000084
+    route:
+    - 1000090
+    - 1000093
+    - 1000105
+    start time: 13
+    velocity: 0.0
+  10028:
+    fraction: 0.0
+    node: 1000099
+    route:
+    - 1000114
+    - 1000102
+    - 1000105
+    - 1000096
+    start time: 37
+    velocity: 0.0
+  10029:
+    fraction: 0.0
+    node: 1000099
+    route:
+    - 1000114
+    - 1000102
+    - 1000105
+    - 1000096
+    start time: 37
+    velocity: 0.0
+  10030:
+    fraction: 0.0
+    node: 1000099
+    route:
+    - 1000087
+    start time: 30
+    velocity: 0.0
+  10031:
+    fraction: 0.0
+    node: 1000099
+    route:
+    - 1000078
+    - 1000081
+    start time: 20
+    velocity: 0.0
+  10032:
+    fraction: 0.0
+    node: 1000102
+    route:
+    - 1000111
+    - 1000096
+    start time: 54
+    velocity: 0.0
+  10033:
+    fraction: 0.0
+    node: 1000099
+    route:
+    - 1000078
+    - 1000081
+    start time: 20
+    velocity: 0.0
+  10034:
+    fraction: 0.0
+    node: 1000078
+    route:
+    - 1000117
+    start time: 46
+    velocity: 0.0
+  10035:
+    fraction: 0.0
+    node: 1000078
+    route:
+    - 1000117
+    start time: 46
+    velocity: 0.0
+  10036:
+    fraction: 0.0
+    node: 1000090
+    route:
+    - 1000093
+    - 1000114
+    - 1000087
+    start time: 13
+    velocity: 0.0
+  10037:
+    fraction: 0.0
+    node: 1000114
+    route:
+    - 1000099
+    - 1000093
+    - 1000078
+    start time: 5
+    velocity: 0.0
+  10038:
+    fraction: 0.0
+    node: 1000078
+    route:
+    - 1000117
+    start time: 46
+    velocity: 0.0
+  10039:
+    fraction: 0.0
+    node: 1000084
+    route:
+    - 1000090
+    - 1000093
+    - 1000105
+    start time: 13
+    velocity: 0.0
+  10040:
+    fraction: 0.0
+    node: 1000078
+    route:
+    - 1000117
+    start time: 46
+    velocity: 0.0
+  10041:
+    fraction: 0.0
+    node: 1000090
+    route:
+    - 1000093
+    - 1000114
+    - 1000087
+    start time: 13
+    velocity: 0.0
+  10042:
+    fraction: 0.0
+    node: 1000090
+    route:
+    - 1000093
+    - 1000114
+    - 1000087
+    start time: 13
+    velocity: 0.0
+  10043:
+    fraction: 0.0
+    node: 1000099
+    route:
+    - 1000114
+    - 1000102
+    - 1000105
+    - 1000096
+    start time: 37
+    velocity: 0.0
+  10044:
+    fraction: 0.0
+    node: 1000078
+    route:
+    - 1000117
+    start time: 46
+    velocity: 0.0
+  10045:
+    fraction: 0.0
+    node: 1000099
+    route:
+    - 1000078
+    - 1000081
+    start time: 20
+    velocity: 0.0
+  10046:
+    fraction: 0.0
+    node: 1000114
+    route:
+    - 1000099
+    - 1000093
+    - 1000078
+    start time: 5
+    velocity: 0.0
+  10047:
+    fraction: 0.0
+    node: 1000099
+    route:
+    - 1000114
+    - 1000102
+    - 1000105
+    - 1000096
+    start time: 37
+    velocity: 0.0
+  10048:
+    fraction: 0.0
+    node: 1000102
+    route:
+    - 1000084
+    start time: 25
+    velocity: 0.0
+  10049:
+    fraction: 0.0
+    node: 1000099
+    route:
+    - 1000087
+    start time: 30
+    velocity: 0.0
 
-roads:
-  0:
-    type: straight
-    start node: 0
-    end node: 1
-  1:
-    type: arc
-    centre:
-      x: 0
-      y: 0
-    radius: 100
-    start angle: 2.356194490189793 # 135 degrees
-    sweep angle: -3.141592653589793 # 180 degrees anticlockwise
-    start node: 1
-    end node: 0
-
-
+curves: []
 nodes:
   0:
-    type: junction
     position:
-      x: -100
-      y: -100
+      x: 615.276753555337
+      y: -1181.3100394532084
+    type: junction
   1:
-    type: junction
     position:
-      x: 100
-      y: 100
+      x: 830.8466513435887
+      y: -309.4306196337566
+    type: junction
   2:
-    type: depot
+    position:
+      x: 386.2152046675462
+      y: 342.8388200625777
+    type: junction
+  3:
+    position:
+      x: 88.80944927820504
+      y: 1011.1619596742094
+    type: junction
+  4:
+    position:
+      x: -157.77059694279887
+      y: 834.9088463680819
+    type: junction
+  5:
+    position:
+      x: -285.81841059030677
+      y: 845.8772240197286
+    type: junction
+  6:
+    position:
+      x: -285.02308255522803
+      y: 902.9131802096963
+    type: junction
+  7:
+    position:
+      x: -971.194186732749
+      y: 801.7335677808151
+    type: junction
+  8:
+    position:
+      x: -954.4922876177116
+      y: 552.3940181005746
+    type: junction
+  9:
+    position:
+      x: -1044.4624493890758
+      y: -496.5577885322273
+    type: junction
+  10:
+    position:
+      x: -805.9490466719702
+      y: -573.5114179356024
+    type: junction
+  11:
+    position:
+      x: -22.29042225594094
+      y: -962.2935390220955
+    type: junction
+  12:
+    position:
+      x: 86.38486333396698
+      y: -260.88713607471436
+    type: junction
+  13:
+    position:
+      x: -32.049503513326876
+      y: 88.65716388914734
+    type: junction
+  14:
+    position:
+      x: -108.95790683843491
+      y: 63.59939427115023
+    type: junction
+  15:
+    position:
+      x: -211.45822691698655
+      y: 175.0714191235602
+    type: junction
+  16:
+    position:
+      x: -178.93438168777357
+      y: 233.85606651380658
+    type: junction
+  17:
+    position:
+      x: -389.0480429035476
+      y: 309.0294076791033
+    type: junction
+  18:
+    position:
+      x: -575.9304785941689
+      y: 406.6761901471764
+    type: junction
+  19:
+    position:
+      x: -598.4766157411481
+      y: 358.31315662153065
+    type: junction
+  20:
+    position:
+      x: -589.3159811895251
+      y: 12.36555118765682
+    type: junction
+  21:
+    position:
+      x: -576.4762405429101
+      y: -68.24501197971404
+    type: junction
+  22:
+    position:
+      x: -566.0951736371353
+      y: -94.11042799521238
+    type: junction
+  23:
+    position:
+      x: -706.6519657214727
+      y: -83.8798689013347
+    type: junction
+  24:
+    position:
+      x: -732.0295867574569
+      y: 80.1702425442636
+    type: junction
+  25:
+    position:
+      x: -392.00354733984085
+      y: -67.04688976611942
+    type: junction
+  26:
+    position:
+      x: -306.456405460478
+      y: 32.66215744614601
+    type: junction
+  27:
+    position:
+      x: -431.2979287709374
+      y: -149.8226849641651
+    type: junction
+  28:
+    position:
+      x: -482.87180850110235
+      y: -239.36948383133858
+    type: junction
+  29:
+    position:
+      x: -551.6369751792494
+      y: -316.1225893208757
+    type: junction
+  30:
+    position:
+      x: -334.64650741605027
+      y: -180.31688843201846
+    type: junction
+  31:
+    position:
+      x: -407.28762313935295
+      y: -303.85483296308666
+    type: junction
+  32:
+    position:
+      x: -453.2093374286099
+      y: -382.0976212006062
+    type: junction
+  33:
+    position:
+      x: -467.49295000945375
+      y: -458.6151357218623
+    type: junction
+  34:
+    position:
+      x: -563.2377716363007
+      y: -531.4390152944252
+    type: junction
+  35:
+    position:
+      x: -614.123131058208
+      y: -402.8169594723731
+    type: junction
+  1000078:
     max capacity: 5
     position:
-      x: -50
-      y: 50
+      x: -933.8991993506812
+      y: 557.0761587647721
+    type: depot
+  1000081:
+    max capacity: 5
+    position:
+      x: -711.1679834557702
+      y: 373.50337300170213
+    type: depot
+  1000084:
+    max capacity: 5
+    position:
+      x: 23.212919176616804
+      y: -292.4274082398042
+    type: depot
+  1000087:
+    max capacity: 5
+    position:
+      x: -780.2490370583922
+      y: 59.211455752141774
+    type: depot
+  1000090:
+    max capacity: 5
+    position:
+      x: -655.0442661601846
+      y: -36.18735403381288
+    type: depot
+  1000093:
+    max capacity: 5
+    position:
+      x: -705.8279434955608
+      y: -112.5469574443996
+    type: depot
+  1000096:
+    max capacity: 5
+    position:
+      x: -653.7286394762172
+      y: -365.5410940758884
+    type: depot
+  1000099:
+    max capacity: 5
+    position:
+      x: -761.6979173169724
+      y: -570.3569420333952
+    type: depot
+  1000102:
+    max capacity: 5
+    position:
+      x: 56.18618799957161
+      y: 706.3968588523567
+    type: depot
+  1000105:
+    max capacity: 5
+    position:
+      x: -731.7054695816829
+      y: 107.46730947867036
+    type: depot
+  1000108:
+    max capacity: 5
+    position:
+      x: -545.598700428578
+      y: 417.10495215747505
+    type: depot
+  1000111:
+    max capacity: 5
+    position:
+      x: -589.7394063753891
+      y: 441.59895819891244
+    type: depot
+  1000114:
+    max capacity: 5
+    position:
+      x: -141.30972770043687
+      y: 214.48654096387327
+    type: depot
+  1000117:
+    max capacity: 5
+    position:
+      x: -648.7914397488506
+      y: 333.558765867725
+    type: depot
+  1000120:
+    max capacity: 5
+    position:
+      x: -574.3951308727179
+      y: 330.87083161622286
+    type: depot
+outlines:
+- - - -621.1847807905737
+    - 233.76322335284203
+  - - -849.1512872250229
+    - 275.6767697939649
+  - - -865.184095068203
+    - 96.04979115910828
+  - - -645.7350158024807
+    - 73.71202091500163
+- - - -602.916171098465
+    - 353.3376626018435
+  - - -697.6099471157819
+    - 376.1372964764014
+  - - -718.1519831830337
+    - 249.243701078929
+  - - -620.4520555461168
+    - 235.88667007070035
+- - - -702.9658854896661
+    - 378.24143772386014
+  - - -775.5567874210416
+    - 404.32641360443085
+  - - -846.4925222073992
+    - 277.16345676686615
+  - - -724.0101534762858
+    - 249.99230911582708
+- - - -504.00454621533936
+    - 319.1889819279313
+  - - -600.7835462492015
+    - 339.4335346352309
+  - - -611.0216440571749
+    - 272.4847600562498
+  - - -531.6280931311934
+    - 256.6800092794001
+- - - -573.4648923537934
+    - 410.1386159816757
+  - - -392.7829220045278
+    - 315.36215244885534
+  - - -316.2587933860171
+    - 534.2301358971745
+  - - -425.02225396880993
+    - 593.8342572124675
+- - - -582.9234427276509
+    - 417.08979406859726
+  - - -476.75988542956475
+    - 555.193589833565
+  - - -518.6944905623095
+    - 592.7702021980658
+  - - -460.30452719814394
+    - 666.4602355007082
+  - - -409.8768374815542
+    - 632.2991576148197
+  - - -317.5145426322197
+    - 770.8969952184707
+  - - -500.1158611849278
+    - 802.6188779091462
+  - - -729.2554995384659
+    - 457.7877921555191
+- - - -296.6316178051687
+    - 538.1449340991676
+  - - -66.87993192256909
+    - 444.1704052705318
+  - - 90.04636967736224
+    - 694.4152545100078
+  - - -153.04933414746847
+    - 817.1203356860206
+- - - -736.2410067018342
+    - 31.20824892539531
+  - - -733.6361325944054
+    - 77.76879367325455
+  - - -826.2538786362978
+    - 90.53976262360811
+  - - -830.8847659383924
+    - 31.740366956219077
+- - - -577.6331138507109
+    - -71.75551502779126
+  - - -710.4816933295502
+    - -89.04895951226354
+  - - -712.5077065242185
+    - -49.939083334989846
+  - - -830.5413082029881
+    - -62.96751542203128
+  - - -810.6793024628072
+    - -193.59603297151625
+  - - -723.1296206348148
+    - -182.35090564657003
+  - - -714.6269396772028
+    - -250.0869694845751
+  - - -590.2752306721208
+    - -207.1007289495319
+- - - -715.1080883699093
+    - -43.607481855899096
+  - - -736.2365116857145
+    - 30.62241332512349
+  - - -866.7696475135077
+    - 31.686649322509766
+  - - -875.1631307485526
+    - -29.506548143923283
+  - - -820.460774492561
+    - -55.84599547274411
+- - - -703.4181050963986
+    - -82.88195157796144
+  - - -579.0155581466837
+    - -66.36800866480917
+  - - -593.5034324032495
+    - -3.507979108951986
+  - - -711.338143023319
+    - -3.1528354296460748
+- - - -322.48348096110203
+    - -182.65235819108784
+  - - -113.10496237989719
+    - -189.16548120882362
+  - - -190.33765086096778
+    - 4.6036036824807525
+  - - -265.7989443597762
+    - 72.99450576957315
+  - - -304.06100866903097
+    - 32.2855214420706
+- - - -595.5518266154335
+    - -211.459940074943
+  - - -746.3040779787152
+    - -274.40255884453654
+  - - -724.1068953193098
+    - -426.43156354501843
+  - - -688.1134738776649
+    - -462.30553631670773
+  - - -556.282142571204
+    - -315.22058816533536
+- - - -967.3877482355747
+    - -510.9342870693654
+  - - -806.5014853582834
+    - -563.1498693982139
+  - - -702.8577742324802
+    - -471.87188749946654
+  - - -749.258933606794
+    - -420.05394205264747
+  - - -802.1649284074132
+    - -461.10974354855716
+  - - -824.7150245519393
+    - -435.5993827562779
+- - - -344.2405456630683
+    - -340.71558448299766
+  - - -355.2671586494798
+    - -393.9264265401289
+  - - -247.7576820319846
+    - -529.4847913682461
+  - - -144.3831852843929
+    - -502.88017202727497
+  - - -111.30334632516315
+    - -464.45102447271347
+  - - -34.11705542029449
+    - -458.53882139455527
+  - - -33.6576132125277
+    - -272.3008025493473
+- - - -289.6325196063056
+    - -197.2903152713552
+  - - -420.5681792223756
+    - -145.99031690694392
+  - - -480.3631525833468
+    - -236.46962559595704
+  - - -296.37861916497786
+    - -325.5379807734862
+- - - 97.17302782823874
+    - 165.67269708029926
+  - - -79.39167579189113
+    - 371.238772735931
+  - - -205.71235372313944
+    - 174.6863147104159
+  - - -105.72708825822095
+    - 70.05301840417087
+- - - -847.735293403924
+    - 494.2528401631862
+  - - -911.0955981281646
+    - 567.4203493380919
+  - - -893.3238053396575
+    - 640.9441318307072
+  - - -911.0955981281646
+    - 650.1790803866461
+  - - -943.162093811774
+    - 556.409635508433
+  - - -869.7568627288116
+    - 508.4600387439132
+- - - -791.7136630880146
+    - 416.5400997819379
+  - - -855.1545220102562
+    - 485.8893134864047
+  - - -956.4705205875701
+    - 382.01093789190054
+  - - -841.8982231309807
+    - 331.23319695238024
+- - - -758.3657035475298
+    - -311.6330971363932
+  - - -866.7796273192907
+    - -333.95523015782237
+  - - -963.0511916286123
+    - -483.43120045773685
+  - - -849.4333995158086
+    - -431.2147755045444
+  - - -748.8252782556143
+    - -409.29168449155986
+- - - -700.6894855960976
+    - -485.8227829383686
+  - - -797.394705600509
+    - -567.1357720298693
+  - - -724.9742045209738
+    - -652.4332535266876
+  - - -635.2074756379565
+    - -564.7442326340824
+roads:
+  0:
+    end node: 1
+    start node: 0
+    type: straight
+  1:
+    end node: 11
+    start node: 0
+    type: straight
+  2:
+    end node: 0
+    start node: 1
+    type: straight
+  3:
+    end node: 12
+    start node: 1
+    type: straight
+  4:
+    end node: 2
+    start node: 1
+    type: straight
+  5:
+    end node: 1
+    start node: 2
+    type: straight
+  6:
+    end node: 13
+    start node: 2
+    type: straight
+  7:
+    end node: 3
+    start node: 2
+    type: straight
+  8:
+    end node: 2
+    start node: 3
+    type: straight
+  9:
+    end node: 4
+    start node: 3
+    type: straight
+  10:
+    end node: 3
+    start node: 4
+    type: straight
+  11:
+    end node: 17
+    start node: 4
+    type: straight
+  12:
+    end node: 5
+    start node: 4
+    type: straight
+  13:
+    end node: 6
+    start node: 5
+    type: straight
+  14:
+    end node: 4
+    start node: 5
+    type: straight
+  15:
+    end node: 18
+    start node: 5
+    type: straight
+  16:
+    end node: 5
+    start node: 6
+    type: straight
+  17:
+    end node: 7
+    start node: 6
+    type: straight
+  18:
+    end node: 6
+    start node: 7
+    type: straight
+  19:
+    end node: 8
+    start node: 7
+    type: straight
+  20:
+    end node: 7
+    start node: 8
+    type: straight
+  21:
+    end node: 19
+    start node: 8
+    type: straight
+  22:
+    end node: 9
+    start node: 8
+    type: straight
+  23:
+    end node: 8
+    start node: 9
+    type: straight
+  24:
+    end node: 10
+    start node: 9
+    type: straight
+  25:
+    end node: 9
+    start node: 10
+    type: straight
+  26:
+    end node: 35
+    start node: 10
+    type: straight
+  27:
+    end node: 11
+    start node: 10
+    type: straight
+  28:
+    end node: 0
+    start node: 11
+    type: straight
+  29:
+    end node: 10
+    start node: 11
+    type: straight
+  30:
+    end node: 12
+    start node: 11
+    type: straight
+  31:
+    end node: 11
+    start node: 12
+    type: straight
+  32:
+    end node: 1
+    start node: 12
+    type: straight
+  33:
+    end node: 31
+    start node: 12
+    type: straight
+  34:
+    end node: 14
+    start node: 13
+    type: straight
+  35:
+    end node: 12
+    start node: 13
+    type: straight
+  36:
+    end node: 15
+    start node: 14
+    type: straight
+  37:
+    end node: 16
+    start node: 15
+    type: straight
+  38:
+    end node: 26
+    start node: 15
+    type: straight
+  39:
+    end node: 3
+    start node: 16
+    type: straight
+  40:
+    end node: 16
+    start node: 17
+    type: straight
+  41:
+    end node: 19
+    start node: 18
+    type: straight
+  42:
+    end node: 5
+    start node: 18
+    type: straight
+  43:
+    end node: 17
+    start node: 18
+    type: straight
+  44:
+    end node: 8
+    start node: 19
+    type: straight
+  45:
+    end node: 20
+    start node: 19
+    type: straight
+  46:
+    end node: 18
+    start node: 19
+    type: straight
+  47:
+    end node: 19
+    start node: 20
+    type: straight
+  48:
+    end node: 25
+    start node: 20
+    type: straight
+  49:
+    end node: 20
+    start node: 21
+    type: straight
+  50:
+    end node: 23
+    start node: 21
+    type: straight
+  51:
+    end node: 21
+    start node: 22
+    type: straight
+  52:
+    end node: 21
+    start node: 23
+    type: straight
+  53:
+    end node: 24
+    start node: 23
+    type: straight
+  54:
+    end node: 23
+    start node: 24
+    type: straight
+  55:
+    end node: 27
+    start node: 25
+    type: straight
+  56:
+    end node: 25
+    start node: 26
+    type: straight
+  57:
+    end node: 30
+    start node: 26
+    type: straight
+  58:
+    end node: 22
+    start node: 27
+    type: straight
+  59:
+    end node: 28
+    start node: 27
+    type: straight
+  60:
+    end node: 29
+    start node: 28
+    type: straight
+  61:
+    end node: 35
+    start node: 29
+    type: straight
+  62:
+    end node: 32
+    start node: 29
+    type: straight
+  63:
+    end node: 22
+    start node: 29
+    type: straight
+  64:
+    end node: 12
+    start node: 30
+    type: straight
+  65:
+    end node: 28
+    start node: 31
+    type: straight
+  66:
+    end node: 32
+    start node: 31
+    type: straight
+  67:
+    end node: 12
+    start node: 31
+    type: straight
+  68:
+    end node: 33
+    start node: 32
+    type: straight
+  69:
+    end node: 31
+    start node: 32
+    type: straight
+  70:
+    end node: 32
+    start node: 33
+    type: straight
+  71:
+    end node: 34
+    start node: 33
+    type: straight
+  72:
+    end node: 33
+    start node: 34
+    type: straight
+  73:
+    end node: 35
+    start node: 34
+    type: straight
+  74:
+    end node: 29
+    start node: 35
+    type: straight
+  75:
+    end node: 10
+    start node: 35
+    type: straight
+  76:
+    end node: 1000078
+    start node: 8
+    type: straight
+  77:
+    end node: 8
+    start node: 1000078
+    type: straight
+  78:
+    end node: 1000081
+    start node: 19
+    type: straight
+  79:
+    end node: 19
+    start node: 1000081
+    type: straight
+  80:
+    end node: 1000084
+    start node: 12
+    type: straight
+  81:
+    end node: 12
+    start node: 1000084
+    type: straight
+  82:
+    end node: 1000087
+    start node: 24
+    type: straight
+  83:
+    end node: 24
+    start node: 1000087
+    type: straight
+  84:
+    end node: 1000090
+    start node: 23
+    type: straight
+  85:
+    end node: 23
+    start node: 1000090
+    type: straight
+  86:
+    end node: 1000093
+    start node: 23
+    type: straight
+  87:
+    end node: 23
+    start node: 1000093
+    type: straight
+  88:
+    end node: 1000096
+    start node: 35
+    type: straight
+  89:
+    end node: 35
+    start node: 1000096
+    type: straight
+  90:
+    end node: 1000099
+    start node: 10
+    type: straight
+  91:
+    end node: 10
+    start node: 1000099
+    type: straight
+  92:
+    end node: 1000102
+    start node: 4
+    type: straight
+  93:
+    end node: 4
+    start node: 1000102
+    type: straight
+  94:
+    end node: 1000105
+    start node: 24
+    type: straight
+  95:
+    end node: 24
+    start node: 1000105
+    type: straight
+  96:
+    end node: 1000108
+    start node: 18
+    type: straight
+  97:
+    end node: 18
+    start node: 1000108
+    type: straight
+  98:
+    end node: 1000111
+    start node: 18
+    type: straight
+  99:
+    end node: 18
+    start node: 1000111
+    type: straight
+  100:
+    end node: 1000114
+    start node: 16
+    type: straight
+  101:
+    end node: 16
+    start node: 1000114
+    type: straight
+  102:
+    end node: 1000117
+    start node: 19
+    type: straight
+  103:
+    end node: 19
+    start node: 1000117
+    type: straight
+  104:
+    end node: 1000120
+    start node: 19
+    type: straight
+  105:
+    end node: 19
+    start node: 1000120
+    type: straight
+roundabouts:
+  0:
+    centre:
+      x: 615.276753555337
+      y: -1181.3100394532084
+    radius: 5
+  1:
+    centre:
+      x: 830.8466513435887
+      y: -309.4306196337566
+    radius: 5
+  2:
+    centre:
+      x: 386.2152046675462
+      y: 342.8388200625777
+    radius: 5
+  3:
+    centre:
+      x: 88.80944927820504
+      y: 1011.1619596742094
+    radius: 5
+  4:
+    centre:
+      x: -157.77059694279887
+      y: 834.9088463680819
+    radius: 5
+  5:
+    centre:
+      x: -285.81841059030677
+      y: 845.8772240197286
+    radius: 5
+  6:
+    centre:
+      x: -285.02308255522803
+      y: 902.9131802096963
+    radius: 5
+  7:
+    centre:
+      x: -971.194186732749
+      y: 801.7335677808151
+    radius: 5
+  8:
+    centre:
+      x: -954.4922876177116
+      y: 552.3940181005746
+    radius: 5
+  9:
+    centre:
+      x: -1044.4624493890758
+      y: -496.5577885322273
+    radius: 5
+  10:
+    centre:
+      x: -805.9490466719702
+      y: -573.5114179356024
+    radius: 5
+  11:
+    centre:
+      x: -22.29042225594094
+      y: -962.2935390220955
+    radius: 5
+  12:
+    centre:
+      x: 86.38486333396698
+      y: -260.88713607471436
+    radius: 5
+  16:
+    centre:
+      x: -178.93438168777357
+      y: -178.93438168777357
+    radius: 0.5
+  18:
+    centre:
+      x: -575.9304785941689
+      y: 406.6761901471764
+    radius: 5
+  19:
+    centre:
+      x: -598.4766157411481
+      y: 358.31315662153065
+    radius: 5
+  20:
+    centre:
+      x: -589.3159811895251
+      y: 12.36555118765682
+    radius: 5
+  21:
+    centre:
+      x: -576.4762405429101
+      y: -68.24501197971404
+    radius: 5
+  23:
+    centre:
+      x: -706.6519657214727
+      y: -83.8798689013347
+    radius: 5
+  24:
+    centre:
+      x: -732.0295867574569
+      y: 80.1702425442636
+    radius: 5
+  31:
+    centre:
+      x: -407.28762313935295
+      y: -303.85483296308666
+    radius: 5
+  32:
+    centre:
+      x: -453.2093374286099
+      y: -382.0976212006062
+    radius: 5
+  33:
+    centre:
+      x: -467.49295000945375
+      y: -458.6151357218623
+    radius: 5
+  34:
+    centre:
+      x: -563.2377716363007
+      y: -531.4390152944252
+    radius: 5
+  35:
+    centre:
+      x: -614.123131058208
+      y: -402.8169594723731
+    radius: 5
+text:
+- position:
+  - -621.1847807905737
+  - 233.76322335284203
+  text: Kings' College
+- position:
+  - -602.916171098465
+  - 353.3376626018435
+  text: St. Catharine's College
+- position:
+  - -702.9658854896661
+  - 378.24143772386014
+  text: Queens' College
+- position:
+  - -504.00454621533936
+  - 319.1889819279313
+  text: Corpus Christi College
+- position:
+  - -573.4648923537934
+  - 410.1386159816757
+  text: Pembroke College
+- position:
+  - -582.9234427276509
+  - 417.08979406859726
+  text: Peterhouse College
+- position:
+  - -296.6316178051687
+  - 538.1449340991676
+  text: Downing College
+- position:
+  - -736.2410067018342
+  - 31.20824892539531
+  text: Clare College
+- position:
+  - -577.6331138507109
+  - -71.75551502779126
+  text: Trinity College
+- position:
+  - -715.1080883699093
+  - -43.607481855899096
+  text: Trinity Hall
+- position:
+  - -703.4181050963986
+  - -82.88195157796144
+  text: Gonville & Caius College
+- position:
+  - -322.48348096110203
+  - -182.65235819108784
+  text: Christ's College
+- position:
+  - -595.5518266154335
+  - -211.459940074943
+  text: St. John's College
+- position:
+  - -967.3877482355747
+  - -510.9342870693654
+  text: Magdalene College
+- position:
+  - -344.2405456630683
+  - -340.71558448299766
+  text: Jesus College
+- position:
+  - -289.6325196063056
+  - -197.2903152713552
+  text: Sidney Sussex College
+- position:
+  - 97.17302782823874
+  - 165.67269708029926
+  text: Emmanuel College
+- position:
+  - -847.735293403924
+  - 494.2528401631862
+  text: Dawrin College
+- position:
+  - -791.7136630880146
+  - 416.5400997819379
+  text: Queens' College
+- position:
+  - -758.3657035475298
+  - -311.6330971363932
+  text: St. John's College
+- position:
+  - -700.6894855960976
+  - -485.8227829383686
+  text: Magdalene College
+
