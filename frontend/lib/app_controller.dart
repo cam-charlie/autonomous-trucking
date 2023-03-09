@@ -5,7 +5,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:frontend/constants.dart' as constants;
 import 'package:frontend/generation/file_to_store.dart';
-import 'package:frontend/generation/rstore_to_store.dart';
+//import 'package:frontend/generation/rstore_to_store.dart';
 import 'package:frontend/generation/store_state.dart';
 import 'package:frontend/generation/store_to_json.dart';
 import 'package:frontend/generation/store_to_render.dart';
@@ -14,8 +14,8 @@ import 'package:frontend/state/render_depot.dart';
 import 'package:frontend/state/render_road.dart';
 import 'package:frontend/state/render_simulation.dart';
 
-import 'generation/file_to_rstore.dart';
-import 'generation/rstore_state.dart';
+//import 'generation/file_to_rstore.dart';
+//import 'generation/rstore_state.dart';
 import 'state/interpolator.dart';
 import 'state/render_vehicle.dart';
 
