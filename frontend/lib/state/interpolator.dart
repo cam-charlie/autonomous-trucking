@@ -34,7 +34,7 @@ class Buffering {
 class _Interpolator {
   final StaticRenderData _staticData;
   final Map<RenderRoadID, RenderRoad> _roadMap;
-  final Map<RenderVehicleID, bool> _turn;
+  final Map<RenderVehicleID, RenderRoadID> _turn;
   final Map<RenderVehicleID, double> _speed;
   final Map<RenderVehicleID, bool> _depoted;
   final Function(double time) _getData;
@@ -93,14 +93,14 @@ class _Interpolator {
 
     if (!_turn.containsKey(RenderVehicleID(start.truckId))) {
       comms.add(InitAction(vehicle: RenderVehicleID(start.truckId), time: t0));
-      _turn[RenderVehicleID(start.truckId)] = false;
+      _turn[RenderVehicleID(start.truckId)] = RenderRoadID(start.roadId);
       _speed[RenderVehicleID(start.truckId)] = start.currSpeed;
-    } else if (fracDist > 1 && !(_turn[RenderVehicleID(start.truckId)]!)) {
+    } else if (RenderRoadID(start.roadId) != _turn[RenderVehicleID(start.truckId)]!) {
       // Claculate direction of turn
 
-      double startDir = road_calc.direction(map[RenderRoadID(start.roadId)]!,
+      double startDir = road_calc.direction(map[_turn[RenderVehicleID(start.truckId)]!]!,
           fraction: start.progress);
-      double endDir = road_calc.direction(map[RenderRoadID(end.roadId)]!,
+      double endDir = road_calc.direction(map[RenderRoadID(start.roadId)]!,
           fraction: fracDist % 1.0);
 
       Vector3 calcVec = Vector3(sin(startDir), cos(startDir), 0)
@@ -118,12 +118,11 @@ class _Interpolator {
       comms.add(TurnAction(
           vehicle: RenderVehicleID(start.truckId),
           time: ti,
-          startRoad: RenderRoadID(start.roadId),
-          endRoad: RenderRoadID(end.roadId),
+          startRoad: _turn[RenderVehicleID(start.truckId)]!,
+          endRoad: RenderRoadID(start.roadId),
           direction: dir));
-      _turn[RenderVehicleID(start.truckId)] = true;
-    } else if (fracDist <= 1 && _turn[RenderVehicleID(start.truckId)]!) {
-      _turn[RenderVehicleID(start.truckId)] = false;
+      print("Turn made");
+      _turn[RenderVehicleID(start.truckId)] = RenderRoadID(start.roadId);
     }
 
     if (_speed[RenderVehicleID(start.truckId)]! != end.currSpeed) {

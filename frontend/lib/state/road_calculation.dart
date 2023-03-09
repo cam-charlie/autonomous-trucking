@@ -13,12 +13,16 @@ double length(RenderRoad road) {
   throw Exception('Attempted road length calculation on non-road');
 }
 
-double _invertAngle(double angle) {
+/*double _invertAngle(double angle) {
   if (angle < pi) {
     return pi - angle;
   } else {
-    return 2 * pi - (angle - pi);
+    return 3 * pi - (angle);
   }
+}*/
+
+double _invertAngle(double angle) {
+	return (-angle) % 2*pi;
 }
 
 Offset positionAt(RenderRoad road, {double? distance, double? fraction}) {
@@ -48,12 +52,15 @@ double direction(RenderRoad road, {double? distance, double? fraction}) {
   if (road is RenderStraightRoad) {
     double rotation = (road.end - road.start).direction;
 
-    return _invertAngle(((rotation + (3 * pi / 2)) - (2 * pi)).abs());
+    //return _invertAngle((rotation + pi / 2) % 2 * pi);
+    return rotation + pi/2 ;  
   } else if (road is RenderArcRoad) {
     Offset travel =
         road.centre - positionAt(road, distance: distance, fraction: fraction);
-    double angle;
-
+        
+    
+    double angle = travel.direction + (road.clockwise? pi/2: -pi/2);
+/*
     if (travel.dy == 0) {
       angle = travel.dx > 0 ? pi / 2 : 3 * pi / 2;
     } else if (travel.dy > 0) {
@@ -69,7 +76,8 @@ double direction(RenderRoad road, {double? distance, double? fraction}) {
     }
 
     return _invertAngle(
-        (angle + (road.clockwise ? pi / 2 : -pi / 2)) % (2 * pi));
+        (angle + (road.clockwise ? pi / 2 : -pi / 2)) % (2 * pi));*/
+    return angle + pi/2;
   }
   throw Exception('Attempted vehicle direction calculation on non-road');
 }

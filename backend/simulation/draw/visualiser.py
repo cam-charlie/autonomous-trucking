@@ -27,7 +27,7 @@ class Visualiser:
         self.realm = realm
 
         pygame.init()
-        width, height = 640, 480
+        width, height = 2*640, 2*480
         self.screen = pygame.display.set_mode((width, height))
 
     def refresh(self) -> None:

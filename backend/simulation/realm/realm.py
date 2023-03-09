@@ -3,7 +3,7 @@ import math
 from typing import TYPE_CHECKING
 from .truck import Truck
 from .graph import Node, Road, Edge
-from .entity import Actor
+from .entity import Actor, Actions
 from ..config import Config
 if TYPE_CHECKING:
     from typing import Dict, List, Tuple
@@ -25,11 +25,15 @@ class Realm:
         self.nodes = {n["id"]:Node.from_json(n) for n in data['nodes']}
 
         for r in data['roads']:
+            speed_limit: float = 31.3
+            if "speed_limit" in r:
+                speed_limit = r["speed_limit"]
             self.edges[r["id"]] = Road(
                     r["id"],
                     self.nodes[int(r["start_node_id"])],
                     self.nodes[int(r["end_node_id"])],
-                    r["length"]
+                    r["length"],
+                    speed_limit=speed_limit
                 )
 
         # Run Floyd-Warshall
@@ -72,7 +76,7 @@ class Realm:
             if isinstance(edge,Actor):
                 self.actors[edge.id_] = edge
 
-    def update(self, actions: Dict[int, float], dt: float=1/30) -> Dict[int, bool]:
+    def update(self, actions: Actions, dt: float=1/30) -> Dict[int, bool]:
         """ Runs logic.
         Args:
             actions: list of agent actions
@@ -81,11 +85,7 @@ class Realm:
         """
         # Take actions
         for actor in self.actors.values():
-            if actor.id_ in actions:
-                actor.act(actions[actor.id_], dt)
-            else:
-                actor.act(None, dt)
-
+            actor.act(actions, dt)
         # Step nodes and roads
         for node in self.nodes.values():
             node.update(dt)

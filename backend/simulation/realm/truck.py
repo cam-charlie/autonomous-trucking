@@ -1,5 +1,5 @@
 from __future__ import annotations
-from .entity import Actor
+from .entity import Actor, Actions
 from ..config import Config
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
@@ -12,26 +12,34 @@ class Truck(Actor):
     def __init__(self, id_: int, route: List[int], start_time: float) -> None:
         super().__init__(id_)
         self._velocity: float = 0
+        self.acceleration: float = 0
         self.position: float = 0
         self._stepped = False
         self._route = route
         self._route_index = 0
         self.start_time = start_time
 
-    def act(self, action: Optional[float], dt: float) -> None:
+    def act(self, actions: Actions, dt: float) -> None:
         """Apply actions
 
         Called once each turn, before step()
         """
-        acceleration = action
         self._stepped = False
-        if acceleration is not None:
-            achieved_acceleration = min(Config.get_instance().MAX_ACCELERATION, abs(acceleration))
-            if acceleration < 0:
-                achieved_acceleration = achieved_acceleration * -1
-            self._velocity = min(Config.get_instance().MAX_VELOCITY,
-                                 self._velocity + achieved_acceleration*dt)
-            self._velocity = max(self._velocity, 0)
+        if self.id_ not in actions.truck_accelerations:
+            return
+        self.acceleration = actions.truck_accelerations[self.id_]
+
+
+    def update_position(self, dt: float, road_length: float) -> None:
+        # Taylor series approximation may make the velocity negative,
+        # which breaks the intelligent driver model
+        # So do not permit velocity < 0
+        if self.velocity + self.acceleration * dt < 0:
+            self.position -= (1/2 * self.velocity * self.velocity / self.acceleration) / road_length
+            self._velocity = 0
+        else:
+            self._velocity += self.acceleration * dt
+            self.position += (self.velocity*dt + self.acceleration*dt*dt/2) / road_length
 
     def set_velocity(self, velocity: float) -> None:
         self._velocity = velocity
