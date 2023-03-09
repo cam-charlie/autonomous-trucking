@@ -362,13 +362,6 @@ class Road(Edge):
 
 
 
-    @property
-    def end_node(self) -> Node:
-        return self._end
-
-    @property
-    def speed_limit(self) -> float:
-        return self._speed_limit
 
     @property
     def end_node(self) -> Node:
