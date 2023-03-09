@@ -172,4 +172,9 @@ class AnimatedInputRange extends ChangeNotifier {
     _velocityCalculator.pushValue(_x);
     notifyListeners();
   }
+
+  /* ----------- manual animation ------------ */
+  void animateTo({required double endValue, required Duration duration, Curve curve = Curves.linear}) {
+    _controller.animateTo(endValue, duration: duration, curve: curve);
+  }
 }
