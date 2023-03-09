@@ -59,9 +59,24 @@ class SimulationPainter extends CustomPainter {
     // for (RenderRoad r in state.roads) {
     //   r.drawOutline(canvas: canvas);
     // }
+    final outlinePath = Path();
+    for (RenderOutline o in state.outlines) {
+      outlinePath.addPath(o.calcPath(), Offset.zero);
+    }
+    final outlinePaint = Paint()
+      ..strokeWidth = 8
+      ..style = PaintingStyle.stroke
+      ..color = Color(0x40000000)
+      ..strokeJoin = StrokeJoin.round;
+    canvas.drawPath(outlinePath, outlinePaint);
 
     for (RenderRoad r in state.roads) {
       r.drawBody(canvas: canvas);
+    }
+
+
+    for (RenderText t in state.text) {
+      t.draw(canvas: canvas);
     }
 
     for (RenderVehicle v in state.vehicles) {
@@ -76,12 +91,7 @@ class SimulationPainter extends CustomPainter {
     for (RenderDepot d in state.depots) {
       d.drawBody(canvas: canvas);
     }
-    for (RenderOutline o in state.outlines) {
-      o.draw(canvas: canvas);
-    }
-    for (RenderText t in state.text) {
-      t.draw(canvas: canvas);
-    }
+
   }
 
   @override

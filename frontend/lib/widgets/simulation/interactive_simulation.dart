@@ -32,12 +32,15 @@ class _InteractiveSimulationState extends State<InteractiveSimulation>
       tickerProvider: this,
       initialTransform:
           const CameraTransform(position: Offset(0, 0), rotation: 0, zoom: 1),
-      panBounds: Rect.fromCenter(center: Offset.zero, width: 500, height: 500),
+      panBounds: Rect.fromCenter(center: Offset.zero, width: 2000, height: 2000),
       zoomBounds: const LogarithmicRange(0.1, 10),
       panAnimations: moveDetectorAnimationOptions,
       zoomAnimations: moveDetectorAnimationOptions,
       rotateAnimations: moveDetectorAnimationOptions,
     );
+    // Future.delayed(Duration(seconds: 10), () {
+    //   _controller.panTo(newPan: Offset.zero, newZoom: 10, duration: Duration(seconds: 30));
+    // });
   }
 
   @override

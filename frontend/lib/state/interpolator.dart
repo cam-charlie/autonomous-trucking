@@ -93,10 +93,13 @@ class _Interpolator {
 
     if (!_turn.containsKey(RenderVehicleID(start.truckId))) {
       comms.add(InitAction(vehicle: RenderVehicleID(start.truckId), time: t0));
-      _turn[RenderVehicleID(start.truckId)] = RenderRoadID(start.roadId);
-      _speed[RenderVehicleID(start.truckId)] = start.currSpeed;
-    } else if (RenderRoadID(start.roadId) != _turn[RenderVehicleID(start.truckId)]!) {
+      if (start.progress != -1){
+        _turn[RenderVehicleID(start.truckId)] = RenderRoadID(start.roadId);
+        _speed[RenderVehicleID(start.truckId)] = start.currSpeed;
+      }
+    } else if (RenderRoadID(start.roadId) != _turn[RenderVehicleID(start.truckId)]! && start.progress != -1) {
       // Claculate direction of turn
+
 
       double startDir = road_calc.direction(map[_turn[RenderVehicleID(start.truckId)]!]!,
           fraction: start.progress);

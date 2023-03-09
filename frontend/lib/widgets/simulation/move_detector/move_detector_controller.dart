@@ -97,7 +97,7 @@ class MoveDetectorController extends ChangeNotifier {
   }
 
   // TODO: make manual movement better
-  void panTo(Offset? newPan, double? newZoom, double? newRotation, {required Duration duration, Curve curve = Curves.linear}) {
+  void panTo({Offset? newPan, double? newZoom, double? newRotation, required Duration duration, Curve curve = Curves.linear}) {
     if (newPan != null) {
       _xController.animateTo(endValue: newPan.dx, duration: duration, curve: curve);
       _yController.animateTo(endValue: newPan.dy, duration: duration, curve: curve);

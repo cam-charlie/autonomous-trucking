@@ -36,7 +36,7 @@ class AppController extends ChangeNotifier {
   late final ValueNotifier<RenderSimulationState> stateNotifier;
   RenderVehicleID? _selectedVehicle = null;
   double _currentTime = 0;
-  double _playbackSpeed = 1;
+  double _playbackSpeed = 5;
   bool _playing = true;
 
   late final Ticker _ticker;
@@ -92,7 +92,7 @@ class AppController extends ChangeNotifier {
   }
 
   onSlowdown() {
-    _playbackSpeed = min(0.25, _playbackSpeed - 0.25);
+    _playbackSpeed = max(0.25, _playbackSpeed - 0.25);
   }
 
   @override

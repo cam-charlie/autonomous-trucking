@@ -49,9 +49,9 @@ class Config:
     def clear() -> None:
         Config._INSTANCE = None
 
-    MIN_DESIRED_DIST = 10
+    MIN_DESIRED_DIST = 20
     ACCELERATION_SMOOTHNESS = 4
-    TRUCK_LENGTH = 4
+    TRUCK_LENGTH = 8
     SAFETY_MARGIN_TO_LIGHT = 15
 
     @property

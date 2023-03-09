@@ -38,6 +38,7 @@ class _TruckingAppState extends State<TruckingApp> with SingleTickerProviderStat
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: InactivityDetector(
         onActivity: () => setState(() => _controller.activityNotifier.value = true),
         onInactivity: () => setState(() => _controller.activityNotifier.value = false),

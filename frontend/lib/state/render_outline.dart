@@ -7,18 +7,21 @@ class RenderOutline {
 
   Path calcPath() {
     final path = Path();
-    for (final point in points) {
+    path.moveTo(points[0].dx, points[0].dy);
+    for (final point in points.sublist(1)) {
       path.lineTo(point.dx, point.dy);
     }
     path.close();
     return path;
   }
 
+
+
   void draw({required Canvas canvas}) {
     final paint = Paint()
-      ..strokeWidth = 4
+      ..strokeWidth = 8
       ..style = PaintingStyle.stroke
-      ..color = Color(0x80000000)
+      ..color = Color(0x40000000)
       ..strokeJoin = StrokeJoin.round;
 
     canvas.drawPath(calcPath(), paint);

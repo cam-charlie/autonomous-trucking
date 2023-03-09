@@ -1,3 +1,7 @@
+globals:
+  max vehicle acceleration: 0.68
+  max vehicle velocity: 30.0
+  simulation time: 0.0
 vehicles:
   10000:
     fraction: 0.0
@@ -1526,7 +1530,7 @@ text:
 - position:
   - -847.735293403924
   - 494.2528401631862
-  text: Dawrin College
+  text: Darwin College
 - position:
   - -791.7136630880146
   - 416.5400997819379
