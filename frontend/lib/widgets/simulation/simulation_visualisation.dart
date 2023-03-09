@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/constants.dart' as constants;
 import 'package:frontend/state/render_depot.dart';
+import 'package:frontend/state/render_outline.dart';
 import 'package:frontend/utilities/camera_transform.dart';
 
 import '../../state/render_road.dart';
 import '../../state/render_simulation.dart';
+import '../../state/render_text.dart';
 import '../../state/render_vehicle.dart';
 
 class SimulationVisualisation extends StatelessWidget {
@@ -73,6 +75,12 @@ class SimulationPainter extends CustomPainter {
     }
     for (RenderDepot d in state.depots) {
       d.drawBody(canvas: canvas);
+    }
+    for (RenderOutline o in state.outlines) {
+      o.draw(canvas: canvas);
+    }
+    for (RenderText t in state.text) {
+      t.draw(canvas: canvas);
     }
   }
 

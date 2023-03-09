@@ -5,6 +5,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:frontend/constants.dart' as constants;
 import 'package:frontend/generation/file_to_store.dart';
+import 'package:frontend/generation/rstore_to_store.dart';
 import 'package:frontend/generation/store_state.dart';
 import 'package:frontend/generation/store_to_json.dart';
 import 'package:frontend/generation/store_to_render.dart';
@@ -13,6 +14,8 @@ import 'package:frontend/state/render_depot.dart';
 import 'package:frontend/state/render_road.dart';
 import 'package:frontend/state/render_simulation.dart';
 
+import 'generation/file_to_rstore.dart';
+import 'generation/rstore_state.dart';
 import 'state/interpolator.dart';
 import 'state/render_vehicle.dart';
 
@@ -54,11 +57,16 @@ class AppController extends ChangeNotifier {
     String yamlData = await rootBundle.loadString('assets/state.yaml');
     final StoreSimulationState storeState = loadFileIntoStoreState(yamlData);
     await startFromConfig(convertStoreStateToJson(storeState));
-    final List<RenderRoad> roads = convertStoreStateToRenderRoads(storeState);
+    // String yamlData = await rootBundle.loadString('assets/rstate.yaml');
+    // final RStoreSimulationState rStoreState = loadFileIntoRStoreState(yamlData);
+    // final StoreSimulationState storeState = convertRStoreToStoreSimulationState(rStoreState);
+    await startFromConfig(convertStoreStateToJson(storeState));
+
+    final StaticRenderData data = convertStoreStateToRenderData(storeState);
     // TODO: pass to will's function on init
     final List<RenderDepot> depots =
         convertStoreStateToRenderDepots(storeState);
-    _interpolator = Interpolator(roads: roads, depots: depots);
+    _interpolator = Interpolator(data: data);
     bufferingNotifier.value = false;
     _initialStateLoadedFromFile = true;
   }

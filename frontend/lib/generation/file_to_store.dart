@@ -19,11 +19,15 @@ StoreSimulationState loadFileIntoStoreState(String yamlData) {
   final vehicles = data['vehicles'];
   final roads = data['roads'];
   final nodes = data['nodes'];
+  final text = data['text'] as List;
+  final outlines = data['outlines'] as List;
   final globals = data['globals'];
 
   final Map<StoreRoadID, StoreRoad> roadMap = {};
   final Map<StoreVehicleID, StoreVehicle> vehicleMap = {};
   final Map<StoreNodeID, StoreNode> nodeMap = {};
+  final List<List<Offset>> outlinesList = [];
+  final List<StoreText> textList = [];
 
   // vehicle
   for (MapEntry item in (vehicles as Map).entries) {
@@ -88,10 +92,28 @@ StoreSimulationState loadFileIntoStoreState(String yamlData) {
     simulationTime: globals['simulation time'],
   );
 
+  // outlines
+  for (final List rawOutline in outlines) {
+    final List<Offset> outline = [];
+    for (final List coord in rawOutline) {
+      outline.add(Offset(numToDouble(coord[0]), numToDouble(coord[1])));
+    }
+    outlinesList.add(outline);
+  }
+
+  // text
+  for (final Map item in text) {
+    textList.add(
+      StoreText(item['text'], Offset(numToDouble(item['position'][0]), numToDouble(item['position'][1])))
+    );
+  }
+
   return StoreSimulationState(
     roadMap: roadMap,
     vehicleMap: vehicleMap,
     nodeMap: nodeMap,
     globals: globalsMap,
+    outlines: outlinesList,
+    text: textList,
   );
 }
