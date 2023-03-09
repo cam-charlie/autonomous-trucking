@@ -1,4 +1,5 @@
 import 'dart:ui';
+
 import 'package:frontend/generation/store_state.dart';
 import 'package:yaml/yaml.dart';
 
@@ -18,10 +19,15 @@ StoreSimulationState loadFileIntoStoreState(String yamlData) {
   final vehicles = data['vehicles'];
   final roads = data['roads'];
   final nodes = data['nodes'];
+  final text = data['text'];
+  final outlines = data['outlines'];
+  final globals = data['globals'];
 
   final Map<StoreRoadID, StoreRoad> roadMap = {};
   final Map<StoreVehicleID, StoreVehicle> vehicleMap = {};
   final Map<StoreNodeID, StoreNode> nodeMap = {};
+  final List<List<Offset>> outlinesList = [];
+  final List<StoreText> textList = [];
 
   // vehicle
   for (MapEntry item in (vehicles as Map).entries) {
@@ -31,7 +37,9 @@ StoreSimulationState loadFileIntoStoreState(String yamlData) {
       node: map['node'] != null ? StoreNodeID(map['node']) : null,
       road: map['road'] != null ? StoreRoadID(map['road']) : null,
       fractionAlongRoad: numToDouble(map['fraction']),
-      route: (map['route'] as List).map<StoreNodeID>((id) => StoreNodeID(id as int)).toList(),
+      route: (map['route'] as List)
+          .map<StoreNodeID>((id) => StoreNodeID(id as int))
+          .toList(),
     ));
   }
 
@@ -78,9 +86,34 @@ StoreSimulationState loadFileIntoStoreState(String yamlData) {
     ));
   }
 
+  final globalsMap = StoreSimulationStateGlobals(
+    maxAcceleration: globals['max vehicle acceleration'],
+    maxVelocity: globals['max vehicle velocity'],
+    simulationTime: globals['simulation time'],
+  );
+
+  // outlines
+  for (final List rawOutline in outlines ?? []) {
+    final List<Offset> outline = [];
+    for (final List coord in rawOutline) {
+      outline.add(Offset(numToDouble(coord[0]), numToDouble(coord[1])));
+    }
+    outlinesList.add(outline);
+  }
+
+  // text
+  for (final Map item in text ?? []) {
+    textList.add(
+      StoreText(item['text'], Offset(numToDouble(item['position'][0]), numToDouble(item['position'][1])))
+    );
+  }
+
   return StoreSimulationState(
     roadMap: roadMap,
     vehicleMap: vehicleMap,
     nodeMap: nodeMap,
+    globals: globalsMap,
+    outlines: outlinesList,
+    text: textList,
   );
 }

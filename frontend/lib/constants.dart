@@ -41,6 +41,8 @@ const double translateDragCoefficient = 0.00001;
 const double vehicleSelectionRadius = 20;
 
 const RenderSimulationState exampleState = RenderSimulationState(
+  outlines: [],
+  text: [],
   depots: [],
   vehicles: v,
   roads: [

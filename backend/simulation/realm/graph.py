@@ -4,7 +4,9 @@ from simulation.draw.utils import Drawable, DEFAULT_FONT
 import pygame
 from ..lib.geometry import Point
 from ..config import InvalidConfiguration, Config
+
 from .entity import Actor, Entity, Actions
+
 from collections import OrderedDict
 from typing import TYPE_CHECKING
 import math
@@ -19,11 +21,13 @@ class TruckContainer(Entity, Drawable, ABC):
         super().__init__(id_)
         self._trucks: OrderedDict[int, Truck] = OrderedDict()
 
+
     def get_first_truck(self) -> Optional[Truck]:
         return next(iter(self._trucks.values()), None)
 
     def get_last_truck(self) -> Optional[Truck]:
         return next(reversed(self._trucks.values()), None)
+
 
     def is_empty(self) -> bool:
         return len(self._trucks) == 0
@@ -199,6 +203,7 @@ class Depot(Node, Actor):
             return
         if dt <= self._current_cooldown:
             return
+
         tid_to_release = actions.trucks_to_release[self.id_]
         if tid_to_release in self._trucks:
             truck = self._trucks.pop(tid_to_release)
@@ -207,25 +212,30 @@ class Depot(Node, Actor):
             self._current_cooldown += self._max_cooldown
 
 
+
     def update(self, dt: float) -> None:
         self._current_cooldown = max(0, self._current_cooldown - dt)
         for truck in self._trucks.values():
             truck.set_velocity(0)
 
+
     def compute_actions(self) -> Optional[int]:
         config = Config.get_instance()
+
         for truck in self._trucks.values():
             if truck.start_time >= Config.get_instance().SIM_TIME:
                 continue
             if not truck.done(): #Truck is waiting to be released
                 next_road = self._outgoing[0]
                 if next_road.is_empty():
+
                     return truck.id_
 
 
                 first_car_pos = next_road.get_first_truck().position * next_road.length#type:ignore
                 # If there is space on the road
                 if first_car_pos > float(config.TRUCK_LENGTH + config.SAFETY_MARGIN_TO_LIGHT):
+
                     #Release this truck
                     return truck.id_
         return None
@@ -269,7 +279,9 @@ class Road(Edge):
 
         self._speed_limit = speed_limit
         self._cost = length / speed_limit
+
         self.did_a_reset = False
+
 
     def getPosition(self, u: float) -> Point:
         """ Obtains interpolated position
@@ -310,6 +322,7 @@ class Road(Edge):
                 truck.update_position(dt, self.length)
                 truck.on_movement(dt)
 
+
         # THIS IS PURELY TO DEMONSTRATE THE RUBBER/ELASTIC-BANDING EFFECT
         '''
         if round(Config.get_instance().SIM_TIME,5) == 35.0 and not self.did_a_reset:
@@ -324,6 +337,7 @@ class Road(Edge):
         for i, truck in enumerate(truck_list):
             if i+1 < len(truck_list) and truck_list[i+1].position > truck.position:
                 print(f"collision between {truck_list[i].id_,} and {truck_list[i+1].id_} :(")
+
                 truck.collision(truck_list[i+1])
                 truck_list[i+1].collision(truck)
                 truck_list[i+1].position = max(0, truck.position - 3 / self.length)
@@ -341,9 +355,12 @@ class Road(Edge):
             "id": self.id_,
             "start_node_id": self._start.id_,
             "end_node_id": self._end.id_,
+
             "length": self.length,
             "speed_limit": self._speed_limit
         }
+
+
 
 
     @property

@@ -1,16 +1,15 @@
 import 'dart:math';
 
+import 'package:collection/collection.dart';
+import 'package:flutter/material.dart';
+import 'package:frontend/generation/store_to_render.dart';
 import 'package:frontend/state/communication/comm_log.dart';
 import 'package:frontend/state/render_depot.dart';
-import 'package:vector_math/vector_math.dart';
-
-import 'package:flutter/material.dart';
-
 import 'package:frontend/state/render_road.dart';
-import 'package:frontend/state/road_calculation.dart' as road_calc;
 import 'package:frontend/state/render_simulation.dart';
 import 'package:frontend/state/render_vehicle.dart';
-import 'package:collection/collection.dart';
+import 'package:frontend/state/road_calculation.dart' as road_calc;
+import 'package:vector_math/vector_math.dart';
 
 import 'communication/Backend.dart';
 import 'communication/grpc/trucking.pbgrpc.dart';
@@ -33,8 +32,7 @@ class Buffering {
 }
 
 class _Interpolator {
-  final List<RenderRoad> _roads;
-  final List<RenderDepot> _depots;
+  final StaticRenderData _staticData;
   final Map<RenderRoadID, RenderRoad> _roadMap;
   final Map<RenderVehicleID, RenderRoadID> _turn;
   final Map<RenderVehicleID, double> _speed;
@@ -43,13 +41,11 @@ class _Interpolator {
   CommunicationLog comms;
 
   _Interpolator(
-      {required List<RenderRoad> roads,
-      required List<RenderDepot> depots,
+      {required StaticRenderData data,
       required dynamic Function(double) getData})
-      : _roads = roads,
-        _depots = depots,
+      : _staticData = data,
         _getData = getData,
-        _roadMap = {for (var road in roads) road.id: road},
+        _roadMap = {for (var road in data.roads) road.id: road},
         _turn = {},
         _speed = {},
         _depoted = {},
@@ -214,7 +210,11 @@ class _Interpolator {
           .whereType<RenderVehicle>()
           .toList();
       return RenderSimulationState(
-          vehicles: vehicles, roads: _roads, depots: _depots);
+          vehicles: vehicles,
+          roads: _staticData.roads,
+          depots: _staticData.depots,
+          outlines: _staticData.outlines,
+          text: _staticData.text,);
     }
 
     // time != generated time t0, tomfoolery ensues
@@ -245,18 +245,21 @@ class _Interpolator {
           .whereType<RenderVehicle>()
           .toList();
       return RenderSimulationState(
-          vehicles: vehicles, roads: _roads, depots: _depots);
+        vehicles: vehicles,
+        roads: _staticData.roads,
+        depots: _staticData.depots,
+        outlines: _staticData.outlines,
+        text: _staticData.text,);
     }
   }
 }
 
 class Interpolator extends _Interpolator {
-  Interpolator({roads, depots})
-      : super(roads: roads, depots: depots, getData: getPositionData);
+  Interpolator({data}) : super(data: data, getData: getPositionData);
 }
 
 @visibleForTesting
 class TestInterpolator extends _Interpolator {
-  TestInterpolator({roads, depots, getData})
-      : super(roads: roads, depots: depots, getData: getData);
+  TestInterpolator({data, getData})
+      : super(data: data, getData: getData);
 }

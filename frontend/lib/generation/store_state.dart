@@ -6,16 +6,39 @@ import 'package:equatable/equatable.dart';
 /// the cartesian RenderRoad code and the graph data structure,
 /// and the mapping between the two
 
+
+
 class StoreSimulationState {
   final Map<StoreRoadID, StoreRoad> roadMap;
   final Map<StoreVehicleID, StoreVehicle> vehicleMap;
   final Map<StoreNodeID, StoreNode> nodeMap;
+  final StoreSimulationStateGlobals globals;
+  final List<List<Offset>> outlines;
+  final List<StoreText> text;
 
   StoreSimulationState({
     required this.roadMap,
     required this.vehicleMap,
     required this.nodeMap,
+    required this.globals,
+    required this.outlines,
+    required this.text,
   });
+}
+
+class StoreText {
+  final String text;
+  final Offset position;
+
+  const StoreText(this.text, this.position);
+}
+
+class StoreSimulationStateGlobals {
+final double maxAcceleration;
+final double maxVelocity;
+final double simulationTime;
+
+const StoreSimulationStateGlobals({required this.maxAcceleration, required this.maxVelocity, required this.simulationTime});
 }
 
 class StoreRoadID extends Equatable {

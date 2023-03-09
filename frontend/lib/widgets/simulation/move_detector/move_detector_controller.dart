@@ -96,6 +96,20 @@ class MoveDetectorController extends ChangeNotifier {
     super.dispose();
   }
 
+  // TODO: make manual movement better
+  void panTo(Offset? newPan, double? newZoom, double? newRotation, {required Duration duration, Curve curve = Curves.linear}) {
+    if (newPan != null) {
+      _xController.animateTo(endValue: newPan.dx, duration: duration, curve: curve);
+      _yController.animateTo(endValue: newPan.dy, duration: duration, curve: curve);
+    }
+    if (newZoom != null) {
+      _zController.animateTo(endValue: newZoom, duration: duration, curve: curve);
+    }
+    if (newRotation != null) {
+      _rController.animateTo(endValue: newRotation, duration: duration, curve: curve);
+    }
+  }
+
   Offset transformPanWithRotationAndZoom(Offset pan) {
     final s = sin(rotation), c = cos(rotation); // TODO: need the "-"?
     return Offset(

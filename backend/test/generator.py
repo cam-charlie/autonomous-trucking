@@ -1,4 +1,6 @@
+
 #pylint: disable=protected-access, wrong-import-position, unused-import
+
 import os
 import sys
 import math
@@ -12,7 +14,9 @@ from simulation.realm.graph import Depot, Road, Node, Junction
 from typing import Optional, List
 
 env = Env()
+
 env.reset_from_path("test/test_json/test_graph.json")
+
 
 def angle(u: complex, v: complex) -> float:
     nu, nv = u/abs(u), v/abs(v)
@@ -20,8 +24,10 @@ def angle(u: complex, v: complex) -> float:
 
 def add_road(start: Node,
              end: Node,
+
              control: Optional[Point] = None,
              speed_limit: float =31.3) -> Road:
+
     length = (end.pos - start.pos).magnitude()
     if control is not None:
         # Circle from 3 points
@@ -36,7 +42,9 @@ def add_road(start: Node,
         cz1, cz2, cz3 = c-z1, c-z2, c-z3
         theta = angle(cz1,cz3) + angle(cz2,cz3)
         length = r * theta
+
     road = Road(id_=generateID(), start =start, end=end, length=length, speed_limit=speed_limit)
+
     env.realm.edges[road._id] = road
     return road
 
@@ -52,6 +60,7 @@ def add_depot(x: int, y: int, size: int = 100) -> Depot:
 
 if __name__ == "__main__":
     SCALE = 1
+
     '''
     d1 = add_depot(100,500)
     d2 = add_depot(500,100)

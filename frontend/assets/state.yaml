@@ -424,6 +424,7 @@ vehicles:
     velocity: 0.0
 
 curves: []
+
 nodes:
   0:
     position:
@@ -1538,4 +1539,3 @@ text:
   - -700.6894855960976
   - -485.8227829383686
   text: Magdalene College
-

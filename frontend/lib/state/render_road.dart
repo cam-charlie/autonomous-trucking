@@ -107,7 +107,7 @@ class RenderArcRoad extends RenderRoad with EquatableMixin {
       ..strokeWidth = constants.roadWidth + 8 // * zoom
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.stroke;
-    final start = clockwise ? arcStart : arcEnd;
+    final start = (clockwise ? arcStart : arcEnd) - pi/2;
     final sweep = clockwise ? arcEnd - arcStart : arcStart - arcEnd;
     canvas.drawArc(Rect.fromCircle(center: centre, radius: radius), start,
         sweep, false, paint);
@@ -120,7 +120,7 @@ class RenderArcRoad extends RenderRoad with EquatableMixin {
       ..strokeWidth = constants.roadWidth // * zoom
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.stroke;
-    final start = clockwise ? arcStart : arcEnd;
+    final start = (clockwise ? arcStart : arcEnd) - pi/2;
     final sweep = clockwise ? arcEnd - arcStart : arcStart - arcEnd;
     canvas.drawArc(Rect.fromCircle(center: centre, radius: radius), start,
         sweep, false, paint);

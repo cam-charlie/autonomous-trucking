@@ -10,12 +10,16 @@ from typing import Dict
 
 import time
 
+import time
+
 def setUp() -> Env:
     env = Env()
     return env
 
 def step(env: Env) -> None:
+
     trucks_to_release = {}
+
     #Work out actions
     for actor in env.realm.actors.values():
         if type(actor) is Depot:
@@ -26,7 +30,9 @@ def step(env: Env) -> None:
     truck_accelerations: Dict[int, float] = {}
     for edge in env.realm.edges.values():
         if type(edge) is Road:
+
             edge.compute_actions(truck_accelerations)
+
     #Actually do the step
     actions = Actions(trucks_to_release, truck_accelerations)
     #print(actions)

@@ -45,7 +45,7 @@ class _TruckingAppState extends State<TruckingApp> with SingleTickerProviderStat
         child: Stack(
           children: [
             Positioned.fill(child: InteractiveSimulation(stateNotifier: _controller.stateNotifier)),
-            const BufferOverlay(buffering: true),
+            BufferOverlay(buffering: _controller.bufferingNotifier.value), // TODO: make this setState / animatedBuilder
             ControlUI(
               playing: _controller.playing,
               mouseActive: _controller.activityNotifier.value,
